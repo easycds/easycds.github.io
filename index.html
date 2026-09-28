@@ -59,12 +59,8 @@ main{flex:1; width:100%; max-width:720px; margin:0 auto; padding:clamp(56px,11vh
   clip-path:inset(0 100% 0 0); animation:trace .7s var(--ease) .15s forwards}
 @keyframes trace{to{clip-path:inset(0 0 0 0)}}
 
-.accueil{text-align:center; margin-top:40px}
-.accueil h1{font-family:var(--police-titre); font-weight:600; font-size:clamp(24px,5vw,30px); letter-spacing:-.3px}
-.accueil p{color:var(--text-muted); font-weight:400; margin-top:4px; font-size:15px}
-
 /* ============ Applis ============ */
-.grille{list-style:none; width:100%; margin-top:40px;
+.grille{list-style:none; width:100%; margin-top:48px;
   display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px}
 .appli{
   position:relative; display:flex; align-items:center; gap:16px;
@@ -115,11 +111,6 @@ a.appli .pastille{margin-left:0}
     <svg class="sourire" viewBox="0 0 508.9 161.9" aria-hidden="true"><path d="M6.77 32.98 L3.34 38.61 L1.68 42.68 L0.56 46.94 L0.00 51.30 L0.22 57.89 L1.08 62.20 L3.39 68.37 L5.57 72.19 L9.72 77.31 L14.78 81.53 L33.96 94.03 L56.03 107.06 L69.05 114.09 L78.28 118.77 L91.38 124.99 L100.71 129.12 L113.90 134.54 L123.31 138.10 L136.58 142.70 L146.08 145.68 L159.42 149.45 L169.00 151.84 L182.40 154.76 L192.05 156.55 L205.50 158.62 L215.19 159.80 L228.67 161.01 L237.96 161.55 L256.54 161.92 L275.55 161.31 L294.11 159.76 L303.37 158.62 L316.82 156.55 L335.27 152.90 L354.03 148.21 L372.29 142.70 L381.38 139.60 L394.62 134.68 L404.00 130.89 L417.48 124.99 L430.91 118.61 L444.26 111.74 L457.27 104.56 L470.51 96.74 L483.69 88.45 L494.08 81.53 L497.55 78.83 L500.64 75.70 L504.45 70.32 L507.15 64.31 L508.29 60.06 L508.86 55.70 L508.87 51.30 L508.31 46.94 L507.19 42.68 L505.53 38.61 L502.09 32.98 L486.05 11.81 L481.23 7.21 L475.61 3.64 L469.39 1.24 L462.83 0.09 L458.39 0.05 L453.97 0.59 L449.67 1.70 L445.54 3.36 L419.32 19.32 L408.29 25.49 L397.32 31.23 L386.35 36.55 L375.51 41.41 L364.73 45.84 L353.84 49.90 L343.36 53.42 L332.76 56.59 L315.02 61.01 L304.75 63.05 L294.31 64.75 L283.91 66.04 L273.53 66.95 L259.72 67.56 L245.91 67.48 L232.09 66.71 L221.49 65.66 L207.60 63.66 L193.85 61.01 L183.14 58.48 L169.23 54.58 L158.41 51.08 L144.31 45.90 L133.52 41.48 L122.68 36.62 L108.18 29.51 L93.49 21.57 L82.40 15.10 L67.19 5.55 L63.32 3.36 L57.07 1.08 L52.70 0.25 L48.26 0.00 L41.64 0.71 L35.28 2.71 L29.43 5.90 L25.93 8.64 L22.81 11.81Z"/></svg>
   </header>
 
-  <section class="accueil">
-    <h1 id="salut">Bonjour</h1>
-    <p id="date"></p>
-  </section>
-
   <ul class="grille" id="grille"></ul>
 </main>
 
@@ -169,12 +160,6 @@ document.getElementById('grille').innerHTML = APPLIS.map(a => {
     ? `<li><a class="appli" href="${a.url}"><span class="icone">${svg(a.icone)}</span><span class="nom">${a.nom}</span>${pastille}${FLECHE}</a></li>`
     : `<li><span class="appli a-venir" aria-disabled="true"><span class="icone">${svg(a.icone)}</span><span class="nom">${a.nom}</span>${pastille}</span></li>`;
 }).join('');
-
-/* Salutation + date */
-const h = new Date().getHours();
-document.getElementById('salut').textContent = h < 5 || h >= 18 ? 'Bonsoir' : 'Bonjour';
-const d = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-document.getElementById('date').textContent = d.charAt(0).toUpperCase() + d.slice(1);
 
 /* Thème clair / sombre (suit l'appareil, sauf si on a cliqué sur le bouton) */
 const btn = document.getElementById('theme');

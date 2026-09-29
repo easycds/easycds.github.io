@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /pedagogie.html
+Disallow: /livret.html
+Disallow: /trame.js
+Disallow: /administratif.html
+Disallow: /permis/

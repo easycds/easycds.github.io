@@ -169,7 +169,7 @@ document.getElementById('grille').innerHTML = APPLIS.map(a => {
     : `<li><span class="appli a-venir" aria-disabled="true"><span class="icone">${svg(a.icone)}</span><span class="txt"><span class="nom">${a.nom}</span>${pastille}</span></span></li>`;
 }).join('');
 
-/* Thème clair / sombre (suit l'appareil, sauf si on a cliqué sur le bouton) */
+/* Thème : clair par défaut, sombre seulement si on le choisit avec le bouton (choix mémorisé) */
 const btn = document.getElementById('theme');
 const SOLEIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>';
 const LUNE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
@@ -177,12 +177,10 @@ function appliquer(sombre){
   document.body.classList.toggle('dark', sombre);
   btn.innerHTML = sombre ? SOLEIL : LUNE;
 }
-const systeme = window.matchMedia('(prefers-color-scheme: dark)');
 let choix = null;
 try { choix = localStorage.getItem('easy-hub-theme'); } catch(e){}
-let sombre = choix ? choix === 'dark' : systeme.matches;
+let sombre = choix === 'dark';
 appliquer(sombre);
-systeme.addEventListener('change', e => { if (!choix) { sombre = e.matches; appliquer(sombre); } });
 btn.addEventListener('click', () => {
   sombre = !sombre; appliquer(sombre);
   choix = sombre ? 'dark' : 'light';

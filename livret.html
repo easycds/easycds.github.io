@@ -73,23 +73,9 @@ h1{font-family:var(--police-titre);font-weight:600;font-size:clamp(24px,5vw,30px
 .puce.ko{border-color:var(--s-ko);background:var(--s-ko-l);color:var(--s-ko)}
 .puce.vu{border-color:var(--s-vu);background:var(--s-vu-l);color:var(--s-vu)}
 .puce.next{border-color:var(--s-next);background:var(--s-next-l);color:var(--s-next)}
-/* « ? » : explication de la trame */
-.aide{display:inline-grid;place-items:center;width:18px;height:18px;margin-left:7px;margin-right:-4px;border-radius:50%;
-  font-size:11px;font-weight:800;background:var(--bg);color:var(--text-muted);border:1px solid var(--border);vertical-align:1px;cursor:help}
-.aide:hover{background:var(--text);color:var(--surface);border-color:var(--text)}
-.aide-fond{position:fixed;inset:0;z-index:30;background:rgba(15,17,23,.45);display:none;align-items:center;justify-content:center;padding:16px}
-.aide-fond.on{display:flex}
-.aide-box{background:var(--surface);border-radius:18px;box-shadow:0 20px 50px rgba(0,0,0,.25);width:560px;max-width:100%;max-height:85vh;overflow:auto;padding:20px 22px}
-.aide-ref{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--easy)}
-.aide-box h3{font-family:var(--police-titre);font-weight:600;font-size:20px;margin:2px 0 12px}
-.aide-box ul{list-style:none;display:flex;flex-direction:column;gap:7px;font-size:14.5px;line-height:1.55}
-.aide-box li{position:relative;padding-left:16px}
-.aide-box li::before{content:'';position:absolute;left:0;top:.6em;width:6px;height:6px;border-radius:50%;background:var(--easy)}
-.aide-box li b{color:var(--easy)}
-.aide-act{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap}
-.aide-act a{text-decoration:none;color:inherit}
-@media(max-width:600px){.aide-fond{align-items:flex-end;padding:0}.aide-box{border-radius:18px 18px 0 0;max-height:80vh}}
 .libre{display:flex;gap:8px;margin-top:6px}
+.oblig{text-transform:none;letter-spacing:0;font-weight:600;color:var(--easy);margin-left:4px}
+input.manque{border-color:var(--easy);box-shadow:0 0 0 3px var(--easy-light)}
 input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);font-size:14.5px}
 textarea{resize:vertical;min-height:70px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:11px;padding:10px 14px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap}
@@ -149,8 +135,8 @@ textarea{resize:vertical;min-height:70px}
 
     <div class="carte">
       <h2>Compléments</h2>
-      <label class="lbl" for="secteur">Secteur / circuit</label>
-      <input type="text" id="secteur" placeholder="Ex. : St Serge, les 7 sonnettes, Écouflant bourg" oninput="etat.secteur=this.value;maj()">
+      <label class="lbl" for="secteur">Secteur / circuit <span class="oblig">obligatoire</span></label>
+      <input type="text" id="secteur" placeholder="Ex. : St Serge, les 7 sonnettes, Écouflant bourg" oninput="etat.secteur=this.value;if(this.value.trim())this.classList.remove('manque');maj()">
       <label class="lbl" for="remarque" style="margin-top:12px">Remarque / conseil à l'élève</label>
       <textarea id="remarque" placeholder="Ex. : Aie confiance en toi, tu as les connaissances nécessaires" oninput="etat.remarque=this.value;maj()"></textarea>
     </div>
@@ -168,9 +154,7 @@ textarea{resize:vertical;min-height:70px}
 
 <div class="barre-mobile"><span class="nb" id="nb-m">0 point</span><button class="btn" onclick="document.getElementById('sortie').scrollIntoView({behavior:'smooth'})">Voir le texte</button><button class="btn copie" onclick="copier()">Copier</button></div>
 <div class="toast" id="toast"></div>
-<div class="aide-fond" id="aide" onclick="if(event.target===this)fermerAide()"><div class="aide-box" role="dialog" aria-modal="true" id="aide-contenu"></div></div>
 
-<script src="trame.js"></script>
 <script>
 /* =====================================================================
    STATUTS et POINTS — vocabulaire repris des livrets des moniteurs.
@@ -209,36 +193,6 @@ const POINTS = {
   },
 };
 
-/* Lien entre un point du livret et l'étape de la trame (Pédagogie) qui l'explique.
-   "C2-13" = compétence 2, étape n°13. Un point sans lien n'a pas de « ? ». */
-const TRAME = {
-  'Installation au poste de conduite':'C1-1','Commandes du véhicule':'C1-1','Manipulation du volant':'C1-2','Petit / grand chevauchement':'C1-2',
-  'Retour de volant':'C1-2','Tâche aveugle / vision 180°':'C1-2','Repérer les intersections':'C1-3',
-  'Chaîne cinématique':'C1-4','Démarrer / s\'arrêter':'C1-4','Calage':'C1-4','Roue libre':'C1-4','1-2 arrêt précis':'C1-4','Arrêt en sécurité':'C1-4',
-  'Dosage du frein':'C1-4','Freinage dégressif':'C1-4','1-2-3 / 3-2':'C1-4','1-2-3-4 / 4-3-2':'C1-4','1-2-3-4-5 / 5-4-3-2':'C1-4','Frein moteur':'C1-4','Montée des vitesses (accélérer)':'C1-4',
-  'Démarrage en côte avec FM':'C1-5','Démarrage en côte sans FM':'C1-5','Point de stabilisation':'C1-5',
-  'TAD':'C1-6','TAG':'C1-6','CCPA':'C1-6','Contrôles rétros':'C1-6',
-  'Marche arrière ligne droite':'C1-7','Marche arrière en courbe':'C1-7','Demi-tour':'C1-7','Reprise 1re (R1)':'C1-8',
-  'Connaissance du code':'C2-1','Stop / CLP':'C2-1','Placement sur la chaussée':'C2-1',
-  'Conduite commentée':'C2-2','PADA / détection':'C2-2','Indices formels / informels':'C2-2','Contrôles intersections':'C2-2','Régime de priorité':'C2-2',
-  'Feux tricolores':'C2-3','Feux TAD':'C2-4','Feux TAG':'C2-4','Croisement indonésien':'C2-4','Croisement classique':'C2-4',
-  'Giratoire à une voie':'C2-5','Giratoire haricot':'C2-5','Décision à l\'insertion':'C2-5','Giratoire TAD / tout droit':'C2-6','Giratoire TAG / demi-tour':'C2-7',
-  'Piste / bande cyclable':'C2-9','Changement de voie / file':'C2-9','Choix de voies':'C2-9','Parcours d\'observation':'C2-9',
-  'Bataille arrière droite':'C2-10','Bataille arrière gauche':'C2-11','Bataille avant':'C2-12','Épi avant':'C2-12',
-  'Créneau à droite':'C2-13','Créneau à gauche':'C2-14','Global C2 / Bilan n°1':'C2-15',
-  'Rues étroites':'C3-1','Gabarit à droite':'C3-1','Route de campagne':'C3-2','Virages':'C3-2','Arrêt de précision à 80':'C3-3','0-80 / 80-0':'C3-3',
-  'TAD en campagne / voie de stockage':'C3-4','Voie d\'accélération / insertion':'C3-5','Voie de décélération / sortie':'C3-6','Voie d\'entrecroisement':'C3-7',
-  'Autoroute / voie rapide':'C3-8','Distances de sécurité':'C3-8','Bouchons / interfile':'C3-8','Dépassement':'C3-9','Régulateur / limiteur':'C3-10','Aides à la conduite':'C3-10',
-  'Tunnel':'C3-11','Centre-ville / hyper centre':'C3-12','Usagers vulnérables':'C3-12','Angles morts':'C3-12','Voie de bus':'C3-12',
-  'Premiers secours':'C4-1','Fatigue / alcool / risques':'C4-1','Vérifications véhicule':'C4-2','Écoconduite':'C4-3','Global':'C4-4',
-  'Examen blanc (EB)':'C4-5','Prépa permis':'C4-6','Circuit type examen':'C4-6','Centre d\'examen':'C4-6','Gestion du stress':'C4-6',
-};
-function etapeTrame(p){
-  const r=TRAME[p]; if(!r||typeof COMPETENCES==='undefined')return null;
-  const [c,n]=r.split('-'), comp=COMPETENCES.find(x=>x.code===c), e=comp&&comp.etapes[+n-1];
-  return e?{ref:r,comp,num:+n,etape:e}:null;
-}
-
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('on'),2200); }
 
@@ -259,22 +213,8 @@ function rendrePuces(){
   document.getElementById('puces').innerHTML=h;
 }
 function puce(p){ const s=etat.points[p]; const st=STATUTS.find(x=>x.id===s);
-  const aide=etapeTrame(p) ? `<span class="aide" role="button" title="Voir l'explication dans la trame" data-p="${esc(p)}" onclick="event.stopPropagation();ouvrirAide(this.dataset.p)">?</span>` : '';
-  return `<button class="puce${s?' '+s:''}" data-p="${esc(p)}" onclick="basculer(this.dataset.p)">${st?st.emoji+' ':''}${esc(p)}${aide}</button>`; }
+  return `<button class="puce${s?' '+s:''}" data-p="${esc(p)}" onclick="basculer(this.dataset.p)">${st?st.emoji+' ':''}${esc(p)}</button>`; }
 
-/* Explication de la trame pour un point (fenêtre par-dessus) */
-const fort = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-function ouvrirAide(p){
-  const t=etapeTrame(p); if(!t)return;
-  document.getElementById('aide-contenu').innerHTML=
-    `<div class="aide-ref">${t.comp.code} · étape ${t.num}</div><h3>${esc(t.etape.titre)}</h3>`+
-    `<ul>${t.etape.points.map(x=>`<li>${fort(x)}</li>`).join('')}</ul>`+
-    `<div class="aide-act"><a class="btn" href="pedagogie.html#${t.ref.toLowerCase()}" target="_blank" rel="noopener">Ouvrir dans la trame</a>`+
-    `<button class="btn primaire" onclick="fermerAide()">Fermer</button></div>`;
-  document.getElementById('aide').classList.add('on');
-}
-function fermerAide(){ document.getElementById('aide').classList.remove('on'); }
-document.addEventListener('keydown',e=>{ if(e.key==='Escape')fermerAide(); });
 function basculer(p){
   if(etat.points[p]===mode){ delete etat.points[p]; etat.ordre=etat.ordre.filter(x=>x!==p); }
   else{ etat.points[p]=mode; if(!etat.ordre.includes(p))etat.ordre.push(p); }
@@ -308,6 +248,12 @@ function setFormat(f){ format=f; try{ localStorage.setItem('livret_format',f); }
   document.getElementById('f-liste').classList.toggle('on',f==='liste'); document.getElementById('f-ligne').classList.toggle('on',f==='ligne'); maj(); }
 async function copier(){
   const t=texte(); if(!t){ toast('Rien à copier : clique d\'abord sur des points'); return; }
+  // Le secteur est obligatoire pour que tous les livrets l'indiquent
+  if(!etat.secteur.trim()){
+    const s=document.getElementById('secteur'); s.classList.add('manque');
+    s.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>s.focus(),300);
+    toast('Indique d\'abord le secteur / circuit'); return;
+  }
   try{ await navigator.clipboard.writeText(t); }
   catch(e){ const a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove(); }
   toast('Texte copié ✓ — colle-le dans le livret');

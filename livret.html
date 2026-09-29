@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff3131">
+<title>Livret de séance · Easy Auto-École</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --easy:#ff3131; --easy-dark:#e01f1f; --easy-light:#fff0f0;
+  --grad-easy:linear-gradient(135deg,#ff4040 0%,#ff3131 55%,#ec1f1f 100%);
+  --bg:#f7f6f5; --surface:#ffffff; --text:#1c2430; --text-muted:#6b7280; --text-light:#9ca3af; --border:#ebe9e7;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 14px rgba(16,24,40,.06);
+  --police-titre:'Fredoka','DM Sans',sans-serif; --police-texte:'DM Sans','Segoe UI',system-ui,sans-serif;
+  /* couleurs des statuts */
+  --s-ok:#057a55; --s-ok-l:#def7ec; --s-cours:#c2410c; --s-cours-l:#ffedd5; --s-att:#a16207; --s-att-l:#fef9c3;
+  --s-ko:#dc2626; --s-ko-l:#fee2e2; --s-vu:#1a56db; --s-vu-l:#e8f0ff; --s-next:#7e3af2; --s-next-l:#f1eaff;
+}
+body.dark{
+  --bg:#0f1117; --surface:#1a1d27; --text:#e8eaf0; --text-muted:#8b92a8; --text-light:#5a6178; --border:#2a2f40; --easy-light:#3a0d0d;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.35);
+  --s-ok-l:#0d3326; --s-cours-l:#3a1d0a; --s-att-l:#332a08; --s-ko-l:#3a0d0d; --s-vu-l:#16254d; --s-next-l:#2a1a4a;
+  --s-ok:#34d399; --s-cours:#fb923c; --s-att:#facc15; --s-ko:#f87171; --s-vu:#93b4ff; --s-next:#c4a5ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;font-family:var(--police-texte);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+button,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+.haut{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--grad-easy);color:#fff;box-shadow:0 2px 10px rgba(255,49,49,.25)}
+.retour{display:inline-flex;align-items:center;gap:6px;color:#fff;text-decoration:none;font-size:14px;font-weight:600;padding:6px 10px 6px 6px;border-radius:10px}
+.retour:hover{background:rgba(255,255,255,.15)}
+.retour svg{width:18px;height:18px}
+.haut .t{font-family:var(--police-titre);font-weight:600;font-size:18px}
+.rond{margin-left:auto;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.15);color:#fff;cursor:pointer;display:grid;place-items:center}
+.rond svg{width:17px;height:17px}
+main{max-width:1180px;margin:0 auto;padding:22px 16px 120px;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+h1{font-family:var(--police-titre);font-weight:600;font-size:clamp(24px,5vw,30px)}
+.intro{color:var(--text-muted);font-size:14.5px;margin:4px 0 16px}
+.carte{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px 18px;margin-bottom:14px}
+.carte h2{font-family:var(--police-titre);font-weight:600;font-size:17px;margin-bottom:10px}
+.lbl{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);margin:0 0 6px}
+
+/* Pinceau : statut appliqué au clic */
+.pinceau{position:sticky;top:60px;z-index:4;background:var(--bg);padding:8px 0 10px;margin-bottom:6px}
+.modes{display:flex;gap:6px;flex-wrap:wrap}
+.mode{border:2px solid var(--border);background:var(--surface);border-radius:12px;padding:7px 12px;font-weight:700;font-size:13.5px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.mode.on{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.mode.ok.on{border-color:var(--s-ok);background:var(--s-ok-l);color:var(--s-ok)}
+.mode.cours.on{border-color:var(--s-cours);background:var(--s-cours-l);color:var(--s-cours)}
+.mode.att.on{border-color:var(--s-att);background:var(--s-att-l);color:var(--s-att)}
+.mode.ko.on{border-color:var(--s-ko);background:var(--s-ko-l);color:var(--s-ko)}
+.mode.vu.on{border-color:var(--s-vu);background:var(--s-vu-l);color:var(--s-vu)}
+.mode.next.on{border-color:var(--s-next);background:var(--s-next-l);color:var(--s-next)}
+.astuce{font-size:12.5px;color:var(--text-muted);margin-top:6px}
+
+/* Onglets compétences */
+.onglets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.onglet{border:1px solid var(--border);background:var(--surface);color:var(--text-muted);padding:7px 13px;border-radius:11px;font-weight:700;font-size:13.5px;cursor:pointer}
+.onglet.on{background:var(--text);border-color:var(--text);color:var(--surface)}
+.onglet .c{display:inline-block;min-width:18px;margin-left:4px;font-size:11px;background:var(--easy);color:#fff;border-radius:9px;padding:0 5px}
+
+/* Puces */
+.groupe{margin-bottom:12px}
+.groupe .gt{font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:6px}
+.puces{display:flex;flex-wrap:wrap;gap:6px}
+.puce{border:1.5px solid var(--border);background:var(--surface);border-radius:20px;padding:7px 12px;font-size:13.5px;font-weight:600;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:transform .08s}
+.puce:active{transform:scale(.96)}
+.puce:hover{border-color:var(--text-muted)}
+.puce.ok{border-color:var(--s-ok);background:var(--s-ok-l);color:var(--s-ok)}
+.puce.cours{border-color:var(--s-cours);background:var(--s-cours-l);color:var(--s-cours)}
+.puce.att{border-color:var(--s-att);background:var(--s-att-l);color:var(--s-att)}
+.puce.ko{border-color:var(--s-ko);background:var(--s-ko-l);color:var(--s-ko)}
+.puce.vu{border-color:var(--s-vu);background:var(--s-vu-l);color:var(--s-vu)}
+.puce.next{border-color:var(--s-next);background:var(--s-next-l);color:var(--s-next)}
+.libre{display:flex;gap:8px;margin-top:6px}
+input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);font-size:14.5px}
+textarea{resize:vertical;min-height:70px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:11px;padding:10px 14px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--text-muted)}
+.btn.primaire{background:var(--easy);border-color:var(--easy);color:#fff}
+.btn.primaire:hover{background:var(--easy-dark)}
+.btn.copie{background:var(--s-ok);border-color:var(--s-ok);color:#fff}
+
+/* Résultat */
+.sortie{position:sticky;top:72px}
+.apercu{white-space:pre-wrap;font-size:14px;line-height:1.6;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px 14px;min-height:140px;max-height:48vh;overflow:auto}
+.apercu:empty::before{content:'Clique sur les points travaillés : le texte s\'écrit tout seul ici.';color:var(--text-light)}
+.format{display:flex;gap:6px;margin-bottom:10px}
+.format button{flex:1;border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:7px;font-weight:700;font-size:12.5px;color:var(--text-muted);cursor:pointer}
+.format button.on{background:var(--text);color:var(--surface);border-color:var(--text)}
+.sortie .act{display:flex;gap:8px;margin-top:10px}
+.sortie .act .btn{flex:1}
+.barre-mobile{display:none}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#1c2430;color:#fff;padding:11px 18px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:20;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:900px){
+  main{grid-template-columns:1fr}
+  .sortie{position:static}
+  .barre-mobile{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:6;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+  .barre-mobile .btn{flex:1}
+  .barre-mobile .nb{font-size:12px;color:var(--text-muted);align-self:center;white-space:nowrap}
+}
+</style>
+</head>
+<body>
+<header class="haut">
+  <a class="retour" href="https://easycds.github.io/pedagogie.html" title="Retour à la Pédagogie">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Pédagogie
+  </a>
+  <span class="t">Livret de séance</span>
+  <button class="rond" id="theme" type="button" aria-label="Changer de thème"></button>
+</header>
+
+<main>
+  <section>
+    <h1>Fin de séance</h1>
+    <p class="intro">Choisis un statut, puis clique sur ce qui a été travaillé. Le texte pour le livret numérique s'écrit tout seul : il n'y a plus qu'à le copier-coller.</p>
+
+    <div class="pinceau">
+      <div class="modes" id="modes"></div>
+      <div class="astuce">Recliquer sur un point avec le même statut l'enlève.</div>
+    </div>
+
+    <div class="carte">
+      <div class="onglets" id="onglets"></div>
+      <div id="puces"></div>
+      <div class="libre">
+        <input type="text" id="libre" placeholder="Autre point (ex. : épi Lidl, 5-3 en deux temps…)" onkeydown="if(event.key==='Enter')ajouterLibre()">
+        <button class="btn" onclick="ajouterLibre()">Ajouter</button>
+      </div>
+    </div>
+
+    <div class="carte">
+      <h2>Compléments</h2>
+      <label class="lbl" for="secteur">Secteur / circuit</label>
+      <input type="text" id="secteur" placeholder="Ex. : St Serge, les 7 sonnettes, Écouflant bourg" oninput="etat.secteur=this.value;maj()">
+      <label class="lbl" for="remarque" style="margin-top:12px">Remarque / conseil à l'élève</label>
+      <textarea id="remarque" placeholder="Ex. : Aie confiance en toi, tu as les connaissances nécessaires" oninput="etat.remarque=this.value;maj()"></textarea>
+    </div>
+  </section>
+
+  <aside class="sortie" id="sortie">
+    <div class="carte">
+      <h2>Texte pour le livret</h2>
+      <div class="format"><button id="f-liste" onclick="setFormat('liste')">En liste</button><button id="f-ligne" onclick="setFormat('ligne')">Sur une ligne</button></div>
+      <div class="apercu" id="apercu"></div>
+      <div class="act"><button class="btn" onclick="nouvelle()">Nouvelle séance</button><button class="btn copie" onclick="copier()">Copier le texte</button></div>
+    </div>
+  </aside>
+</main>
+
+<div class="barre-mobile"><span class="nb" id="nb-m">0 point</span><button class="btn" onclick="document.getElementById('sortie').scrollIntoView({behavior:'smooth'})">Voir le texte</button><button class="btn copie" onclick="copier()">Copier</button></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   STATUTS et POINTS — vocabulaire repris des livrets des moniteurs.
+   Pour ajouter un point : ajoute-le dans la bonne liste ci-dessous.
+   ===================================================================== */
+const STATUTS = [
+  { id:'ok',    emoji:'✅', lib:'Acquis' },
+  { id:'cours', emoji:'🟠', lib:'En cours' },
+  { id:'att',   emoji:'⚠️', lib:'À surveiller' },
+  { id:'ko',    emoji:'❌', lib:'Non acquis' },
+  { id:'vu',    emoji:'👀', lib:'Abordé' },
+  { id:'next',  emoji:'➡️', lib:'Prochaine séance' },
+];
+const POINTS = {
+  C1: {
+    'Installation & volant': ['Installation au poste de conduite','Commandes du véhicule','Manipulation du volant','Petit / grand chevauchement','Retour de volant','Tâche aveugle / vision 180°','Repérer les intersections'],
+    'Mécanique': ['Chaîne cinématique','Démarrer / s\'arrêter','Calage','Roue libre','1-2 arrêt précis','Arrêt en sécurité','Dosage du frein','Freinage dégressif','1-2-3 / 3-2','1-2-3-4 / 4-3-2','1-2-3-4-5 / 5-4-3-2','Frein moteur','Montée des vitesses (accélérer)'],
+    'Côte & contrôles': ['Démarrage en côte avec FM','Démarrage en côte sans FM','Point de stabilisation','TAD','TAG','CCPA','Contrôles rétros'],
+    'Manœuvres C1': ['Marche arrière ligne droite','Marche arrière en courbe','Demi-tour','Reprise 1re (R1)','Global C1'],
+  },
+  C2: {
+    'Code & conduite commentée': ['Connaissance du code','Conduite commentée','PADA / détection','Indices formels / informels','Contrôles intersections','Régime de priorité','Stop / CLP','Placement sur la chaussée'],
+    'Feux & intersections': ['Feux tricolores','Feux TAD','Feux TAG','Croisement indonésien','Croisement classique','Piste / bande cyclable'],
+    'Giratoires & voies': ['Giratoire à une voie','Giratoire TAD / tout droit','Giratoire TAG / demi-tour','Giratoire haricot','Décision à l\'insertion','Changement de voie / file','Choix de voies','Parcours d\'observation','Voie de bus'],
+    'Manœuvres C2': ['Bataille arrière droite','Bataille arrière gauche','Bataille avant','Épi avant','Créneau à droite','Créneau à gauche','Global C2 / Bilan n°1'],
+  },
+  C3: {
+    'Ville': ['Rues étroites','Gabarit à droite','Centre-ville / hyper centre','Usagers vulnérables','Angles morts'],
+    'Campagne': ['Route de campagne','Virages','Arrêt de précision à 80','0-80 / 80-0','TAD en campagne / voie de stockage'],
+    'Voie rapide': ['Voie d\'accélération / insertion','Voie de décélération / sortie','Voie d\'entrecroisement','Autoroute / voie rapide','Distances de sécurité','Dépassement','Bouchons / interfile','Tunnel','Régulateur / limiteur','Conduite par mauvais temps'],
+  },
+  C4: {
+    'Autonomie & sécurité': ['Autonomie','Anticipation','Prise d\'information','Lecture de la signalisation H/V','Allure adaptée','Gestion de la mécanique','Confiance en soi','Gestion du stress'],
+    'Thèmes C4': ['Écoconduite','Vérifications véhicule','Premiers secours','Fatigue / alcool / risques','Aides à la conduite'],
+    'Examen': ['Global','Examen blanc (EB)','Prépa permis','Circuit type examen','Centre d\'examen'],
+  },
+};
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('on'),2200); }
+
+// état de la séance en cours (gardé dans le navigateur si on quitte la page)
+let etat = { points:{}, ordre:[], secteur:'', remarque:'' };  // points : { "TAG":"cours", ... }
+let mode='ok', comp='C1', format='liste';
+try{ const e=JSON.parse(localStorage.getItem('livret_seance')||'null'); if(e&&e.points)etat=e; format=localStorage.getItem('livret_format')||'liste'; }catch(e){}
+
+function rendreModes(){
+  document.getElementById('modes').innerHTML=STATUTS.map(s=>`<button class="mode ${s.id}${mode===s.id?' on':''}" onclick="mode='${s.id}';rendreModes()">${s.emoji} ${s.lib}</button>`).join('');
+}
+function rendrePuces(){
+  const cpt=c=>Object.values(POINTS[c]).flat().filter(p=>etat.points[p]).length;
+  document.getElementById('onglets').innerHTML=Object.keys(POINTS).map(c=>`<button class="onglet${comp===c?' on':''}" onclick="comp='${c}';rendrePuces()">${c}${cpt(c)?`<span class="c">${cpt(c)}</span>`:''}</button>`).join('');
+  const libres=etat.ordre.filter(p=>!Object.values(POINTS).some(g=>Object.values(g).flat().includes(p)));
+  let h=Object.entries(POINTS[comp]).map(([g,l])=>`<div class="groupe"><div class="gt">${esc(g)}</div><div class="puces">${l.map(puce).join('')}</div></div>`).join('');
+  if(libres.length)h+=`<div class="groupe"><div class="gt">Points ajoutés</div><div class="puces">${libres.map(puce).join('')}</div></div>`;
+  document.getElementById('puces').innerHTML=h;
+}
+function puce(p){ const s=etat.points[p]; const st=STATUTS.find(x=>x.id===s);
+  return `<button class="puce${s?' '+s:''}" data-p="${esc(p)}" onclick="basculer(this.dataset.p)">${st?st.emoji+' ':''}${esc(p)}</button>`; }
+function basculer(p){
+  if(etat.points[p]===mode){ delete etat.points[p]; etat.ordre=etat.ordre.filter(x=>x!==p); }
+  else{ etat.points[p]=mode; if(!etat.ordre.includes(p))etat.ordre.push(p); }
+  rendrePuces(); maj();
+}
+function ajouterLibre(){
+  const i=document.getElementById('libre'), p=i.value.trim(); if(!p)return;
+  etat.points[p]=mode; if(!etat.ordre.includes(p))etat.ordre.push(p); i.value='';
+  rendrePuces(); maj(); i.focus();
+}
+
+// Texte final, toujours dans le même ordre de statuts pour uniformiser les livrets
+function texte(){
+  const lignes=[];
+  STATUTS.forEach(s=>{
+    const l=etat.ordre.filter(p=>etat.points[p]===s.id);
+    if(!l.length)return;
+    if(format==='liste') lignes.push(`${s.emoji} ${s.lib} : ${l.join(', ')}`);
+    else lignes.push(s.id==='next' ? `${s.emoji} Prochaine séance : ${l.join(', ')}` : l.map(p=>`${s.emoji} ${p}`).join(' '));
+  });
+  if(etat.secteur.trim()) lignes.splice(0,0,`📍 ${etat.secteur.trim()}`);
+  if(etat.remarque.trim()){ const r=`💬 ${etat.remarque.trim()}`; const i=lignes.findIndex(x=>x.startsWith('➡️')); if(i<0)lignes.push(r); else lignes.splice(i,0,r); }
+  return lignes.join(format==='liste'?'\n':' ');
+}
+function maj(){
+  document.getElementById('apercu').textContent=texte();
+  const n=etat.ordre.length; document.getElementById('nb-m').textContent=n+' point'+(n>1?'s':'');
+  try{ localStorage.setItem('livret_seance',JSON.stringify(etat)); }catch(e){}
+}
+function setFormat(f){ format=f; try{ localStorage.setItem('livret_format',f); }catch(e){}
+  document.getElementById('f-liste').classList.toggle('on',f==='liste'); document.getElementById('f-ligne').classList.toggle('on',f==='ligne'); maj(); }
+async function copier(){
+  const t=texte(); if(!t){ toast('Rien à copier : clique d\'abord sur des points'); return; }
+  try{ await navigator.clipboard.writeText(t); }
+  catch(e){ const a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove(); }
+  toast('Texte copié ✓ — colle-le dans le livret');
+}
+function nouvelle(){
+  if(etat.ordre.length&&!confirm('Effacer cette séance et en commencer une nouvelle ?'))return;
+  etat={points:{},ordre:[],secteur:'',remarque:''}; document.getElementById('secteur').value=''; document.getElementById('remarque').value=''; mode='ok';
+  rendreModes(); rendrePuces(); maj();
+}
+
+document.getElementById('secteur').value=etat.secteur||''; document.getElementById('remarque').value=etat.remarque||'';
+rendreModes(); rendrePuces(); setFormat(format);
+
+/* Thème (clair par défaut, même réglage que Mes outils) */
+const btnT=document.getElementById('theme');
+const SOLEIL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>';
+const LUNE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+function appliquer(s){ document.body.classList.toggle('dark',s); btnT.innerHTML=s?SOLEIL:LUNE; }
+let choix=null; try{ choix=localStorage.getItem('easy-hub-theme'); }catch(e){}
+let sombre=choix==='dark'; appliquer(sombre);
+btnT.addEventListener('click',()=>{ sombre=!sombre; appliquer(sombre); try{ localStorage.setItem('easy-hub-theme',sombre?'dark':'light'); }catch(e){} });
+</script>
+</body>
+</html>

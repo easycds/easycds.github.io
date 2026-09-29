@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff3131">
+<meta name="robots" content="noindex">
+<title>Administratif · Easy Auto-École</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --easy:#ff3131; --easy-dark:#e01f1f; --easy-light:#fff0f0;
+  --grad-easy:linear-gradient(135deg,#ff4040 0%,#ff3131 55%,#ec1f1f 100%);
+  --bg:#f7f6f5; --surface:#ffffff; --text:#1c2430; --text-muted:#6b7280; --text-light:#9ca3af;
+  --border:#ebe9e7; --ok:#057a55; --ok-light:#def7ec; --warn:#b45309; --warn-light:#fff7ed;
+  --cp:#1a56db; --cp-light:#e8f0ff; --rec:#7e3af2; --rec-light:#f1eaff;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 14px rgba(16,24,40,.06);
+  --police-titre:'Fredoka','DM Sans',sans-serif; --police-texte:'DM Sans','Segoe UI',system-ui,sans-serif;
+}
+body.dark{
+  --bg:#0f1117; --surface:#1a1d27; --text:#e8eaf0; --text-muted:#8b92a8; --text-light:#5a6178;
+  --border:#2a2f40; --easy-light:#3a0d0d; --ok-light:#0d3326; --warn-light:#2d1a08; --cp-light:#16254d; --rec-light:#2a1a4a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;font-family:var(--police-texte);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+.haut{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--grad-easy);color:#fff;box-shadow:0 2px 10px rgba(255,49,49,.25)}
+.retour{display:inline-flex;align-items:center;gap:6px;color:#fff;text-decoration:none;font-size:14px;font-weight:600;padding:6px 10px 6px 6px;border-radius:10px}
+.retour:hover{background:rgba(255,255,255,.15)}
+.retour svg{width:18px;height:18px}
+.haut .t{font-family:var(--police-titre);font-weight:600;font-size:18px}
+.haut .droite{margin-left:auto;display:flex;gap:8px;align-items:center}
+.rond{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.15);color:#fff;cursor:pointer;display:grid;place-items:center}
+.rond svg{width:17px;height:17px}
+.qui{font-size:12px;opacity:.9;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+main{max-width:980px;margin:0 auto;padding:24px 16px 60px}
+h1{font-family:var(--police-titre);font-weight:600;font-size:clamp(24px,5vw,32px)}
+.intro{color:var(--text-muted);font-size:14.5px;margin:4px 0 20px}
+.carte{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:16px}
+.carte h2{font-family:var(--police-titre);font-weight:600;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.carte h2 .n{font-family:var(--police-texte);font-size:12px;font-weight:700;background:var(--bg);color:var(--text-muted);padding:2px 9px;border-radius:10px}
+label.lbl{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);margin:0 0 6px}
+input[type=text],input[type=email],input[type=password],input[type=date],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);font-size:14.5px}
+textarea{resize:vertical;min-height:70px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:11px;padding:10px 16px;font-weight:700;font-size:14px;cursor:pointer}
+.btn:hover{border-color:var(--text-muted)}
+.btn.primaire{background:var(--easy);border-color:var(--easy);color:#fff}
+.btn.primaire:hover{background:var(--easy-dark)}
+.btn.vert{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.petit{padding:6px 11px;font-size:12.5px;border-radius:9px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.onglets{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.onglet{border:1px solid var(--border);background:var(--surface);color:var(--text-muted);padding:9px 16px;border-radius:12px;font-weight:700;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.onglet.on{background:var(--easy);border-color:var(--easy);color:#fff}
+.onglet .pas{background:#fff;color:var(--easy);font-size:11px;border-radius:10px;padding:1px 7px}
+.onglet:not(.on) .pas{background:var(--easy);color:#fff}
+.grille2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* Calendrier */
+.modes{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.mode{border:2px solid var(--border);background:var(--surface);border-radius:12px;padding:8px 14px;font-weight:700;cursor:pointer}
+.mode.cp.on{border-color:var(--cp);background:var(--cp-light);color:var(--cp)}
+.mode.recup.on{border-color:var(--rec);background:var(--rec-light);color:var(--rec)}
+.mode.gomme.on{border-color:var(--text-muted);background:var(--bg)}
+.cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cal-nav b{font-family:var(--police-titre);font-weight:600;font-size:17px;flex:1;text-align:center;text-transform:capitalize}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .jn{font-size:11px;font-weight:700;color:var(--text-light);text-align:center;padding:2px 0;text-transform:uppercase}
+.jour{aspect-ratio:1.15;border:1px solid var(--border);border-radius:10px;background:var(--surface);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-weight:600;font-size:14px;user-select:none;-webkit-tap-highlight-color:transparent}
+.jour:hover{border-color:var(--text-muted)}
+.jour.vide{visibility:hidden}
+.jour.dim{background:var(--bg);color:var(--text-light)}
+.jour.auj{box-shadow:inset 0 0 0 2px var(--easy)}
+.jour .tg{font-size:10px;font-weight:800;letter-spacing:.3px}
+.jour.CP{background:var(--cp-light);border-color:var(--cp);color:var(--cp)}
+.jour.RECUP{background:var(--rec-light);border-color:var(--rec);color:var(--rec)}
+.periode{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
+.periode>div{flex:1;min-width:130px}
+.recap{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pill{font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:20px;background:var(--bg);color:var(--text-muted)}
+.pill.cp{background:var(--cp-light);color:var(--cp)}
+.pill.recup{background:var(--rec-light);color:var(--rec)}
+.plages{font-size:13.5px;color:var(--text-muted);margin-top:8px;line-height:1.6}
+
+/* Signature */
+.sig-box{border:2px dashed var(--border);border-radius:12px;background:#fff;position:relative;touch-action:none}
+body.dark .sig-box{background:#f4f4f5}
+.sig-box canvas{display:block;width:100%;height:150px;cursor:crosshair}
+.sig-box .ph{position:absolute;inset:0;display:grid;place-items:center;color:#9ca3af;font-size:13px;pointer-events:none}
+.sig-actions{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px;flex-wrap:wrap}
+.sig-img{height:70px;max-width:220px;object-fit:contain;background:#fff;border-radius:8px;border:1px solid var(--border)}
+
+/* Liste des demandes */
+.dem{display:flex;align-items:center;gap:14px;padding:13px 4px;border-top:1px solid var(--border);cursor:pointer}
+.dem:first-child{border-top:none}
+.dem:hover{background:var(--bg)}
+.dem .qui2{font-weight:700;font-size:15px}
+.dem .meta{font-size:12.5px;color:var(--text-muted);margin-top:2px}
+.statut{margin-left:auto;font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.st-signee{background:var(--warn-light);color:var(--warn)}
+.st-validee{background:var(--ok-light);color:var(--ok)}
+.st-envoyee{background:var(--bg);color:var(--text-muted)}
+.st-refusee{background:var(--easy-light);color:var(--easy)}
+.vide-txt{color:var(--text-muted);font-size:14px;padding:10px 0}
+
+/* Détail */
+.det-h{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.det-h h2{margin:0}
+.mini-mois{margin-top:10px}
+.mini-mois .mm-t{font-weight:700;font-size:13px;text-transform:capitalize;margin-bottom:5px}
+.mm{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:3px}
+.mm div{border:1px solid var(--border);border-radius:6px;text-align:center;font-size:11px;padding:3px 0;line-height:1.2}
+.mm div.CP{background:var(--cp-light);color:var(--cp);border-color:var(--cp);font-weight:700}
+.mm div.RECUP{background:var(--rec-light);color:var(--rec);border-color:var(--rec);font-weight:700}
+.mm div.we{background:var(--bg);color:var(--text-light)}
+.sigs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.sigs>div{border:1px solid var(--border);border-radius:12px;padding:12px}
+.sigs .t{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.sigs .d{font-size:12px;color:var(--text-muted);margin-top:4px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+
+/* Connexion */
+.login{max-width:380px;margin:8vh auto 0}
+.login .carte{padding:24px}
+.login p{font-size:13.5px;color:var(--text-muted);margin-bottom:14px}
+.login .champ{margin-bottom:12px}
+.err{color:var(--easy);font-size:13px;margin-top:8px;min-height:18px}
+.refus{text-align:center;padding:30px 20px}
+.refus svg{width:44px;height:44px;color:var(--easy);margin-bottom:10px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1c2430;color:#fff;padding:11px 18px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:20;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.demo{background:var(--warn-light);color:var(--warn);font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:10px;margin-bottom:14px}
+@media(max-width:700px){.grille2,.sigs{grid-template-columns:1fr}.qui{display:none}.jour{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="haut">
+  <a class="retour" href="https://easycds.github.io/" title="Retour à Mes outils">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Mes outils
+  </a>
+  <span class="t">Administratif</span>
+  <div class="droite">
+    <span class="qui" id="qui"></span>
+    <button class="rond" id="theme" type="button" aria-label="Changer de thème"></button>
+    <button class="rond" id="btn-out" type="button" title="Se déconnecter" style="display:none" onclick="deconnexion()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+  </div>
+</header>
+<main id="app"></main>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+/* =====================================================================
+   ADMINISTRATIF — demandes de congés
+   Accès : comptes de ACCES (vérifié ici ET par les règles Firestore :
+   les demandes sont rangées dans la collection protégée easy_permis_ants).
+   ===================================================================== */
+const ACCES = ['testpourexercice@gmail.com'];
+const MONITEURS = ['Charles','Grégoire','Quentin','Doriane','Aline'];
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E",
+  authDomain: "easy-cds.firebaseapp.com",
+  projectId: "easy-cds",
+  storageBucket: "easy-cds.firebasestorage.app",
+  messagingSenderId: "1076531712032",
+  appId: "1:1076531712032:web:5fb2189564a4a4bc3eac45"
+};
+const COLLECTION = 'easy_permis_ants';
+// Test en local (localhost) : pas de Firebase, données dans ce navigateur uniquement
+const DEMO = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+
+const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const JOURS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iso = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const dLong = s => { const d=new Date(s+'T12:00:00'); return JOURS[d.getDay()].toLowerCase()+'. '+d.getDate()+' '+MOIS[d.getMonth()]+' '+d.getFullYear(); };
+const MOIS_C = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+const dCourt = s => { const d=new Date(s+'T12:00:00'); return d.getDate()+' '+MOIS_C[d.getMonth()]; };
+const hDate = ts => ts ? new Date(ts).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('on'),2600); }
+
+let db=null, utilisateur=null, demandes=[], vue='nouvelle', ouverte=null;
+// Brouillon de la nouvelle demande
+let brouillon = { moniteur:'', jours:{}, commentaire:'' }, mode='CP', moisVu=new Date();
+moisVu.setDate(1);
+
+/* ---------------- Stockage ---------------- */
+const stock = {
+  ecouter(cb){
+    if(DEMO){ const lire=()=>{ try{ cb(JSON.parse(localStorage.getItem('demo_conges')||'[]')); }catch(e){ cb([]); } }; lire(); stock._cb=lire; return; }
+    db.collection(COLLECTION).where('type','==','conge').onSnapshot(snap=>{
+      cb(snap.docs.map(d=>Object.assign({id:d.id},d.data())));
+    }, e=>{ document.getElementById('app').innerHTML=ecranRefus('Les données sont protégées et ce compte n\'y a pas accès.'); });
+  },
+  async enregistrer(d){
+    if(DEMO){ const l=JSON.parse(localStorage.getItem('demo_conges')||'[]').filter(x=>x.id!==d.id); l.push(d); localStorage.setItem('demo_conges',JSON.stringify(l)); stock._cb(); return; }
+    const {id,...data}=d; await db.collection(COLLECTION).doc(id).set(data);
+  },
+  async supprimer(id){
+    if(DEMO){ localStorage.setItem('demo_conges',JSON.stringify(JSON.parse(localStorage.getItem('demo_conges')||'[]').filter(x=>x.id!==id))); stock._cb(); return; }
+    await db.collection(COLLECTION).doc(id).delete();
+  }
+};
+
+/* ---------------- Connexion ---------------- */
+function demarrer(){
+  if(DEMO){ utilisateur={email:'test-local'}; entrer(); return; }
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db=firebase.firestore();
+  firebase.auth().onAuthStateChanged(u=>{
+    utilisateur=u;
+    document.getElementById('btn-out').style.display=u?'':'none';
+    document.getElementById('qui').textContent=u?u.email:'';
+    if(!u){ ecranConnexion(); return; }
+    if(ACCES.indexOf((u.email||'').toLowerCase())<0){ document.getElementById('app').innerHTML=ecranRefus('Cet espace est réservé. Ton compte ('+esc(u.email)+') n\'a pas l\'accès.'); return; }
+    entrer();
+  });
+}
+function ecranConnexion(){
+  document.getElementById('app').innerHTML=`<div class="login"><div class="carte">
+    <h1 style="font-size:24px;margin-bottom:6px">Espace réservé</h1>
+    <p>Connecte-toi avec ton compte Easy (le même que pour Places Permis).</p>
+    <div class="champ"><label class="lbl" for="lg-mail">E-mail</label><input type="email" id="lg-mail" autocomplete="username"></div>
+    <div class="champ"><label class="lbl" for="lg-mdp">Mot de passe</label><input type="password" id="lg-mdp" autocomplete="current-password" onkeydown="if(event.key==='Enter')connexion()"></div>
+    <button class="btn primaire" style="width:100%" onclick="connexion()">Se connecter</button>
+    <div class="err" id="lg-err"></div></div></div>`;
+}
+function connexion(){
+  const m=document.getElementById('lg-mail').value.trim(), p=document.getElementById('lg-mdp').value;
+  document.getElementById('lg-err').textContent='';
+  firebase.auth().signInWithEmailAndPassword(m,p).catch(()=>{ document.getElementById('lg-err').textContent='E-mail ou mot de passe incorrect.'; });
+}
+function deconnexion(){ if(!DEMO) firebase.auth().signOut(); }
+function ecranRefus(t){
+  return `<div class="carte refus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <h2 style="font-family:var(--police-titre);font-weight:600;margin-bottom:6px">Accès réservé</h2><p style="color:var(--text-muted)">${t}</p>
+    ${DEMO?'':'<button class="btn" style="margin-top:14px" onclick="deconnexion()">Changer de compte</button>'}</div>`;
+}
+function entrer(){
+  try{ const b=JSON.parse(localStorage.getItem('conge_brouillon')||'null'); if(b&&b.jours)brouillon=b; }catch(e){}
+  stock.ecouter(l=>{ demandes=l.sort((a,b)=>(b.cree||0)-(a.cree||0)); if(ouverte&&!demandes.find(d=>d.id===ouverte))ouverte=null; rendre(); });
+}
+
+/* ---------------- Affichage ---------------- */
+const LIB = { signee:'À valider', validee:'Validée · à envoyer', envoyee:'Envoyée à la RH', refusee:'Refusée' };
+function rendre(){
+  const app=document.getElementById('app');
+  if(ouverte){ app.innerHTML=vueDetail(demandes.find(d=>d.id===ouverte)); monterSignature('sig-dir'); return; }
+  const aValider=demandes.filter(d=>d.statut==='signee').length, aEnvoyer=demandes.filter(d=>d.statut==='validee').length;
+  let h=(DEMO?'<div class="demo">Mode test (ordinateur local) : rien n\'est envoyé en ligne.</div>':'')+
+    `<h1>Demandes de congés</h1><p class="intro">Le moniteur coche ses jours (CP ou récup) et signe. La direction valide en signant, puis la demande part à la RH.</p>
+    <div class="onglets">
+      <button class="onglet${vue==='nouvelle'?' on':''}" onclick="vue='nouvelle';rendre()">Nouvelle demande</button>
+      <button class="onglet${vue==='liste'?' on':''}" onclick="vue='liste';rendre()">Suivi des demandes${aValider+aEnvoyer?` <span class="pas">${aValider+aEnvoyer}</span>`:''}</button>
+    </div>`;
+  h+= vue==='nouvelle' ? vueNouvelle() : vueListe();
+  app.innerHTML=h;
+  if(vue==='nouvelle') monterSignature('sig-mon');
+}
+
+function vueNouvelle(){
+  const nb={CP:0,RECUP:0}; Object.values(brouillon.jours).forEach(v=>nb[v]++);
+  return `<div class="carte"><h2>1 · Qui fait la demande ?</h2>
+    <select id="nv-mon" onchange="brouillon.moniteur=this.value;sauverBrouillon()"><option value="">— Choisir le moniteur —</option>${MONITEURS.map(m=>`<option${brouillon.moniteur===m?' selected':''}>${m}</option>`).join('')}</select></div>
+  <div class="carte"><h2>2 · Coche les jours</h2>
+    <div class="modes"><span style="font-size:13px;color:var(--text-muted);font-weight:600">Je coche en :</span>
+      <button class="mode cp${mode==='CP'?' on':''}" onclick="mode='CP';rendre()">CP · congés payés</button>
+      <button class="mode recup${mode==='RECUP'?' on':''}" onclick="mode='RECUP';rendre()">Récup</button>
+      <button class="mode gomme${mode===''?' on':''}" onclick="mode='';rendre()">Effacer</button></div>
+    <div class="cal-nav"><button class="btn petit" onclick="changerMois(-1)" aria-label="Mois précédent">‹</button><b>${MOIS[moisVu.getMonth()]} ${moisVu.getFullYear()}</b><button class="btn petit" onclick="changerMois(1)" aria-label="Mois suivant">›</button></div>
+    <div class="cal">${calendrier()}</div>
+    <div class="periode"><div><label class="lbl">Du</label><input type="date" id="p-du"></div><div><label class="lbl">Au</label><input type="date" id="p-au"></div>
+      <button class="btn" onclick="appliquerPeriode()">Remplir la période</button></div>
+    <div style="font-size:12px;color:var(--text-light);margin-top:6px">« Remplir la période » coche tous les jours sauf les dimanches, avec le type choisi au-dessus.</div>
+    <div class="recap"><span class="pill cp">${nb.CP} jour${nb.CP>1?'s':''} CP</span><span class="pill recup">${nb.RECUP} jour${nb.RECUP>1?'s':''} récup</span></div>
+    <div class="plages">${plagesTexte(brouillon.jours)||'Aucun jour coché.'}</div></div>
+  <div class="carte"><h2>3 · Commentaire <span class="n">facultatif</span></h2>
+    <textarea id="nv-com" placeholder="Ex. : je ne peux pas partir avant le 23 car mes billets d'avion sont achetés" oninput="brouillon.commentaire=this.value;sauverBrouillon()">${esc(brouillon.commentaire)}</textarea></div>
+  <div class="carte"><h2>4 · Signature du moniteur</h2>
+    <div class="sig-box"><canvas id="sig-mon"></canvas><div class="ph" id="sig-mon-ph">Signe ici avec le doigt ou la souris</div></div>
+    <div class="sig-actions"><button class="btn petit" onclick="effacerSig('sig-mon')">Effacer la signature</button>
+      <button class="btn primaire" onclick="envoyerDemande()">Signer et transmettre à la direction</button></div></div>`;
+}
+function calendrier(){
+  const y=moisVu.getFullYear(), m=moisVu.getMonth(), auj=iso(new Date());
+  let h=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(j=>`<div class="jn">${j}</div>`).join('');
+  const dec=(new Date(y,m,1).getDay()+6)%7; for(let i=0;i<dec;i++)h+='<div class="jour vide"></div>';
+  const n=new Date(y,m+1,0).getDate();
+  for(let d=1;d<=n;d++){ const k=iso(new Date(y,m,d)), v=brouillon.jours[k]||'', dim=new Date(y,m,d).getDay()===0;
+    h+=`<div class="jour${v?' '+v:''}${dim&&!v?' dim':''}${k===auj?' auj':''}" onclick="cocher('${k}')">${d}${v?`<span class="tg">${v==='CP'?'CP':'RÉC'}</span>`:''}</div>`; }
+  return h;
+}
+function cocher(k){ if(!mode||brouillon.jours[k]===mode)delete brouillon.jours[k]; else brouillon.jours[k]=mode; sauverBrouillon(); garderSigEtRendre(); }
+function changerMois(n){ moisVu=new Date(moisVu.getFullYear(),moisVu.getMonth()+n,1); garderSigEtRendre(); }
+function appliquerPeriode(){
+  const a=document.getElementById('p-du').value, b=document.getElementById('p-au').value;
+  if(!a||!b||b<a){ toast('Choisis une date de début et une date de fin'); return; }
+  for(let d=new Date(a+'T12:00:00'); iso(d)<=b; d.setDate(d.getDate()+1)){ if(d.getDay()===0)continue; if(mode)brouillon.jours[iso(d)]=mode; else delete brouillon.jours[iso(d)]; }
+  moisVu=new Date(a+'T12:00:00'); moisVu.setDate(1); sauverBrouillon(); garderSigEtRendre();
+}
+function sauverBrouillon(){ try{ localStorage.setItem('conge_brouillon',JSON.stringify(brouillon)); }catch(e){} }
+// Regroupe les jours en plages : « CP du 23 au 27 février 2027 (5 j) »
+function plages(jours){
+  const ks=Object.keys(jours).sort(), res=[]; let cur=null;
+  ks.forEach(k=>{ const t=jours[k];
+    if(cur&&cur.type===t){ const p=new Date(cur.fin+'T12:00:00'); p.setDate(p.getDate()+1); if(p.getDay()===0)p.setDate(p.getDate()+1); if(iso(p)===k){ cur.fin=k; cur.n++; return; } }
+    cur={type:t,debut:k,fin:k,n:1}; res.push(cur); });
+  return res;
+}
+function plagesTexte(jours){
+  return plages(jours).map(p=>`<b style="color:var(--${p.type==='CP'?'cp':'rec'})">${p.type==='CP'?'CP':'Récup'}</b> ${p.n>1?'du '+dLong(p.debut)+' au '+dLong(p.fin):'le '+dLong(p.debut)} (${p.n} j)`).join('<br>');
+}
+
+/* ---------------- Signature ---------------- */
+const sigs={};
+function monterSignature(id){
+  const cv=document.getElementById(id); if(!cv)return;
+  const r=cv.getBoundingClientRect(); cv.width=Math.round(r.width); cv.height=150;
+  const ctx=cv.getContext('2d'); ctx.lineWidth=2.4; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#1c2a6b';
+  const s=sigs[id]={cv,ctx,vide:true,dessin:false};
+  if(s.image){}
+  const pos=e=>{ const b=cv.getBoundingClientRect(); return [e.clientX-b.left,e.clientY-b.top]; };
+  cv.onpointerdown=e=>{ cv.setPointerCapture(e.pointerId); s.dessin=true; const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+.1,y+.1); ctx.stroke(); marquer(id); };
+  cv.onpointermove=e=>{ if(!s.dessin)return; const [x,y]=pos(e); ctx.lineTo(x,y); ctx.stroke(); };
+  cv.onpointerup=cv.onpointercancel=()=>{ s.dessin=false; };
+  if(garde[id]){ const img=new Image(); img.onload=()=>{ ctx.drawImage(img,0,0,cv.width,cv.height); marquer(id); }; img.src=garde[id]; delete garde[id]; }
+}
+function marquer(id){ sigs[id].vide=false; const ph=document.getElementById(id+'-ph'); if(ph)ph.style.display='none'; }
+function effacerSig(id){ const s=sigs[id]; if(!s)return; s.ctx.clearRect(0,0,s.cv.width,s.cv.height); s.vide=true; const ph=document.getElementById(id+'-ph'); if(ph)ph.style.display=''; }
+function imageSig(id){
+  const s=sigs[id]; if(!s||s.vide)return null;
+  // Image réduite sur fond blanc (légère à stocker)
+  const c=document.createElement('canvas'), k=Math.min(1,360/s.cv.width); c.width=Math.round(s.cv.width*k); c.height=Math.round(s.cv.height*k);
+  const x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(s.cv,0,0,c.width,c.height);
+  return c.toDataURL('image/jpeg',.75);
+}
+// Garde la signature en cours quand on recoche un jour (le calendrier est redessiné)
+const garde={};
+function garderSigEtRendre(){ const s=sigs['sig-mon']; if(s&&!s.vide)garde['sig-mon']=s.cv.toDataURL(); rendre(); }
+
+async function envoyerDemande(){
+  if(!brouillon.moniteur){ toast('Choisis le moniteur'); document.getElementById('nv-mon').focus(); return; }
+  if(!Object.keys(brouillon.jours).length){ toast('Coche au moins un jour'); return; }
+  const sig=imageSig('sig-mon'); if(!sig){ toast('Il manque la signature du moniteur'); return; }
+  const d={ id:'conge_'+Date.now(), type:'conge', moniteur:brouillon.moniteur, jours:brouillon.jours, commentaire:(brouillon.commentaire||'').trim(),
+    cree:Date.now(), statut:'signee', sigMoniteur:sig, sigMoniteurLe:Date.now(), saisiPar:utilisateur.email };
+  try{ await stock.enregistrer(d); }catch(e){ toast('Envoi impossible : vérifie ta connexion'); return; }
+  brouillon={moniteur:'',jours:{},commentaire:''}; sauverBrouillon(); vue='liste'; rendre(); toast('Demande signée et transmise à la direction ✓');
+}
+
+function vueListe(){
+  if(!demandes.length)return '<div class="carte"><div class="vide-txt">Aucune demande pour l\'instant.</div></div>';
+  const groupe=(titre,l)=> l.length?`<div class="carte"><h2>${titre} <span class="n">${l.length}</span></h2>${l.map(ligne).join('')}</div>`:'';
+  return groupe('À valider par la direction',demandes.filter(d=>d.statut==='signee'))+
+    groupe('Validées · à envoyer à la RH',demandes.filter(d=>d.statut==='validee'))+
+    groupe('Envoyées à la RH',demandes.filter(d=>d.statut==='envoyee'))+
+    groupe('Refusées',demandes.filter(d=>d.statut==='refusee'));
+}
+function ligne(d){
+  const nb={CP:0,RECUP:0}; Object.values(d.jours||{}).forEach(v=>nb[v]++);
+  const p=plages(d.jours||{}), deb=p.length?p[0].debut:'', fin=p.length?p[p.length-1].fin:'';
+  return `<div class="dem" onclick="ouverte='${d.id}';rendre();scrollTo(0,0)"><div><div class="qui2">${esc(d.moniteur)}</div>
+    <div class="meta">${deb?(deb===fin?dCourt(deb):dCourt(deb)+' → '+dCourt(fin)):''} · ${nb.CP?nb.CP+' CP':''}${nb.CP&&nb.RECUP?' + ':''}${nb.RECUP?nb.RECUP+' récup':''} · demandé le ${hDate(d.cree).slice(0,10)}</div></div>
+    <span class="statut st-${d.statut}">${LIB[d.statut]||d.statut}</span></div>`;
+}
+
+function vueDetail(d){
+  if(!d)return '';
+  const nb={CP:0,RECUP:0}; Object.values(d.jours||{}).forEach(v=>nb[v]++);
+  const mois=[...new Set(Object.keys(d.jours||{}).map(k=>k.slice(0,7)))].sort();
+  let h=`<button class="btn petit" onclick="ouverte=null;rendre()" style="margin-bottom:14px">‹ Retour aux demandes</button>
+  <div class="carte"><div class="det-h"><div><h2>${esc(d.moniteur)}</h2><div style="font-size:13px;color:var(--text-muted)">Demande du ${hDate(d.cree)}</div></div><span class="statut st-${d.statut}">${LIB[d.statut]}</span></div>
+    <div class="recap"><span class="pill cp">${nb.CP} jour${nb.CP>1?'s':''} CP</span><span class="pill recup">${nb.RECUP} jour${nb.RECUP>1?'s':''} récup</span></div>
+    <div class="plages">${plagesTexte(d.jours||{})}</div>
+    ${mois.map(m=>miniMois(m,d.jours)).join('')}
+    ${d.commentaire?`<div style="margin-top:14px;padding:10px 12px;background:var(--bg);border-radius:10px;font-size:14px"><b>Commentaire :</b> ${esc(d.commentaire)}</div>`:''}
+    <div class="sigs"><div><div class="t">Signature du moniteur</div><img class="sig-img" src="${d.sigMoniteur}" alt="Signature du moniteur"><div class="d">le ${hDate(d.sigMoniteurLe)}</div></div>
+      <div><div class="t">Validation de la direction</div>${d.sigDirection?`<img class="sig-img" src="${d.sigDirection}" alt="Signature de la direction"><div class="d">${d.statut==='refusee'?'Refusée':'Bon pour accord'} le ${hDate(d.sigDirectionLe)}</div>`:(d.statut==='refusee'?'<div class="d">Refusée</div>':'<div class="d">En attente</div>')}</div></div>
+    ${d.motifRefus?`<div style="margin-top:12px;color:var(--easy);font-size:14px"><b>Motif du refus :</b> ${esc(d.motifRefus)}</div>`:''}
+    ${d.envoyeLe?`<div style="margin-top:12px;color:var(--text-muted);font-size:13px">Envoyée à la RH le ${hDate(d.envoyeLe)}</div>`:''}</div>`;
+  if(d.statut==='signee'){
+    h+=`<div class="carte"><h2>Validation par la direction</h2>
+      <div class="sig-box"><canvas id="sig-dir"></canvas><div class="ph" id="sig-dir-ph">Signature de la direction</div></div>
+      <div class="sig-actions"><button class="btn petit" onclick="effacerSig('sig-dir')">Effacer</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="refuser('${d.id}')">Refuser</button><button class="btn vert" onclick="valider('${d.id}')">Signer et valider</button></div></div></div>`;
+  }
+  h+=`<div class="actions">`;
+  if(d.statut==='validee'||d.statut==='envoyee') h+=`<button class="btn primaire" onclick="imprimer('${d.id}')">Télécharger le PDF pour la RH</button>`;
+  if(d.statut==='validee') h+=`<button class="btn vert" onclick="marquerEnvoyee('${d.id}')">Marquer comme envoyée à la RH</button>`;
+  h+=`<button class="btn" style="margin-left:auto" onclick="supprimer('${d.id}')">Supprimer la demande</button></div>`;
+  return h;
+}
+function miniMois(m,jours){
+  const y=+m.slice(0,4), mo=+m.slice(5)-1, n=new Date(y,mo+1,0).getDate(); let h='';
+  for(let i=1;i<=n;i++){ const k=iso(new Date(y,mo,i)), v=(jours||{})[k], we=new Date(y,mo,i).getDay()===0;
+    h+=`<div class="${v||(we?'we':'')}">${i}${v?'<br>'+(v==='CP'?'CP':'RÉC'):''}</div>`; }
+  return `<div class="mini-mois"><div class="mm-t">${MOIS[mo]} ${y}</div><div class="mm">${h}</div></div>`;
+}
+async function valider(id){
+  const d=demandes.find(x=>x.id===id), sig=imageSig('sig-dir');
+  if(!sig){ toast('Il manque ta signature'); return; }
+  Object.assign(d,{statut:'validee',sigDirection:sig,sigDirectionLe:Date.now(),validePar:utilisateur.email});
+  await stock.enregistrer(d); toast('Demande validée ✓ — tu peux l\'envoyer à la RH');
+}
+async function refuser(id){
+  const motif=prompt('Motif du refus (il sera visible sur la demande) :'); if(motif===null)return;
+  const d=demandes.find(x=>x.id===id), sig=imageSig('sig-dir');
+  Object.assign(d,{statut:'refusee',motifRefus:motif.trim(),sigDirection:sig||null,sigDirectionLe:Date.now(),validePar:utilisateur.email});
+  await stock.enregistrer(d); toast('Demande refusée');
+}
+async function marquerEnvoyee(id){ const d=demandes.find(x=>x.id===id); Object.assign(d,{statut:'envoyee',envoyeLe:Date.now()}); await stock.enregistrer(d); toast('Marquée comme envoyée à la RH ✓'); }
+async function supprimer(id){ if(!confirm('Supprimer définitivement cette demande ?'))return; await stock.supprimer(id); ouverte=null; rendre(); toast('Demande supprimée'); }
+
+/* ---------------- Document pour la RH (impression / PDF) ---------------- */
+function imprimer(id){
+  const d=demandes.find(x=>x.id===id); if(!d)return;
+  const mois=[...new Set(Object.keys(d.jours).map(k=>k.slice(0,7)))].sort();
+  const nb={CP:0,RECUP:0}; Object.values(d.jours).forEach(v=>nb[v]++);
+  const tableaux=mois.map(m=>{ const y=+m.slice(0,4), mo=+m.slice(5)-1, n=new Date(y,mo+1,0).getDate(); let a='',b='';
+    for(let i=1;i<=n;i++){ const k=iso(new Date(y,mo,i)), v=d.jours[k]||'', dim=new Date(y,mo,i).getDay()===0;
+      a+=`<th${dim?' class="dim"':''}>${i}</th>`; b+=`<td class="${v}${dim?' dim':''}">${v==='CP'?'CP':v==='RECUP'?'REC':''}</td>`; }
+    return `<table><tr><th class="m" rowspan="2">${MOIS[mo].toUpperCase()} ${y}</th>${a}</tr><tr>${b}</tr></table>`; }).join('');
+  const lignes=plages(d.jours).map(p=>`<li><b>${p.type==='CP'?'Congés payés':'Récupération'}</b> : ${p.n>1?'du '+dLong(p.debut)+' au '+dLong(p.fin):'le '+dLong(p.debut)} — ${p.n} jour${p.n>1?'s':''}</li>`).join('');
+  const doc=`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Demande de congés - ${esc(d.moniteur)}</title><style>
+    @page{size:A4 landscape;margin:14mm}body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:0}
+    .e{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #ff3131;padding-bottom:8px;margin-bottom:16px}
+    .e h1{font-size:22px;margin:0;letter-spacing:.5px}.e .s{font-size:12px;color:#555;text-align:right}
+    .nom{font-size:15px;margin:0 0 14px}.nom b{font-size:17px}
+    table{border-collapse:collapse;width:100%;margin-bottom:10px;table-layout:fixed}th,td{border:1px solid #333;text-align:center;font-size:10px;padding:4px 0}
+    th.m{width:92px;font-size:11px;background:#f3f3f3}td{height:24px;font-weight:bold}td.CP{background:#dbe7ff}td.RECUP{background:#eadcff}.dim{background:#eee}
+    ul{font-size:13px;line-height:1.7;margin:10px 0 0 18px;padding:0}.tot{font-size:13px;margin-top:6px}
+    .com{margin-top:12px;font-size:13px;border:1px solid #ccc;border-radius:6px;padding:8px 10px}
+    .sg{display:flex;gap:30px;margin-top:22px}.sg>div{flex:1;border:1px solid #999;border-radius:6px;padding:10px;min-height:120px}
+    .sg .t{font-size:11px;font-weight:bold;text-transform:uppercase;margin-bottom:6px}.sg img{height:80px;max-width:100%}.sg .d{font-size:11px;color:#444;margin-top:4px}
+    .leg{font-size:11px;color:#555;margin-top:4px}</style></head><body>
+    <div class="e"><h1>DEMANDE DE CONGÉS</h1><div class="s">Easy Auto-École<br>Document généré le ${hDate(Date.now())}</div></div>
+    <p class="nom">NOM PRÉNOM : <b>${esc(d.moniteur)}</b></p>
+    ${tableaux}<div class="leg">CP = congés payés · REC = récupération · jours grisés = dimanches</div>
+    <ul>${lignes}</ul><div class="tot">Total : <b>${nb.CP}</b> jour(s) de CP et <b>${nb.RECUP}</b> jour(s) de récupération.</div>
+    ${d.commentaire?`<div class="com"><b>Commentaire du salarié :</b> ${esc(d.commentaire)}</div>`:''}
+    <div class="sg"><div><div class="t">Date et signature du salarié</div><img src="${d.sigMoniteur}"><div class="d">Signé le ${hDate(d.sigMoniteurLe)}</div></div>
+      <div><div class="t">Bon pour accord — direction</div>${d.sigDirection?`<img src="${d.sigDirection}"><div class="d">Validé le ${hDate(d.sigDirectionLe)}</div>`:''}</div></div>
+    <script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script></body></html>`;
+  const w=window.open('','_blank');
+  if(!w){ toast('Autorise les fenêtres pop-up pour ce site'); return; }
+  w.document.open(); w.document.write(doc); w.document.close();
+}
+
+/* ---------------- Thème (clair par défaut) ---------------- */
+const btnT=document.getElementById('theme');
+const SOLEIL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>';
+const LUNE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+function appliquer(s){ document.body.classList.toggle('dark',s); btnT.innerHTML=s?SOLEIL:LUNE; }
+let choix=null; try{ choix=localStorage.getItem('easy-hub-theme'); }catch(e){}
+let sombre=choix==='dark'; appliquer(sombre);
+btnT.addEventListener('click',()=>{ sombre=!sombre; appliquer(sombre); try{ localStorage.setItem('easy-hub-theme',sombre?'dark':'light'); }catch(e){} });
+
+demarrer();
+</script>
+</body>
+</html>

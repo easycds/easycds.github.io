@@ -126,7 +126,8 @@ body.dark .sig-box{background:#f4f4f5}
 .login .carte{padding:24px}
 .login p{font-size:13.5px;color:var(--text-muted);margin-bottom:14px}
 .login .champ{margin-bottom:12px}
-.err{color:var(--easy);font-size:13px;margin-top:8px;min-height:18px}
+.err{color:var(--easy);font-size:13px;margin-top:8px;min-height:18px;font-weight:600}
+.oubli{margin-top:2px;border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;text-decoration:underline;padding:0}
 .refus{text-align:center;padding:30px 20px}
 .refus svg{width:44px;height:44px;color:var(--easy);margin-bottom:10px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1c2430;color:#fff;padding:11px 18px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:20;opacity:0;transition:opacity .2s;pointer-events:none}
@@ -222,12 +223,19 @@ function demarrer(){
 }
 function ecranConnexion(){
   document.getElementById('app').innerHTML=`<div class="login"><div class="carte">
-    <h1 style="font-size:24px;margin-bottom:6px">Espace réservé</h1>
-    <p>Connecte-toi avec ton compte Easy (le même que pour Places Permis).</p>
+    <h1 style="font-size:24px;margin-bottom:14px">Espace réservé</h1>
     <div class="champ"><label class="lbl" for="lg-mail">E-mail</label><input type="email" id="lg-mail" autocomplete="username"></div>
     <div class="champ"><label class="lbl" for="lg-mdp">Mot de passe</label><input type="password" id="lg-mdp" autocomplete="current-password" onkeydown="if(event.key==='Enter')connexion()"></div>
     <button class="btn primaire" style="width:100%" onclick="connexion()">Se connecter</button>
-    <div class="err" id="lg-err"></div></div></div>`;
+    <div class="err" id="lg-err"></div>
+    <button type="button" class="oubli" onclick="motDePasseOublie()">Mot de passe oublié ?</button></div></div>`;
+}
+function motDePasseOublie(){
+  const m=document.getElementById('lg-mail').value.trim(), err=document.getElementById('lg-err');
+  err.style.color='';
+  if(!m){ err.textContent='Tape d\'abord ton e-mail au-dessus.'; return; }
+  firebase.auth().sendPasswordResetEmail(m).then(()=>{ err.style.color='var(--ok)'; err.textContent='E-mail envoyé ! Regarde ta boîte (et les spams).'; })
+    .catch(e=>{ err.textContent=e.code==='auth/invalid-email'?'E-mail invalide.':'Envoi impossible, réessaie plus tard.'; });
 }
 function connexion(){
   const m=document.getElementById('lg-mail').value.trim(), p=document.getElementById('lg-mdp').value;

@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Pédagogie · Easy Auto-École</title>
 <link rel="manifest" href="/pedagogie.webmanifest">
-<link rel="apple-touch-icon" href="/permis/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="/pedagogie-apple-touch.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -199,6 +199,12 @@ btn.addEventListener('click', () => { sombre = !sombre; appliquer(sombre); choix
 <script>
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', function () { navigator.serviceWorker.register('/sw-pedagogie.js', { scope: '/' }).catch(function () {}); });
+}
+</script>
+<script>
+/* Appli installée : « Mes outils » s'ouvre dans le navigateur, pas dans la fenêtre de l'appli */
+if ((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone) {
+  document.querySelectorAll('a[href="/"]').forEach(function (a) { a.target = '_blank'; a.rel = 'noopener'; });
 }
 </script>
 </body>

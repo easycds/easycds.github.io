@@ -110,7 +110,7 @@
       SIMU.map((x) => { const on = !!etat.choix[x[0]]; return '<button type="button" class="r-coche' + (on ? ' on' : '') + '" data-act="coche" data-v="' + x[0] + '" aria-pressed="' + on + '"><span class="cc">' + (on ? '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>' : '') + '</span><span class="nm">' + esc(x[1]) + '</span><span class="pt">' + (on ? '− ' : '') + pts(x[2]) + '</span></button>'; }).join('') +
       '</section><aside class="r-carte r-solde" aria-live="polite"><div><span class="lbl">Points restants</span><div class="gros">' + reste + '<span> / ' + capital + '</span></div></div>' +
       '<div class="r-cases" aria-hidden="true">' + cases + '</div>' +
-      '<label class="r-meme"><input type="checkbox" id="r-meme"' + (etat.meme ? ' checked' : '') + '><span>Commises en même temps (même contrôle) : <b>8 points</b> retirés au maximum, sauf stupéfiants + alcool (9)</span></label>' +
+      '<label class="r-meme"><input type="checkbox" id="r-meme"' + (etat.meme ? ' checked' : '') + '><span>Commises au même instant (pas à quelques minutes d’écart) : <b>8 points</b> retirés au maximum, sauf stupéfiants + alcool (9)</span></label>' +
       msgs.join('') + '<button type="button" class="r-effacer" data-act="effacer">Tout effacer</button></aside></div>';
   }
 

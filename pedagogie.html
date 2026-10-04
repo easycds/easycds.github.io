@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="/acces.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ff3131">
@@ -98,6 +99,11 @@ h1{font-family:var(--police-titre);font-weight:600;font-size:clamp(26px,5vw,34px
 .etape-c{padding:4px 20px 18px 64px;font-size:15px;line-height:1.65}
 .etape-c ul{list-style:none;display:flex;flex-direction:column;gap:6px}
 .etape-c li{position:relative;padding-left:16px}
+.simu-liens{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.simu-liens span{width:100%;font-size:13px;font-weight:700;color:var(--text-muted)}
+.simu-liens a{display:inline-flex;align-items:center;min-height:40px;padding:8px 14px;border-radius:999px;background:var(--easy-light);color:var(--easy-dark);font-weight:600;font-size:14px;text-decoration:none}
+body.dark .simu-liens a{color:#ffb4ab}
+@media print{.simu-liens{display:none}}
 .etape-c li::before{content:'';position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--easy)}
 .cle{font-weight:700;color:var(--easy)}
 
@@ -258,6 +264,8 @@ let actif = COMPETENCES[0].code, etapeCible = 0;
 try { const m = location.hash.slice(1).toUpperCase().match(/^(C\d)(?:-(\d+))?$/);
   if (m && COMPETENCES.some(c => c.code === m[1] && c.etapes.length)) { actif = m[1]; etapeCible = +(m[2]||0); } } catch(e){}
 
+const SIMU_LIENS = {"C1-3":[["cedez","Cédez-le-passage"],["stop","4 Stops"],["priorite_droite","Priorité à droite"],["exemple","Carrefours en ville"]],"C1-6":[["exemple","Carrefours en ville"],["arret_precis","Arrêt précis"]],"C1-7":[["demi_tour","Demi-tour en 3 étapes"]],"C2-3":[["briollay1","Briollay – feux"],["feux_classique","Feux · croisement classique"]],"C2-4":[["feux_classique","Croisement classique"],["feux_indo","À l’indonésienne"],["feux_camion","Face à un camion"],["sonnettes_vue","7 Sonnettes"],["dunant_vue","Henri Dunant × Copernic"]],"C2-5":[["giratoire","Giratoire"],["haricot","Giratoire en haricot"]],"C2-6":[["giratoire","Giratoire"],["giratoire_velo","Avec bande cyclable"]],"C2-7":[["giratoire","Giratoire"],["giratoire2","À deux voies"],["haricot_velo","Haricot avec bande cyclable"]],"C2-8":[["giratoire2","Giratoire à deux voies"]],"C2-9":[["sonnettes_vue","7 Sonnettes"],["dunant_vue","Henri Dunant × Copernic"]],"C2-10":[["parking","Parking"],["manoeuvres","Manœuvres"]],"C2-11":[["parking","Parking"],["manoeuvres","Manœuvres"]],"C2-12":[["parking","Parking"],["manoeuvres","Manœuvres"]],"C2-13":[["manoeuvres","Manœuvres"],["parking","Parking"]],"C2-14":[["manoeuvres","Manœuvres"],["parking","Parking"]],"C3-1":[["etroit","Passage étroit"],["rd_croiser","Se croiser sur route étroite"]],"C3-2":[["rd_croiser","Route étroite"],["rd_droite","Tourner à droite"],["rd_gauche","Tourner à gauche"]],"C3-3":[["arret_precis","Arrêt précis à un repère"]],"C3-4":[["rd_droite","Tourner à droite hors agglo"],["rd_gauche","Tourner à gauche hors agglo"]],"C3-5":[["autoroute","Voie d’insertion"]],"C3-6":[["sortie","Sortie (décélération)"]],"C3-7":[["autoroute","Voie d’insertion"]],"C3-9":[["depassement","Dépasser un cycliste (1,5 m)"],["depassement_ville","En ville (1 m)"]]}; // étape de la trame → scènes du simulateur
+function liensSimu(code, n){ const L = SIMU_LIENS[code + '-' + n]; if (!L) return ''; return '<div class="simu-liens"><span>Voir dans le simulateur</span>' + L.map(function (x) { return '<a href="/simu/#' + x[0] + '" target="_blank" rel="noopener">' + esc(x[1]) + ' ↗</a>'; }).join('') + '</div>'; }
 function afficher(){
   document.getElementById('onglets').innerHTML = COMPETENCES.map(c =>
     `<button class="onglet${c.code===actif?' on':''}" ${c.etapes.length?`onclick="choisir('${c.code}')"`:'disabled title="Bientôt"'}>${c.code}</button>`).join('');
@@ -266,7 +274,7 @@ function afficher(){
     `<section class="comp"><div class="comp-h"><div class="badge">${c.code}</div><div><h2>${esc(c.titre)}</h2>${c.sousTitre?`<p>${esc(c.sousTitre)}</p>`:''}</div>`+
     `<div class="outils"><button onclick="toutOuvrir(true)">Tout déplier</button><button onclick="toutOuvrir(false)">Tout replier</button></div></div>`+
     c.etapes.map((e,i) => `<details class="etape"><summary><span class="num">${i+1}</span><span class="etape-t">${esc(e.titre)}</span>${CHEV}</summary>`+
-      `<div class="etape-c"><ul>${e.points.map(p=>`<li>${fort(p)}</li>`).join('')}</ul></div></details>`).join('')+
+      `<div class="etape-c"><ul>${e.points.map(p=>`<li>${fort(p)}</li>`).join('')}</ul>${liensSimu(c.code, i + 1)}</div></details>`).join('')+
     ((c.alertes||[]).length||(c.astuces||[]).length ? `<div class="notes">`+
       (c.alertes||[]).map(a=>`<div class="alerte">${ALERTE}<span>${fort(a)}</span></div>`).join('')+
       ((c.astuces||[]).length ? `<div class="astuces">${c.astuces.map(a=>`<div class="astuce">${AMPOULE}<span>${fort(a)}</span></div>`).join('')}</div>` : '')+

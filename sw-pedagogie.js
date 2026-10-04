@@ -1,10 +1,10 @@
 /* Service worker — Pédagogie (installation en appli)
    Réseau d'abord : toujours la dernière version en ligne.
    Copie de secours de la page Pédagogie, de la trame et du livret si pas de réseau. */
-var CACHE = 'pedagogie-v2';
-var FILES = ['/pedagogie.html', '/livret.html', '/trame.js', '/pedagogie.webmanifest',
+var CACHE = 'pedagogie-v3';
+var FILES = ['/pedagogie.html', '/livret.html', '/trame.js', '/reglementation.js', '/pedagogie.webmanifest',
              '/pedagogie-192.png', '/pedagogie-512.png', '/pedagogie-apple-touch.png'];
-var RESEAU_D_ABORD = ['/pedagogie.html', '/livret.html', '/trame.js', '/pedagogie.webmanifest'];
+var RESEAU_D_ABORD = ['/pedagogie.html', '/livret.html', '/trame.js', '/reglementation.js', '/pedagogie.webmanifest'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES); }).catch(function () {}));

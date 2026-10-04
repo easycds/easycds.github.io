@@ -127,6 +127,91 @@ body.dark .alerte{background:#2d1a08;color:#fdba74;border-color:#5a3412}
   .comp{box-shadow:none}
   .etape-c{display:block!important}
 }
+
+/* ============ Trame / Réglementation ============ */
+.sections{display:flex;gap:6px;padding:5px;background:var(--surface);border:1px solid var(--border);border-radius:14px;width:fit-content;max-width:100%;flex-wrap:wrap;margin-bottom:22px}
+.sections button{font-family:var(--police-titre);font-weight:600;font-size:15px;border:0;background:transparent;color:var(--text-muted);padding:10px 16px;min-height:44px;border-radius:10px;cursor:pointer}
+.sections button.on{background:var(--easy-dark);color:#fff}
+.r-onglets{display:flex;gap:4px;border-bottom:2px solid var(--border);flex-wrap:wrap;margin-bottom:22px}
+.r-onglets button{font-family:var(--police-titre);font-weight:600;font-size:16px;padding:12px 14px;min-height:46px;margin-bottom:-2px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--text-muted);cursor:pointer}
+.r-onglets button.on{border-bottom-color:var(--easy-dark);color:var(--text)}
+.r-cache{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.r-cherche{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0 14px;min-height:46px;margin-bottom:12px;color:var(--text-muted)}
+.r-cherche input{flex:1;border:0;outline:none;background:transparent;font:inherit;font-size:15px;color:var(--text);min-height:44px}
+.r-filtres{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.r-filtres button{font:inherit;font-size:14px;font-weight:600;padding:10px 14px;min-height:44px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer}
+.r-filtres button.on{background:var(--text);border-color:var(--text);color:var(--bg)}
+.r-carte{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.r-ligne{display:grid;grid-template-columns:minmax(0,1fr) 120px 170px 90px;gap:16px;align-items:center;padding:14px 20px;border-top:1px solid var(--border)}
+.r-ligne:first-child{border-top:0}
+.r-entete{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);padding-top:12px;padding-bottom:12px}
+.r-ligne b{display:block;font-size:15.5px;line-height:1.35}
+.r-ligne small{display:block;font-size:13px;color:var(--text-muted);margin-top:3px;line-height:1.4}
+.r-classe{font-size:13.5px;color:var(--text-muted)}
+.r-montant b{font-size:17px}
+.r-pts{justify-self:end;min-width:64px;text-align:center;padding:6px 10px;border-radius:10px;font-weight:700;font-size:14px}
+.p0{background:var(--bg);color:var(--text-muted)}.p1{background:#fff1d6;color:#7a4a00}.p2{background:#ffe0dc;color:#a3160f}.p3{background:#a3160f;color:#fff}
+body.dark .p1{background:#3a2a08;color:#fcd38a}body.dark .p2{background:#3d1210;color:#ffb4ab}
+.r-vide{padding:20px;color:var(--text-muted)}
+.r-grille{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px}
+.r-grille-haut{margin:0 0 14px}
+.r-bloc{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px 20px;margin-bottom:14px}
+.r-grille .r-bloc{margin-bottom:0}
+.r-bloc h2{font-family:var(--police-titre);font-weight:600;font-size:19px;margin-bottom:10px}
+.r-bloc p{font-size:14.5px;line-height:1.55;margin-top:8px}
+.r-bloc p:first-of-type{margin-top:0}
+.r-bloc table{width:100%;border-collapse:collapse;font-size:14px}
+.r-bloc th,.r-bloc td{padding:8px 4px;border-top:1px solid var(--border);text-align:right;font-weight:400}
+.r-bloc thead th{border-top:0;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);font-weight:700}
+.r-bloc th:first-child{text-align:left;font-weight:600}
+.r-bloc .r-petit{font-size:13px;color:var(--text-muted);margin-top:10px}
+.r-orange{background:#fff7ed;border-color:#fed7aa;color:#7c2d12}body.dark .r-orange{background:#2d1a08;border-color:#5a3412;color:#fdba74}
+.r-sombre{background:#1c2430;border-color:#1c2430;color:#e6e8ec}.r-sombre h2{color:#fff}body.dark .r-sombre{background:#2a2f40;border-color:#2a2f40}
+.r-source{font-size:12.5px;color:var(--text-muted);line-height:1.6;margin-top:20px}
+.r-permis{display:inline-flex;gap:6px;padding:5px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;flex-wrap:wrap}
+.r-permis button{font:inherit;font-weight:700;font-size:14.5px;padding:10px 16px;min-height:44px;border-radius:10px;border:0;background:transparent;color:var(--text-muted);cursor:pointer}
+.r-permis button.on{background:var(--text);color:var(--bg)}
+.r-simu{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start}
+.r-liste{padding:8px}
+.r-coche{width:100%;display:flex;align-items:center;gap:12px;padding:12px;min-height:48px;border:0;border-radius:12px;background:transparent;font:inherit;color:var(--text);text-align:left;cursor:pointer}
+.r-coche .cc{flex:none;width:22px;height:22px;border-radius:6px;border:2px solid var(--text-light);display:grid;place-items:center;box-sizing:border-box}
+.r-coche .nm{flex:1;font-size:15px}.r-coche .pt{font-weight:600;font-size:14px;color:var(--text-muted)}
+.r-coche.on{background:var(--easy-light)}.r-coche.on .cc{background:var(--easy-dark);border-color:var(--easy-dark)}.r-coche.on .nm{font-weight:600}.r-coche.on .pt{color:#a3160f}
+body.dark .r-coche.on .pt{color:#ffb4ab}
+.r-solde{padding:20px;display:flex;flex-direction:column;gap:16px}
+.r-solde .lbl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted)}
+.r-solde .gros{font-family:var(--police-titre);font-weight:600;font-size:56px;line-height:1}
+.r-solde .gros span{font-size:24px;color:var(--text-muted)}
+.r-cases{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.r-cases i{height:22px;border-radius:6px;background:var(--bg)}.r-cases i.pl{background:#2f9e6b}.r-cases i.pe{background:#ffe0dc;border:2px dashed #e01f1f}
+body.dark .r-cases i.pe{background:#3d1210}
+.r-meme{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.45;cursor:pointer}
+.r-meme input{flex:none;width:20px;height:20px;margin-top:1px;accent-color:var(--easy)}
+.r-msg{padding:12px 14px;border-radius:12px;background:var(--bg);font-size:14px;line-height:1.5}
+.r-msg.al{background:#a3160f;color:#fff;font-weight:600}
+.r-effacer{font:inherit;font-weight:600;font-size:14px;min-height:44px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer}
+.r-table{overflow-x:auto}
+.r-table table{width:100%;min-width:620px;border-collapse:collapse}
+.r-table thead th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);padding:14px 8px;text-align:center;font-weight:700}
+.r-table thead th:first-child{text-align:left;padding-left:20px}
+.r-table thead th.jc-t{color:#a3160f}body.dark .r-table thead th.jc-t{color:#ffb4ab}
+.r-table tbody th{text-align:left;padding:14px 20px;font-weight:600;font-size:15px;line-height:1.35;border-top:1px solid var(--border)}
+.r-table td{padding:10px 8px;border-top:1px solid var(--border)}
+.r-table td.jc{background:var(--easy-light)}
+.panneau{margin:0 auto;width:50px;height:50px;border-radius:50%;border:5px solid #e01f1f;background:#fff;color:#1c2430;display:grid;place-items:center;font-weight:700;font-size:17px;box-sizing:border-box}
+.r-notes{margin-top:6px}.r-notes p{font-size:14.5px;line-height:1.55;color:var(--text-muted);margin-top:10px}.r-notes b{color:var(--text)}
+.r-delai .n{display:block;font-family:var(--police-titre);font-weight:600;font-size:34px;line-height:1;margin-bottom:8px}
+.r-delai b{display:block;font-size:15.5px;margin-bottom:4px}.r-delai .d,.r-stage .d{display:block;font-size:14px;color:var(--text-muted);line-height:1.5}
+.c6{color:#2f7d55}.c2{color:#8a5a00}.c3{color:#a3160f}body.dark .c6{color:#6fd3a0}body.dark .c2{color:#fcd38a}body.dark .c3{color:#ffb4ab}
+.r-stage{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.r-stage .n{font-family:var(--police-titre);font-weight:600;font-size:30px}.r-stage b{display:block;font-size:15.5px;margin-bottom:4px}.r-stage div{flex:1 1 320px}
+.r-pro{display:grid;grid-template-columns:130px minmax(0,1fr);gap:8px 16px;font-size:14.5px;line-height:1.5;margin-bottom:10px}
+@media(max-width:720px){
+.r-ligne{grid-template-columns:minmax(0,1fr) auto;row-gap:6px}
+.r-ligne .r-classe,.r-entete{display:none}
+.r-pts{grid-row:1 / span 2;grid-column:2}
+.r-simu,.r-pro{grid-template-columns:minmax(0,1fr)}
+}
+@media print{.sections,.r-onglets,.r-filtres,.r-cherche,.r-effacer{display:none}}
 </style>
 </head>
 <body>
@@ -139,6 +224,11 @@ body.dark .alerte{background:#2d1a08;color:#fdba74;border-color:#5a3412}
 </header>
 
 <main>
+  <nav class="sections" id="sections" aria-label="Pédagogie">
+    <button type="button" data-vue="trame" class="on" aria-pressed="true">Trame pédagogique</button>
+    <button type="button" data-vue="regl" aria-pressed="false">Réglementation</button>
+  </nav>
+  <div id="vue-trame">
   <h1>Trame pédagogique</h1>
   <p class="intro">Le déroulé des leçons, compétence par compétence. Clique sur une étape pour la déplier.</p>
   <a class="livret" href="livret.html">
@@ -148,11 +238,14 @@ body.dark .alerte{background:#2d1a08;color:#fdba74;border-color:#5a3412}
   </a>
   <div class="onglets" id="onglets"></div>
   <div id="contenu"></div>
+  </div>
+  <div id="vue-regl" hidden></div>
 </main>
 
 <p class="pied">Easy Auto-École · <a href="/">Mes outils</a> · <a href="mentions-legales.html">Mentions légales</a></p>
 
 <script src="trame.js"></script>
+<script src="reglementation.js"></script>
 <script>
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fort = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<span class="cle">$1</span>');

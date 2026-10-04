@@ -2,13 +2,15 @@
 <html lang="fr">
 <head>
 <script src="/acces.js"></script>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
+<link rel="apple-touch-icon" href="/pedagogie-apple-touch.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ff3131">
 <meta name="robots" content="noindex">
 <title>Administratif · Easy Auto-École</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts/polices.css">
 <style>
 :root{
   --easy:#ff3131; --easy-dark:#e01f1f; --easy-light:#fff0f0;
@@ -138,6 +140,7 @@ body.dark .sig-box{background:#f4f4f5}
 .toast.on{opacity:1}
 .demo{background:var(--warn-light);color:var(--warn);font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:10px;margin-bottom:14px}
 @media(max-width:700px){.grille2,.sigs{grid-template-columns:1fr}.qui{display:none}.jour{font-size:13px}}
+.pied a{display:inline-block;padding:10px 4px}
 </style>
 </head>
 <body>
@@ -233,7 +236,7 @@ function ecranConnexion(){
     <div class="champ"><label class="lbl" for="lg-mdp">Mot de passe</label><input type="password" id="lg-mdp" autocomplete="current-password" onkeydown="if(event.key==='Enter')connexion()"></div>
     <button class="btn primaire" style="width:100%" onclick="connexion()">Se connecter</button>
     <div class="err" id="lg-err"></div>
-    <button type="button" class="oubli" onclick="motDePasseOublie()">Mot de passe oublié ?</button></div></div>`;
+    <button type="button" class="oubli" onclick="motDePasseOublie()" style="display:inline-block;padding:10px 4px">Mot de passe oublié ?</button></div></div>`;
 }
 function motDePasseOublie(){
   const m=document.getElementById('lg-mail').value.trim(), err=document.getElementById('lg-err');

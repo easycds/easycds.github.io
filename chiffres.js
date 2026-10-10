@@ -55,7 +55,21 @@
     '.s-mois{display:flex;gap:10px}.s-mois div{flex:1;border-radius:14px;padding:12px 14px;background:var(--bg)}.s-mois small{display:block;font-size:13.5px;font-weight:600;color:var(--text-muted)}.s-mois b{font-family:var(--police-titre);font-weight:600;font-size:26px}' +
     '.s-mois .r{background:var(--easy-light)}.s-mois .r b{color:#c41a1a}body.dark .s-mois .r b{color:#ff8a80}' +
     '.s-source{font-size:12.5px;color:var(--text-muted);line-height:1.6;margin-top:6px}' +
-    '@media print{.s-onglets,.s-filtres,.s-nav{display:none}}';
+    '.s-titre{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}' +
+    '.s-presenter{display:inline-flex;align-items:center;gap:8px;font:inherit;font-weight:700;font-size:15px;min-height:44px;padding:0 16px;border-radius:12px;border:0;background:var(--easy-dark);color:#fff;cursor:pointer;margin-top:4px}.s-presenter svg{width:18px;height:18px}' +
+    '.s-alerte{background:var(--easy-light);border-color:transparent}.s-gros{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.s-gros b{font-family:var(--police-titre);font-weight:600;font-size:56px;line-height:1;color:#c41a1a}body.dark .s-gros b{color:#ff8a80}.s-gros span{flex:1 1 260px;font-size:16px;line-height:1.5}' +
+    '.s-comp{display:flex;flex-direction:column;gap:14px}.s-cmp>b{display:block;font-size:15px;margin-bottom:4px}' +
+    '.s-cmp .l{display:grid;grid-template-columns:8.5em minmax(0,1fr) 3.4em;align-items:center;gap:10px;font-size:13.5px;color:var(--text-muted);margin-top:3px}' +
+    '.s-cmp .f{height:16px;background:var(--bg);border-radius:6px;overflow:hidden}.s-cmp .f i{display:block;height:100%;border-radius:6px}.s-cmp em{font-style:normal;font-weight:700;color:var(--text);text-align:right}' +
+    '.s-pr{position:fixed;inset:0;z-index:50;background:#1c2430;color:#fff;display:flex;align-items:center;justify-content:center;padding:max(24px,env(safe-area-inset-top)) 24px max(24px,env(safe-area-inset-bottom));cursor:pointer;user-select:none}' +
+    '.s-pr-c{max-width:1100px;text-align:center;display:flex;flex-direction:column;gap:18px;align-items:center}' +
+    '.s-pr-c small{font-family:var(--police-titre);font-weight:600;font-size:clamp(20px,3.2vw,34px);color:#ff6b6b;letter-spacing:.02em}' +
+    '.s-pr-c b{font-family:var(--police-titre);font-weight:600;font-size:clamp(46px,10vw,128px);line-height:1.02}' +
+    '.s-pr-c span{font-size:clamp(19px,2.6vw,32px);line-height:1.4;color:#d5d9e0;max-width:900px}' +
+    '.s-pr-x{position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;width:52px;height:52px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:30px;line-height:1;cursor:pointer}' +
+    '.s-pr-b{position:absolute;left:0;right:0;bottom:max(18px,env(safe-area-inset-bottom));display:flex;justify-content:center;align-items:center;gap:18px;font-weight:600;color:#c9cdd4}' +
+    '.s-pr-b button{width:56px;height:56px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:34px;line-height:1;cursor:pointer}' +
+    '@media print{.s-onglets,.s-filtres,.s-nav,.s-presenter{display:none}}';
   document.head.appendChild(st);
 
   const TUES = {};
@@ -63,25 +77,28 @@
     10289, 9617, 9083, 9052, 8533, 8412, 8080, 7989, 8437, 8029, 7643, 7720, 7242, 5731, 5232, 5318, 4709, 4620, 4275, 4273,
     3992, 3963, 3653, 3268, 3384, 3461, 3477, 3448, 3248, 3244, 2541, 2944, 3267, 3167, 3193, 3263].forEach((n, i) => { TUES[1970 + i] = n; });
   const CATS = { vitesse: ['Vitesse', '#e01f1f'], alcool: ['Alcool', '#b35c00'], equipement: ['Équipement', '#2f6fd1'], permis: ['Permis', '#4a5568'], controle: ['Contrôles', '#7b3fb5'], contexte: ['Contexte', '#8a929b'] };
+  /* Dates vérifiées sur « Les grandes dates de la sécurité routière » (ONISR) */
   const MESURES = [
-    [1970, 'alcool', 'Juillet 1970', 'Premier taux légal d’alcool au volant', 'La loi fixe pour la première fois un taux d’alcool dans le sang au-delà duquel conduire est sanctionné.'],
-    [1972, 'contexte', '1972', 'Le pire bilan, et le début d’une politique de sécurité routière', 'Record de tués sur les routes. L’État crée un comité interministériel et un délégué à la sécurité routière.'],
-    [1973, 'equipement', '1er juillet 1973', 'Ceinture à l’avant hors agglomération, casque à moto', 'La ceinture devient obligatoire aux places avant hors agglomération, et le casque pour les motards.'],
-    [1974, 'vitesse', 'Fin 1974', 'Limitations générales : 90 sur route, 130 sur autoroute', 'Après des limitations partielles en 1973, des vitesses maximales s’appliquent sur tout le réseau hors agglomération.'],
-    [1978, 'alcool', 'Juillet 1978', 'Dépistages d’alcool préventifs', 'Les forces de l’ordre peuvent contrôler l’alcoolémie même sans accident ni infraction.'],
-    [1990, 'vitesse', '1er décembre 1990', '50 km/h en ville et ceinture à l’arrière', 'La vitesse en agglomération passe de 60 à 50 km/h, avec la possibilité de zones 30. La ceinture devient aussi obligatoire aux places arrière.'],
+    [1970, 'alcool', '9 juillet 1970', 'Premier taux légal d’alcool au volant', 'Une loi fixe les premiers seuils : 0,80 g/l de sang pour une contravention, 1,20 g/l pour un délit.'],
+    [1972, 'contexte', '5 juillet 1972', 'Le pire bilan, et le début d’une politique de sécurité routière', 'Record de tués sur les routes. Un décret crée le Comité interministériel de la sécurité routière et un délégué interministériel.'],
+    [1973, 'vitesse', '28 juin 1973', 'Premières limitations de vitesse sur route', '110 km/h sur les routes à grande circulation, 100 km/h sur les autres routes. Les autoroutes passent à 120 km/h en décembre 1973.'],
+    [1973, 'equipement', '1er juillet 1973', 'Ceinture à l’avant hors agglomération, casque à moto', 'La ceinture devient obligatoire aux places avant, hors agglomération, dans les voitures récentes. La même année, le casque devient obligatoire pour les motards.'],
+    [1974, 'vitesse', '9 novembre 1974', '130 sur autoroute, 90 sur route', 'Les limitations générales s’appliquent : 130 km/h sur autoroute, 110 sur les routes à chaussées séparées, 90 sur les autres routes.'],
+    [1978, 'alcool', '12 juillet 1978', 'Dépistages d’alcool préventifs', 'Une loi permet aux forces de l’ordre de contrôler l’alcoolémie même sans accident ni infraction.'],
+    [1990, 'vitesse', '1er décembre 1990', '50 km/h en ville', 'La vitesse en agglomération passe de 60 à 50 km/h, avec la possibilité de zones 30.'],
+    [1991, 'equipement', '1991', 'Ceinture obligatoire à l’arrière', 'Le port de la ceinture devient obligatoire pour les passagers assis à l’arrière.'],
     [1992, 'permis', '1er juillet 1992', 'Le permis à points', 'Chaque infraction retire des points. À zéro, le permis n’est plus valable.'],
-    [1995, 'alcool', 'Septembre 1995', 'Taux d’alcool abaissé à 0,5 g/l', 'Le taux maximal autorisé est abaissé à 0,5 gramme d’alcool par litre de sang.'],
-    [2002, 'contexte', 'Juillet 2002', 'La sécurité routière devient une grande priorité nationale', 'Le président de la République en fait l’un des grands chantiers du quinquennat, avec des contrôles et des sanctions renforcés.'],
-    [2003, 'controle', 'Fin octobre 2003', 'Les premiers radars automatiques', 'Les excès de vitesse sont flashés et verbalisés automatiquement. Le nombre de tués baisse très fortement cette année-là.'],
+    [1995, 'alcool', '29 août 1995', 'Taux d’alcool abaissé à 0,5 g/l', 'Un décret abaisse le taux maximal autorisé de 0,7 à 0,5 gramme d’alcool par litre de sang.'],
+    [2002, 'contexte', '14 juillet 2002', 'La sécurité routière devient un grand chantier national', 'Le président de la République en fait l’un des grands chantiers du quinquennat, avec des contrôles et des sanctions renforcés.'],
+    [2003, 'controle', '27 octobre 2003', 'Le premier radar automatique', 'Les excès de vitesse sont flashés et verbalisés automatiquement. Le nombre de tués baisse très fortement cette année-là.'],
     [2004, 'permis', '1er mars 2004', 'Le permis probatoire', 'Les nouveaux conducteurs démarrent avec 6 points et doivent faire leurs preuves pendant trois ans (deux avec la conduite accompagnée).'],
-    [2008, 'equipement', '1er octobre 2008', 'Gilet et triangle obligatoires', 'Chaque voiture doit avoir un gilet de haute visibilité et un triangle de présignalisation.'],
-    [2015, 'alcool', '1er juillet 2015', '0,2 g/l pour les jeunes conducteurs', 'Pendant le permis probatoire, le taux d’alcool autorisé est abaissé à 0,2 g/l : en pratique, zéro verre.'],
+    [2008, 'equipement', '1er octobre 2008', 'Gilet et triangle obligatoires', 'Chaque voiture doit avoir un gilet de haute visibilité et un triangle de présignalisation (décret du 30 juillet 2008).'],
+    [2015, 'alcool', '1er juillet 2015', '0,2 g/l pour les jeunes conducteurs', 'Pendant le permis probatoire et l’apprentissage, le taux d’alcool autorisé est abaissé à 0,2 g/l : en pratique, zéro verre.'],
     [2018, 'vitesse', '1er juillet 2018', '80 km/h sur les routes sans séparateur', 'La vitesse maximale passe de 90 à 80 km/h sur les routes à double sens sans séparateur central. Depuis fin 2019, les départements peuvent revenir à 90 sur certaines routes.'],
     [2020, 'contexte', '2020', 'Les confinements', 'Le trafic s’effondre pendant les confinements : le nombre de tués tombe au plus bas, puis remonte quand la circulation reprend.'],
-    [2025, 'permis', 'Juillet 2025', 'Création de l’homicide routier', 'Un conducteur qui tue quelqu’un, par exemple en ayant bu, consommé des stupéfiants ou commis un grand excès de vitesse, est poursuivi pour homicide routier, et non plus pour homicide involontaire.']
+    [2025, 'permis', '9 juillet 2025', 'Création de l’homicide routier', 'Un conducteur qui tue quelqu’un, par exemple en ayant bu, consommé des stupéfiants ou commis un grand excès de vitesse, est poursuivi pour homicide routier, et non plus pour homicide involontaire.']
   ];
-  const etat = { vue: 'courbe', cat: 'tous', sel: 5 };
+  const etat = { vue: 'courbe', cat: 'tous', sel: 6, diapo: -1 };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const fmt = (n) => n.toLocaleString('fr-FR');
   const X = (an) => 60 + (an - 1970) / 55 * 920, Y = (n) => 380 - n / 18000 * 350;
@@ -152,16 +169,106 @@
       '<p class="s-source">Chiffres définitifs 2025, France métropolitaine, ONISR (bilan publié le 29 mai 2026). Tués à 30 jours.</p>';
   }
 
+  /* Maine-et-Loire : bilan ONISR 2025 (publié le 14/09/2026), indicateurs départementaux p. 44,
+     réseau des départements p. 59, résultats bruts du BAAC par département p. 200 */
+  function comparer(L) {
+    return '<div class="s-comp">' + L.map((x) => {
+      const max = Math.max(x[1], x[2]) * 1.15;
+      return '<div class="s-cmp"><b>' + x[0] + '</b>' +
+        '<div class="l"><span>Maine-et-Loire</span><span class="f"><i style="width:' + (x[1] / max * 100).toFixed(1) + '%;background:' + (x[1] > x[2] ? '#c41a1a' : '#e8a3a3') + '"></i></span><em>' + x[1] + x[3] + '</em></div>' +
+        '<div class="l"><span>France</span><span class="f"><i style="width:' + (x[2] / max * 100).toFixed(1) + '%;background:#9aa2ab"></i></span><em>' + x[2] + x[3] + '</em></div></div>';
+    }).join('') + '</div>';
+  }
+  function vueDep() {
+    return '<div class="s-cles">' +
+      '<div class="s-cle sombre"><small>Maine-et-Loire, 2025</small><b>46 morts</b><span>41 en 2024</span></div>' +
+      '<div class="s-cle rouge"><small>Depuis 2019</small><b>+44 %</b><span>en France : +1 %</span></div>' +
+      '<div class="s-cle"><small>Accidents avec blessés en 2025</small><b>693</b><span>dans le département</span></div></div>' +
+      '<section class="s-bloc s-alerte"><h2>L’alcool pèse plus lourd chez nous</h2><div class="s-gros"><b>37 %</b><span>des morts du Maine-et-Loire le sont dans un accident avec un conducteur alcoolisé, contre <strong>29 %</strong> en France (moyenne 2021-2025).</span></div></section>' +
+      '<section class="s-bloc"><h2>Le département face à la France</h2><p style="margin:0 0 12px">Moyennes 2021-2025.</p>' +
+      comparer([
+        ['Morts par million d’habitants', 44, 48, ''],
+        ['Morts par million de 18-24 ans', 82, 95, ''],
+        ['Morts par million de 25-34 ans', 59, 58, ''],
+        ['Morts par million de 65 ans et plus', 57, 59, ''],
+        ['Morts dans un accident avec alcool', 37, 29, ' %'],
+        ['… avec alcool ou stupéfiants', 42, 40, ' %'],
+        ['Morts dans un accident avec un conducteur novice', 20, 20, ' %'],
+        ['Morts en deux-roues motorisé', 18, 22, ' %'],
+        ['Morts dans un accident sans autre véhicule ni piéton', 35, 41, ' %']
+      ]) + '</section>' +
+      '<div class="s-deux"><section class="s-bloc"><h2>En ville ou à la campagne ?</h2><div class="s-mois"><div class="r"><small>Zone gendarmerie</small><b>40 morts</b></div><div><small>Zone police (villes)</small><b>6 morts</b></div></div>' +
+      '<p>En 2025, presque tous les morts du département sont hors des villes surveillées par la police : <b>40 sur 46</b>.</p></section>' +
+      '<section class="s-bloc"><h2>Sur les routes départementales</h2><div class="s-mois"><div class="r"><small>Morts en 2025</small><b>30</b></div><div><small>Réseau</small><b>5 046 km</b></div></div>' +
+      '<p>Dont <b>19 en voiture</b>, 4 en deux-roues motorisé et 2 piétons.</p></section></div>' +
+      '<p class="s-source">ONISR, « La sécurité routière en France, bilan de l’année 2025 » (septembre 2026) : indicateurs départementaux, réseau géré par les départements et résultats par département. Morts à 30 jours.</p>';
+  }
+
+  /* Mode présentation : les chiffres chocs en plein écran, un par écran */
+  const DIAPOS = [
+    ['1972', '16 545 morts', 'sur les routes de France. Le pire bilan de notre histoire.'],
+    ['2025', '3 263 morts', '5 fois moins qu’en 1972. Mais c’est encore près de 9 morts par jour.'],
+    ['Les morts', '77 % d’hommes', '2 523 hommes et 740 femmes en 2025.'],
+    ['Les 18-24 ans', '2 fois plus de risque', '96 morts par million de jeunes, contre 49 en moyenne.'],
+    ['Première cause', 'La vitesse', 'retrouvée chez 29 % des conducteurs responsables d’un accident mortel.'],
+    ['Deuxième cause', 'L’alcool', 'retrouvé chez 21 % des conducteurs responsables d’un accident mortel.'],
+    ['Sans carrosserie', '47 % des morts', 'sont à pied, à vélo, en deux-roues motorisé ou en trottinette.'],
+    ['Où ?', '6 morts sur 10', 'sur les routes hors agglomération, hors autoroutes.'],
+    ['Maine-et-Loire', '46 morts en 2025', '+44 % par rapport à 2019. En France : +1 %.'],
+    ['Maine-et-Loire', '37 %', 'des morts le sont dans un accident avec un conducteur alcoolisé. En France : 29 %.'],
+    ['Maine-et-Loire', '40 sur 46', 'morts en 2025 hors des villes, en zone gendarmerie.'],
+    ['', 'Chaque mort compte.', 'Easy Auto-École']
+  ];
+  let ecran = null;
+  function diapo() {
+    const d = DIAPOS[etat.diapo];
+    ecran.querySelector('.s-pr-c').innerHTML = (d[0] ? '<small>' + esc(d[0]) + '</small>' : '') + '<b>' + esc(d[1]) + '</b><span>' + esc(d[2]) + '</span>';
+    ecran.querySelector('.s-pr-n').textContent = (etat.diapo + 1) + ' / ' + DIAPOS.length;
+  }
+  function presenter() {
+    etat.diapo = 0;
+    ecran = document.createElement('div');
+    ecran.className = 's-pr'; ecran.setAttribute('role', 'dialog'); ecran.setAttribute('aria-label', 'Présentation des chiffres');
+    ecran.innerHTML = '<button type="button" class="s-pr-x" data-pr="fermer" aria-label="Fermer la présentation">×</button>' +
+      '<div class="s-pr-c" aria-live="polite"></div>' +
+      '<div class="s-pr-b"><button type="button" data-pr="-1" aria-label="Écran précédent">‹</button><span class="s-pr-n"></span><button type="button" data-pr="1" aria-label="Écran suivant">›</button></div>';
+    document.body.appendChild(ecran);
+    ecran.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-pr]');
+      if (b && b.dataset.pr === 'fermer') return fermer();
+      const pas = b ? +b.dataset.pr : (e.clientX > window.innerWidth / 2 ? 1 : -1);
+      etat.diapo = Math.min(DIAPOS.length - 1, Math.max(0, etat.diapo + pas)); diapo();
+    });
+    document.addEventListener('keydown', touche);
+    try { if (ecran.requestFullscreen) ecran.requestFullscreen().catch(() => {}); } catch (er) {}
+    diapo();
+    ecran.querySelector('.s-pr-x').focus();
+  }
+  function touche(e) {
+    if (!ecran) return;
+    if (e.key === 'Escape') fermer();
+    else if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); etat.diapo = Math.min(DIAPOS.length - 1, etat.diapo + 1); diapo(); }
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); etat.diapo = Math.max(0, etat.diapo - 1); diapo(); }
+  }
+  function fermer() {
+    document.removeEventListener('keydown', touche);
+    try { if (document.fullscreenElement) document.exitFullscreen(); } catch (er) {}
+    if (ecran) ecran.remove(); ecran = null;
+  }
+  document.addEventListener('fullscreenchange', () => { if (ecran && !document.fullscreenElement && etat.diapo >= 0 && ecran._plein) fermer(); if (ecran && document.fullscreenElement) ecran._plein = true; });
+
   function rendre() {
-    racine.innerHTML = '<h1>Les chiffres de la route</h1><p class="intro">50 ans de sécurité routière, et qui sont les victimes aujourd’hui.</p>' +
+    racine.innerHTML = '<div class="s-titre"><div><h1>Les chiffres de la route</h1><p class="intro">50 ans de sécurité routière, et qui sont les victimes aujourd’hui.</p></div>' +
+      '<button type="button" class="s-presenter" data-act="presenter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/></svg>Présenter</button></div>' +
       '<div class="s-onglets" role="tablist" aria-label="Chiffres">' +
-      [['courbe', 'La courbe depuis 1970'], ['qui', 'Qui, où, pourquoi en 2025']].map((o) => '<button type="button" role="tab" data-act="vue" data-v="' + o[0] + '" aria-selected="' + (etat.vue === o[0]) + '"' + (etat.vue === o[0] ? ' class="on"' : '') + '>' + o[1] + '</button>').join('') +
-      '</div>' + (etat.vue === 'qui' ? vueQui() : vueCourbe());
+      [['courbe', 'La courbe depuis 1970'], ['qui', 'Qui, où, pourquoi en 2025'], ['dep', 'Maine-et-Loire']].map((o) => '<button type="button" role="tab" data-act="vue" data-v="' + o[0] + '" aria-selected="' + (etat.vue === o[0]) + '"' + (etat.vue === o[0] ? ' class="on"' : '') + '>' + o[1] + '</button>').join('') +
+      '</div>' + (etat.vue === 'qui' ? vueQui() : etat.vue === 'dep' ? vueDep() : vueCourbe());
   }
 
   racine.addEventListener('click', (e) => {
     const b = e.target.closest('[data-act]'); if (!b) return;
     const a = b.dataset.act, v = b.dataset.v;
+    if (a === 'presenter') return presenter();
     if (a === 'vue') etat.vue = v;
     else if (a === 'sel') etat.sel = +v;
     else if (a === 'cat') {

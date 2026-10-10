@@ -1,7 +1,7 @@
 /* Service worker — Pédagogie (installation en appli)
    Réseau d'abord : toujours la dernière version en ligne.
    Copie de secours de la page Pédagogie, de la trame et du livret si pas de réseau. */
-var CACHE = 'pedagogie-v7';
+var CACHE = 'pedagogie-v8';
 var FILES = ['/', '/index.html', '/fonts/polices.css', '/favicon-32.png', '/pedagogie.html', '/livret.html', '/trame.js', '/reglementation.js', '/chiffres.js', '/acces.js', '/pedagogie.webmanifest',
              '/pedagogie-192.png', '/pedagogie-512.png', '/pedagogie-apple-touch.png'];
 var RESEAU_D_ABORD = ['/', '/index.html', '/fonts/polices.css', '/pedagogie.html', '/livret.html', '/trame.js', '/reglementation.js', '/chiffres.js', '/acces.js', '/pedagogie.webmanifest'];

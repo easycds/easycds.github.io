@@ -25,8 +25,11 @@
     '.s-filtres button.on{background:var(--text);border-color:var(--text);color:var(--bg)}' +
     '.s-pt{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}' +
     '.s-graph{position:relative}.s-graph svg{display:block;width:100%;height:auto}' +
+    '.s-graph.etroit .ax{font-size:14px}.s-graph.etroit .lab{font-size:14.5px}.s-graph.etroit .s-mk{width:26px;height:26px}.s-graph.etroit .s-mk i{width:12px;height:12px;border-width:2px}.s-graph.etroit .s-mk.on i{width:17px;height:17px}' +
+    '@media(max-width:600px){.s-filtres{flex-wrap:nowrap;overflow-x:auto;margin:0 -14px 10px;padding:0 14px 4px;scrollbar-width:none}.s-filtres::-webkit-scrollbar{display:none}.s-filtres button{flex:none}.s-bloc{padding:14px}}' +
     '.s-graph .ax{font:600 13px var(--police-texte);fill:var(--text-muted)}.s-graph .lab{font:700 14px var(--police-texte);fill:var(--text)}' +
     '.s-graph .gr{stroke:var(--border);stroke-width:1}.s-graph .base{stroke:var(--text-light);stroke-width:1.5}' +
+    '.s-frise{position:relative;margin-top:6px;border-top:1px dashed var(--border)}.s-frise-t{position:absolute;left:0;top:6px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted)}' +
     '.s-mk{position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;border:0;padding:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center}' +
     '.s-mk i{width:16px;height:16px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.35)}.s-mk.on i{width:22px;height:22px}' +
     '.s-fiche{border-radius:16px;background:var(--bg);padding:14px 16px;display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}' +
@@ -101,22 +104,31 @@
   const etat = { vue: 'courbe', cat: 'tous', sel: 6, diapo: -1 };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const fmt = (n) => n.toLocaleString('fr-FR');
-  const X = (an) => 60 + (an - 1970) / 55 * 920, Y = (n) => 380 - n / 18000 * 350;
+  /* Géométrie de la courbe : une version large (ordinateur) et une version haute et lisible (téléphone) */
+  const LARGE = { vw: 1000, vh: 420, g: 60, d: 980, h: 30, b: 380, ans: [1970, 1980, 1990, 2000, 2010, 2020], pas: 30, dot: 16 };
+  const ETROIT = { vw: 400, vh: 330, g: 40, d: 390, h: 18, b: 300, ans: [1970, 1990, 2010], pas: 25, dot: 12 };
+  let G = LARGE;
+  const X = (an) => G.g + (an - 1970) / 55 * (G.d - G.g), Y = (n) => G.b - n / 18000 * (G.b - G.h);
+  const largeur = () => (racine.clientWidth || window.innerWidth) - 40;
 
   function vueCourbe() {
+    format = largeur() < 560; G = format ? ETROIT : LARGE;
+    const etroit = G === ETROIT, px = largeur() / G.vw; /* 1 unité du dessin = px pixels à l'écran */
     const ans = Object.keys(TUES).map(Number);
     const d = 'M ' + ans.map((a) => X(a).toFixed(1) + ' ' + Y(TUES[a]).toFixed(1)).join(' L ');
     const m = MESURES[etat.sel], c = CATS[m[1]];
     const ligne = (a) => TUES[a] ? a + ' : <b>' + fmt(TUES[a]) + '</b> tués' : a + ' : pas encore de bilan';
-    const grille = [0, 5000, 10000, 15000].map((v) => '<line class="' + (v ? 'gr' : 'base') + '" x1="60" x2="980" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"/><text class="ax" x="52" y="' + Y(v).toFixed(1) + '" text-anchor="end" dominant-baseline="central">' + fmt(v) + '</text>').join('');
-    const annees = [1970, 1980, 1990, 2000, 2010, 2020].map((a) => '<text class="ax" x="' + X(a).toFixed(1) + '" y="404" text-anchor="middle">' + a + '</text>').join('') + '<text class="lab" x="980" y="404" text-anchor="end">2025</text>';
-    let prevAn = -9, pile = 0;
+    const grille = [0, 5000, 10000, 15000].map((v) => '<line class="' + (v ? 'gr' : 'base') + '" x1="' + G.g + '" x2="' + G.d + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"/><text class="ax" x="' + (G.g - 6) + '" y="' + Y(v).toFixed(1) + '" text-anchor="end" dominant-baseline="central">' + (etroit && v ? (v / 1000) + 'k' : fmt(v)) + '</text>').join('');
+    const annees = G.ans.map((a) => '<text class="ax" x="' + X(a).toFixed(1) + '" y="' + (G.b + 22) + '" text-anchor="' + (a === 1970 ? 'start' : 'middle') + '">' + a + '</text>').join('') + '<text class="lab" x="' + G.d + '" y="' + (G.b + 22) + '" text-anchor="end">2025</text>';
+    /* Les mesures sont posées sur une frise sous l'axe des années, en plusieurs rangées si elles sont trop proches */
+    const rangees = [], haut = G.pas;
     const points = MESURES.map((x, i) => {
       if (etat.cat !== 'tous' && x[1] !== etat.cat) return '';
-      const n = TUES[x[0]] || TUES[2025];
-      pile = x[0] - prevAn <= 1 ? pile + 1 : 0; prevAn = x[0]; /* années collées : on empile les points au-dessus de la courbe */
-      return '<button type="button" class="s-mk' + (i === etat.sel ? ' on' : '') + '" data-act="sel" data-v="' + i + '" style="left:' + (X(x[0]) / 10).toFixed(2) + '%;top:calc(' + (Y(n) / 4.2).toFixed(2) + '% - ' + (pile * 26) + 'px)" aria-label="' + esc(x[2] + ' : ' + x[3]) + '"><i style="background:' + CATS[x[1]][1] + '"></i></button>';
+      const xp = X(x[0]) * px;
+      let r = rangees.findIndex((fin) => xp - fin >= G.dot + 8); if (r < 0) { r = rangees.length; rangees.push(0); } rangees[r] = xp;
+      return '<button type="button" class="s-mk' + (i === etat.sel ? ' on' : '') + '" data-act="sel" data-v="' + i + '" style="left:' + (X(x[0]) / G.vw * 100).toFixed(2) + '%;top:' + (r * haut + haut / 2) + 'px" aria-label="' + esc(x[2] + ' : ' + x[3]) + '"><i style="background:' + CATS[x[1]][1] + '"></i></button>';
     }).join('');
+    const frise = '<div class="s-frise" style="height:' + (rangees.length * haut + 4) + 'px">' + points + '</div>';
     const filtres = [['tous', 'Toutes', '#e01f1f']].concat(Object.keys(CATS).map((k) => [k, CATS[k][0], CATS[k][1]]))
       .map((f) => '<button type="button" data-act="cat" data-v="' + f[0] + '"' + (etat.cat === f[0] ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '><span class="s-pt" style="background:' + f[2] + '"></span>' + f[1] + '</button>').join('');
     const liste = MESURES.map((x, i) => (etat.cat === 'tous' || x[1] === etat.cat) ? '<button type="button" data-act="sel" data-v="' + i + '"' + (i === etat.sel ? ' class="on"' : '') + '><span class="an">' + x[0] + '</span><span class="s-pt" style="background:' + CATS[x[1]][1] + '"></span><span class="tt">' + esc(x[3]) + '</span></button>' : '').join('');
@@ -125,10 +137,11 @@
       '<div class="s-cle"><small>2025</small><b>3 263 tués</b><span>+2,2 % sur un an</span></div>' +
       '<div class="s-cle sombre"><small>En 50 ans</small><b>5 fois moins</b></div></div>' +
       '<section class="s-bloc"><div class="s-filtres">' + filtres + '</div>' +
-      '<div class="s-graph"><svg viewBox="0 0 1000 420" role="img" aria-label="Nombre de tués par an de 1970 à 2025">' + grille + annees +
-      '<line x1="' + X(m[0]).toFixed(1) + '" x2="' + X(m[0]).toFixed(1) + '" y1="30" y2="380" stroke="' + c[1] + '" stroke-width="2" stroke-dasharray="5 5"/>' +
-      '<path d="' + d + ' L 980 380 L 60 380 Z" fill="#ff3131" opacity=".1"/><path d="' + d + '" fill="none" stroke="#e01f1f" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>' +
-      '<text class="lab" x="150" y="92">1972 : 16 545</text><text class="lab" x="972" y="296" text-anchor="end">2025 : 3 263</text></svg>' + points + '</div>' +
+      '<div class="s-graph' + (etroit ? ' etroit' : '') + '"><svg viewBox="0 0 ' + G.vw + ' ' + G.vh + '" role="img" aria-label="Nombre de tués par an de 1970 à 2025">' + grille + annees +
+      '<line x1="' + X(m[0]).toFixed(1) + '" x2="' + X(m[0]).toFixed(1) + '" y1="' + G.h + '" y2="' + G.b + '" stroke="' + c[1] + '" stroke-width="2" stroke-dasharray="5 5"/>' +
+      '<path d="' + d + ' L ' + G.d + ' ' + G.b + ' L ' + G.g + ' ' + G.b + ' Z" fill="#ff3131" opacity=".1"/><path d="' + d + '" fill="none" stroke="#e01f1f" stroke-width="' + (etroit ? 2.5 : 3) + '" stroke-linejoin="round" stroke-linecap="round"/>' +
+      '<circle cx="' + X(m[0]).toFixed(1) + '" cy="' + Y(TUES[m[0]] || TUES[2025]).toFixed(1) + '" r="' + (etroit ? 5 : 6) + '" fill="' + c[1] + '" stroke="#fff" stroke-width="2"/>' +
+      '<text class="lab" x="' + (X(1975) + 4).toFixed(1) + '" y="' + Y(16000).toFixed(1) + '">1972 : 16 545</text><text class="lab" x="' + (G.d - 4) + '" y="' + (Y(3263) - (etroit ? 30 : 20)).toFixed(1) + '" text-anchor="end">2025 : 3 263</text></svg>' + frise + '</div>' +
       '<div class="s-fiche"><div class="g"><span class="dt">' + esc(m[2]) + '</span><span class="s-tag" style="background:' + c[1] + '">' + c[0] + '</span><h3>' + esc(m[3]) + '</h3><p>' + esc(m[4]) + '</p></div>' +
       '<div class="d"><small>Tués sur l’année</small>' + ligne(m[0] - 1) + '<br>' + ligne(m[0] + 1) + '</div>' +
       '<div class="s-nav"><button type="button" data-act="pas" data-v="-1">Mesure précédente</button><button type="button" class="pl" data-act="pas" data-v="1">Mesure suivante</button></div></div></section>' +
@@ -282,5 +295,7 @@
     rendre();
   });
 
+  let format = null;
+  window.addEventListener('resize', () => { if (racine.hidden || !racine.firstChild || etat.vue !== 'courbe') return; const f = largeur() < 560; if (f !== format) { format = f; rendre(); } });
   window.EasyChiffres = { rendre: function () { if (!racine.firstChild) rendre(); } };
 })();

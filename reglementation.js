@@ -162,14 +162,17 @@
   racine.addEventListener('input', (e) => { if (e.target.id === 'r-q') { etat.q = e.target.value; lignes(); } });
   racine.addEventListener('change', (e) => { if (e.target.id === 'r-meme') { etat.meme = e.target.checked; corps(); } });
 
-  /* Trame / Réglementation */
+  /* Trame / Réglementation / Chiffres */
+  const HASH = { regl: '#reglementation', chiffres: '#chiffres' };
   function montrer(v) {
-    const regl = v === 'regl';
-    trame.hidden = regl; racine.hidden = !regl;
+    const chiffres = document.getElementById('vue-chiffres');
+    trame.hidden = v !== 'trame'; racine.hidden = v !== 'regl'; if (chiffres) chiffres.hidden = v !== 'chiffres';
     nav.querySelectorAll('button').forEach((b) => { const on = b.dataset.vue === v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
-    try { history.replaceState(null, '', regl ? '#reglementation' : location.pathname); } catch (er) {}
-    if (regl && !racine.firstChild) rendre();
+    try { history.replaceState(null, '', HASH[v] || location.pathname); } catch (er) {}
+    if (v === 'regl' && !racine.firstChild) rendre();
+    if (v === 'chiffres' && window.EasyChiffres) window.EasyChiffres.rendre();
   }
   nav.addEventListener('click', (e) => { const b = e.target.closest('button[data-vue]'); if (b) montrer(b.dataset.vue); });
   if (location.hash === '#reglementation') montrer('regl');
+  else if (location.hash === '#chiffres') montrer('chiffres');
 })();

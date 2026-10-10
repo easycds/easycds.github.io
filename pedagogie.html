@@ -235,6 +235,7 @@ body.dark .r-cases i.pe{background:#3d1210}
   <nav class="sections" id="sections" aria-label="Pédagogie">
     <button type="button" data-vue="trame" class="on" aria-pressed="true">Trame pédagogique</button>
     <button type="button" data-vue="regl" aria-pressed="false">Réglementation</button>
+    <button type="button" data-vue="chiffres" aria-pressed="false">Chiffres</button>
   </nav>
   <div id="vue-trame">
   <h1>Trame pédagogique</h1>
@@ -248,11 +249,13 @@ body.dark .r-cases i.pe{background:#3d1210}
   <div id="contenu"></div>
   </div>
   <div id="vue-regl" hidden></div>
+  <div id="vue-chiffres" hidden></div>
 </main>
 
 <p class="pied">Easy Auto-École · <a href="/">Mes outils</a> · <a href="mentions-legales.html">Mentions légales</a></p>
 
 <script src="trame.js"></script>
+<script src="chiffres.js"></script>
 <script src="reglementation.js"></script>
 <script>
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));

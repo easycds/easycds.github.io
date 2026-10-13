@@ -1,7 +1,7 @@
 {
   "name": "Easy Auto-École · Pédagogie",
   "short_name": "Pédagogie",
-  "description": "Outils pédagogiques des moniteurs — Easy Auto-École",
+  "description": "Outils pédagogiques des moniteurs, Easy Auto-École",
   "lang": "fr",
   "id": "/pedagogie.html",
   "start_url": "/pedagogie.html",
@@ -11,8 +11,29 @@
   "background_color": "#ff3131",
   "theme_color": "#ff3131",
   "icons": [
-    { "src": "/pedagogie-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/pedagogie-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/pedagogie-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/pedagogie-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pedagogie-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/easy-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/easy-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

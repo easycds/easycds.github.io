@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff3131">
+<title>Parrainage · Easy CDS</title>
+<meta name="description" content="Un élève Easy CDS t'a donné sa carte de parrainage : inscris-toi à l'auto-école Easy CDS de Saint-Sylvain-d'Anjou.">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
+<link rel="stylesheet" href="/fonts/polices.css">
+<style>
+:root{--easy:#ff3131;--easy-dark:#e01f1f;--text:#1c2430;--muted:#5f6672;--bg:#f7f5f2;--surface:#fff;--border:#e6e3df;--titre:'Fredoka','DM Sans',sans-serif;--texte:'DM Sans','Segoe UI',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+body{font-family:var(--texte);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+header{background:linear-gradient(135deg,#ff4040,#ff3131 60%,#ee2a2a);color:#fff;padding:16px 20px}
+.logo{font-family:var(--titre);font-weight:700;font-size:24px;line-height:1}
+.logo span{font-size:14px;font-weight:600;opacity:.9}
+main{flex:1;width:100%;max-width:460px;margin:0 auto;padding:26px 18px 30px;display:flex;flex-direction:column;gap:18px}
+h1{font-family:var(--titre);font-weight:700;font-size:30px;line-height:1.08}
+.intro{font-size:16px;line-height:1.5;color:#3a434f}
+.carte{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 2px 10px rgba(28,36,48,.06)}
+.lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.code{font-family:var(--titre);font-weight:700;font-size:32px;letter-spacing:.06em;text-align:center;border:2px solid var(--text);border-radius:12px;padding:8px}
+.saisie{display:flex;gap:8px}
+.saisie input{flex:1;min-width:0;font:600 20px var(--titre);letter-spacing:.06em;text-transform:uppercase;border:2px solid var(--text);border-radius:12px;padding:10px 12px}
+.err{color:#c62828;font-size:13px;font-weight:600;margin-top:8px;display:none}
+.etapes{display:flex;flex-direction:column;gap:12px;font-size:15px;line-height:1.45}
+.etapes div{display:flex;gap:12px;align-items:flex-start}
+.etapes b.n{width:26px;height:26px;flex:none;border-radius:50%;background:var(--easy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:15px;font-weight:700;font-size:16px;text-decoration:none;border:2px solid var(--text);color:var(--text);background:#fff;cursor:pointer;font-family:var(--texte)}
+.btn.rouge{background:var(--easy);border-color:var(--easy);color:#fff}
+.btn.rouge:hover{background:var(--easy-dark)}
+.agence{font-size:15px;line-height:1.55}
+footer{text-align:center;font-size:12px;color:var(--muted);padding:16px}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+<header><div class="logo">easy <span>auto-école · Saint-Sylvain</span></div></header>
+<main>
+  <h1>Un élève Easy t’a donné sa carte&nbsp;?</h1>
+  <p class="intro">Inscris-toi chez Easy CDS avec son code : il gagne 1 h de conduite quand tu signes ton contrat.</p>
+
+  <div class="carte" id="bloc-code">
+    <div class="lbl">Code parrain</div>
+    <div class="code" id="code"></div>
+  </div>
+  <div class="carte" id="bloc-saisie" hidden>
+    <div class="lbl">Code au dos de la carte</div>
+    <form class="saisie" onsubmit="valider(event)"><input id="champ" placeholder="CDS-XXXX" autocomplete="off" maxlength="8"><button class="btn rouge" type="submit">OK</button></form>
+    <div class="err" id="err">Ce code n’a pas le bon format. Il ressemble à CDS-4RYC.</div>
+  </div>
+
+  <div class="carte etapes">
+    <div><b class="n">1</b><span>Appelle l’agence ou passe nous voir pour t’inscrire.</span></div>
+    <div><b class="n">2</b><span>Donne le code de ton ami au moment de l’inscription.</span></div>
+    <div><b class="n">3</b><span>Dès que ton contrat est signé, ton ami reçoit 1 h de conduite.</span></div>
+  </div>
+
+  <a class="btn rouge" href="tel:+33241325841">Appeler l’agence · 02 41 32 58 41</a>
+
+  <div class="carte agence">
+    <b>Easy CDS</b><br>3 Passage Saint Anne<br>Saint-Sylvain-d’Anjou, 49480 Verrières-en-Anjou
+  </div>
+  <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Easy+CDS+3+Passage+Saint+Anne+Saint-Sylvain-d%27Anjou" target="_blank" rel="noopener">Voir sur la carte</a>
+</main>
+<footer>Offre de parrainage valable uniquement chez Easy CDS. · <a href="/mentions-legales.html">Mentions légales</a></footer>
+<script>
+var FORMAT=/^CDS-[A-HJ-NP-Z2-9]{4}$/;
+function propre(v){ v=(v||'').toUpperCase().replace(/[^A-Z0-9]/g,''); if(v.indexOf('CDS')===0) v=v.slice(3); return v?'CDS-'+v:''; }
+function afficher(c){
+  document.getElementById('code').textContent=c;
+  document.getElementById('bloc-code').hidden=false;
+  document.getElementById('bloc-saisie').hidden=true;
+  try{ sessionStorage.setItem('easy-parrain',c); }catch(e){}
+}
+function valider(e){
+  e.preventDefault();
+  var c=propre(document.getElementById('champ').value);
+  if(!FORMAT.test(c)){ document.getElementById('err').style.display='block'; return; }
+  history.replaceState(null,'','?c='+c); afficher(c);
+}
+(function(){
+  var c=propre(new URLSearchParams(location.search).get('c'));
+  if(FORMAT.test(c)) afficher(c);
+  else { document.getElementById('bloc-code').hidden=true; document.getElementById('bloc-saisie').hidden=false; }
+})();
+</script>
+</body>
+</html>

@@ -30,7 +30,7 @@ form{display:flex;flex-direction:column;gap:14px}
 .deux{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700}
 label small{font-weight:500;color:var(--gris);font-size:14px}
-input,select,textarea{font:inherit;color:inherit;width:100%;height:50px;border-radius:14px;border:1.5px solid var(--bord);background:#fff;padding:0 14px;font-size:16px}
+input,select,textarea{font:inherit;font-weight:400;color:inherit;width:100%;height:50px;border-radius:14px;border:1.5px solid var(--bord);background:#fff;padding:0 14px;font-size:16px}
 textarea{height:auto;min-height:96px;padding:12px 14px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--easy-fonce);box-shadow:0 0 0 4px rgba(224,31,31,.12)}
 .choix{display:flex;flex-wrap:wrap;gap:8px;position:relative}
@@ -90,18 +90,17 @@ dialog.appel .non{margin-top:8px;width:100%;height:46px;border:0;border-radius:2
   <div class="carte" id="carte">
     <form id="form" novalidate>
       <div class="deux">
-        <label>Prénom<input name="prenom" id="prenom" autocomplete="given-name" required maxlength="40"></label>
-        <label>Nom<input name="nom" id="nom" autocomplete="family-name" maxlength="40"></label>
+        <label>Prénom<input id="prenom" autocomplete="given-name" maxlength="40"></label>
+        <label>Téléphone<input id="tel" type="tel" autocomplete="tel" inputmode="tel" maxlength="20"></label>
       </div>
-      <label>Téléphone<input name="tel" id="tel" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="06 12 34 56 78"></label>
-      <label>E-mail <small>facultatif si tu laisses ton téléphone</small><input name="email" id="email" type="email" autocomplete="email" maxlength="80"></label>
-      <fieldset>
-        <legend>Ce qui t’intéresse</legend>
-        <div class="choix" id="choix"></div>
-      </fieldset>
-      <label>Ton message <small>facultatif</small><textarea name="message" id="message" maxlength="1000" placeholder="Ex. je voudrais commencer en janvier, je suis disponible le mercredi…"></textarea></label>
+      <label>Ce qui t'intéresse
+        <select id="formation">
+          <option>Permis B</option><option>Boîte automatique</option><option>Moto / scooter</option><option>Remorque</option><option>Stage code</option><option>Après le permis</option><option>Autre</option>
+        </select>
+      </label>
+      <label><span>Ton message <small>(facultatif)</small></span><textarea id="message" maxlength="1000"></textarea></label>
       <div class="piege" aria-hidden="true"><label>Site web<input name="site" id="site" tabindex="-1" autocomplete="off"></label></div>
-      <label class="accord"><input type="checkbox" id="accord">J’accepte qu’easy Saint-Sylvain utilise ces informations pour me recontacter au sujet de ma formation. Elles ne sont ni revendues, ni utilisées pour autre chose.</label>
+      <label class="accord"><input type="checkbox" id="accord">J'accepte qu'easy Saint-Sylvain utilise ces informations pour me recontacter au sujet de ma formation.</label>
       <div class="erreur" id="erreur" role="alert"></div>
       <button type="submit" id="envoyer">Envoyer ma demande</button>
     </form>
@@ -123,39 +122,18 @@ dialog.appel .non{margin-top:8px;width:100%;height:46px;border:0;border-radius:2
 <footer><div><span><b>easy</b>&nbsp; Saint-Sylvain-d'Anjou · agence du réseau <a href="https://easy-auto-ecole.com" target="_blank" rel="noopener" style="display:inline;min-height:0">easy auto-école</a></span><a href="/mentions-legales.html">Mentions légales</a></div></footer>
 
 <script>
-/* Adresse du script Google (compte stsylvain.easy@gmail.com) qui envoie chaque demande par e-mail.
-   Tant qu'elle est vide, le bouton ouvre l'application e-mail du téléphone avec la demande déjà écrite. */
+/* Même formulaire et même envoi que la page d'accueil : script Google du compte stsylvain.easy@gmail.com */
 var RELAIS = 'https://script.google.com/macros/s/AKfycbyz1be5nciSjHEKgPqdaza34PIMeYmiw0MLyGbchtEEr7By53QYUQwRdwc2cKRJDAgf/exec';
-var DEST = 'stsylvain.easy@gmail.com';
-var FORMATIONS = ['Permis B boîte auto', 'Permis B boîte manuelle', 'Conduite accompagnée', 'Code seul', 'Moto', 'Permis AM', 'Remorque', 'Post-permis', 'Autre'];
 var t0 = Date.now();
-
-var choix = document.getElementById('choix');
-choix.innerHTML = FORMATIONS.map(function (f, i) {
-  return '<input type="checkbox" id="fo' + i + '" value="' + f + '"><label for="fo' + i + '">' + f + '</label>';
-}).join('');
-
 function val(id) { return (document.getElementById(id).value || '').trim(); }
 function erreur(t) { document.getElementById('erreur').textContent = t; }
-
 document.getElementById('form').addEventListener('submit', function (e) {
   e.preventDefault(); erreur('');
-  var d = {
-    prenom: val('prenom'), nom: val('nom'), tel: val('tel'), email: val('email'), message: val('message'), site: val('site'),
-    formation: [].map.call(choix.querySelectorAll('input:checked'), function (x) { return x.value; }).join(', ')
-  };
+  var d = { prenom: val('prenom'), nom: '', tel: val('tel'), email: '', message: val('message'), formation: val('formation'), site: val('site') };
   if (!d.prenom) { erreur('Indique ton prénom.'); return; }
-  var telOk = d.tel.replace(/\D/g, '').length >= 10, mailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email);
-  if (!telOk && !mailOk) { erreur('Laisse un téléphone ou un e-mail pour qu’on puisse te répondre.'); return; }
-  if (d.email && !mailOk) { erreur('L’adresse e-mail ne semble pas complète.'); return; }
+  if (d.tel.replace(/\D/g, '').length < 10) { erreur('Laisse ton numéro de téléphone pour qu’on te rappelle.'); return; }
   if (!document.getElementById('accord').checked) { erreur('Coche la case d’accord pour qu’on puisse te recontacter.'); return; }
   if (d.site || Date.now() - t0 < 3000) { fini(d); return; }   // robot : on fait comme si c'était envoyé
-
-  if (!RELAIS) {                                               // pas encore de script : on passe par l'appli e-mail
-    var corps = 'Prénom : ' + d.prenom + '\nNom : ' + d.nom + '\nTéléphone : ' + d.tel + '\nE-mail : ' + d.email + '\nIntéressé par : ' + (d.formation || '-') + '\n\n' + d.message;
-    location.href = 'mailto:' + DEST + '?subject=' + encodeURIComponent('Demande de contact · ' + d.prenom + ' ' + d.nom) + '&body=' + encodeURIComponent(corps);
-    return;
-  }
   var b = document.getElementById('envoyer'); b.disabled = true; b.textContent = 'Envoi…';
   d.accord = 'oui'; delete d.site;
   fetch(RELAIS, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(d) })

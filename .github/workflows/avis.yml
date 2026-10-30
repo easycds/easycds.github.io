@@ -1,0 +1,44 @@
+name: Avis Codes Rousseau
+# Met à jour avis.json (note et nombre d'avis) chaque lundi matin pour l'écran easycds.fr/tv
+on:
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  avis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lire la page des avis
+        run: |
+          python3 - <<'PY'
+          import json, re, urllib.request, html, datetime, os
+          URL = "https://auto-ecole.codesrousseau.fr/annuaire-auto-ecoles/st-sylvain-d-anjou/easy-saint-sylvain/22049"
+          req = urllib.request.Request(URL, headers={"User-Agent": "Mozilla/5.0 (easycds.fr; mise a jour des avis)"})
+          page = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+          texte = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", page)))
+          note = re.search(r"(\d[.,]\d)\s*/\s*5", texte)
+          nb = re.search(r"\(\s*(\d+)\s*avis\s*\)", texte)
+          if not (note and nb):
+              raise SystemExit("Note ou nombre d'avis introuvable : la page a peut-être changé")
+          ancien = {}
+          if os.path.exists("avis.json"):
+              ancien = json.load(open("avis.json", encoding="utf-8"))
+          data = dict(ancien)
+          data.update({"note": note.group(1).replace(".", ","), "nb": int(nb.group(1)), "source": URL})
+          if data != ancien:
+              data["maj"] = datetime.date.today().isoformat()
+              json.dump(data, open("avis.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+          print(data)
+          PY
+      - name: Enregistrer si ça a changé
+        run: |
+          if [ -n "$(git status --porcelain avis.json)" ]; then
+            git config user.name "easy-bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add avis.json
+            git commit -m "Avis Codes Rousseau : mise à jour automatique"
+            git push
+          fi

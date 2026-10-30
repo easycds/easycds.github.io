@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ff3131">
+<title>Easy · Écran vitrine (bêta)</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="stylesheet" href="/fonts/polices.css">
+<style>
+/* Écran vitrine, en portrait (1080 × 1920). 1rem = 16 px sur cet écran. Lisible depuis le trottoir : très gros textes. */
+:root{--easy:#ff3131;--easy-fonce:#e01f1f;--rose:#ffe4e4;--text:#1c2430;--muted:#4a515c;--bg:#f4f3f1;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:calc(min(100vw / 67.5, 100vh / 120))}
+html,body{height:100%;background:#000}
+body{font-family:'DM Sans','Segoe UI',system-ui,sans-serif;color:var(--text);overflow:hidden;cursor:none;display:flex;align-items:center;justify-content:center}
+.ecran{position:relative;width:67.5rem;height:120rem;background:var(--bg);overflow:hidden}
+.f{font-family:'Fredoka','DM Sans',sans-serif;font-weight:600}
+
+.haut{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:4.4rem 5rem;transition:color .6s}
+.logo{display:flex;flex-direction:column;line-height:.8}
+.logo b{font-family:'Fredoka',sans-serif;font-weight:600;font-size:7rem;color:var(--easy);transition:color .6s}
+.logo span{font-family:'Fredoka',sans-serif;font-weight:500;font-size:2.2rem;margin-top:2rem;line-height:1}
+.beta{font-size:1.3rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.35}
+.ecran.sur-rouge{color:#fff}
+.ecran.sur-rouge .logo b{color:#fff}
+
+.diapo{position:absolute;inset:0;padding:20rem 5rem 15rem;display:flex;flex-direction:column;visibility:hidden}
+.diapo.on{visibility:visible}
+.rouge{background:var(--easy);color:#fff}
+.kick{font-size:2.2rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--easy);margin-bottom:1.8rem}
+.rouge .kick{color:#fff;opacity:.9}
+h2{font-family:'Fredoka',sans-serif;font-weight:600;font-size:9.4rem;line-height:.98;text-wrap:balance}
+h2 em{font-style:normal;color:var(--easy)}
+.rouge h2 em{color:#fff}
+.intro{font-size:3rem;line-height:1.3;color:var(--muted);margin-top:2.6rem}
+.rouge .intro{color:#fff;opacity:.95}
+
+/* cartes de prix */
+.prix{display:flex;flex-direction:column;gap:2.4rem;margin-top:auto}
+.p{display:flex;align-items:center;gap:2.6rem;background:var(--card);border-radius:3.4rem;box-shadow:0 1rem 3.4rem rgba(28,36,48,.1);padding:2.4rem 3.2rem}
+.p img{flex:none;width:20rem;height:13rem;object-fit:contain}
+.p .nom{flex:1;min-width:0}
+.p .nom b{display:block;font-family:'Fredoka',sans-serif;font-weight:600;font-size:4.2rem;line-height:1.05}
+.p .nom small{display:block;font-size:2.4rem;color:var(--muted);margin-top:.6rem}
+.p .px{flex:none;text-align:right}
+.p .px small{display:block;font-size:1.9rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.p .px b{display:block;font-family:'Fredoka',sans-serif;font-weight:600;font-size:7.6rem;line-height:1;color:var(--easy);white-space:nowrap}
+.ttc{font-size:2rem;color:var(--muted);margin-top:2.6rem;text-align:center}
+.rouge .ttc{color:#fff;opacity:.8}
+
+/* carte avec image : le prix passe sous le nom */
+.p.img{display:grid;grid-template-columns:auto 1fr;column-gap:2.8rem;row-gap:.6rem;align-items:center}
+.p.img img{grid-row:1/3;width:19rem;height:13rem}
+.p.img .nom{align-self:end}
+.p.img .px{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:1rem;align-self:start}
+.p.img .px small{display:inline}
+/* grosse photo */
+.photo{margin:auto -5rem 0;height:42rem;display:flex;align-items:center;justify-content:center}
+.photo img{width:100%;height:100%;object-fit:contain}
+
+/* barre post-permis */
+.gain{background:var(--card);border-radius:3.4rem;box-shadow:0 1rem 3.4rem rgba(28,36,48,.1);padding:4rem;display:flex;flex-direction:column;gap:3.6rem;margin-top:auto}
+.gain b.t{font-family:'Fredoka',sans-serif;font-weight:600;font-size:3.6rem;display:block;margin-bottom:1.6rem}
+.gain b.t em{font-style:normal;color:var(--easy)}
+.barre{position:relative;height:5rem;border-radius:1.6rem;background:var(--rose);overflow:hidden}
+.barre i{position:absolute;left:0;top:0;bottom:0;border-radius:1.6rem;background:var(--easy)}
+.barre s{position:absolute;top:0;bottom:0;right:0;display:flex;align-items:center;justify-content:center;color:var(--easy);font-size:2.4rem;font-weight:700;text-decoration:none;background:repeating-linear-gradient(135deg,transparent 0 1rem,rgba(255,49,49,.12) 1rem 2rem)}
+.pastille{display:inline-flex;align-items:baseline;gap:1.2rem;align-self:flex-start;background:var(--easy);color:#fff;border-radius:2.6rem;padding:1.4rem 3.2rem;font-size:3rem;font-weight:700;margin-top:3rem}
+.pastille b{font-family:'Fredoka',sans-serif;font-weight:600;font-size:7rem;line-height:1}
+
+/* contact */
+.qr{margin:auto auto 0;background:#fff;border-radius:4rem;padding:3.4rem;width:44rem;box-shadow:0 2rem 5rem rgba(0,0,0,.18)}
+.qr img{width:100%;display:block}
+.tel{font-family:'Fredoka',sans-serif;font-weight:600;font-size:7.4rem;text-align:center;margin-top:4rem;line-height:1}
+.centre{text-align:center}
+
+.pied{position:absolute;left:5rem;right:5rem;bottom:5rem;z-index:5;display:flex;justify-content:space-between;align-items:center;font-size:2.4rem;font-weight:700;transition:color .6s}
+.pied .num{font-family:'Fredoka',sans-serif;font-size:3.4rem}
+.temps{position:absolute;left:5rem;right:5rem;bottom:3rem;height:.6rem;border-radius:1rem;background:rgba(28,36,48,.1);z-index:5;overflow:hidden}
+.temps i{display:block;height:100%;width:0;background:var(--easy)}
+.ecran.sur-rouge .temps{background:rgba(255,255,255,.3)}
+.ecran.sur-rouge .temps i{background:#fff}
+
+/* animations */
+.a{opacity:0;transform:translateY(3rem)}
+.diapo.on .a{animation:monte .8s cubic-bezier(.2,.7,.2,1) forwards}
+.diapo.on .a1{animation-delay:.1s}.diapo.on .a2{animation-delay:.25s}.diapo.on .a3{animation-delay:.4s}.diapo.on .a4{animation-delay:.6s}.diapo.on .a5{animation-delay:.8s}.diapo.on .a6{animation-delay:1s}
+@keyframes monte{to{opacity:1;transform:none}}
+.diapo.on .barre i{animation:pousse 1.4s .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes pousse{from{width:0!important}}
+@media (prefers-reduced-motion:reduce){.a,.diapo.on .a{animation:none;opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="ecran" id="ecran">
+  <div class="haut"><div class="logo"><b>easy</b><span>auto-école · Saint-Sylvain</span></div><span class="beta">bêta</span></div>
+  <div id="diapos"></div>
+  <div class="pied"><span class="num">02 41 32 58 41</span><span>easycds.fr/contact</span></div>
+  <div class="temps"><i id="t"></i></div>
+</div>
+<script>
+var DUREE = 9;   // secondes par diapo
+var IMG = '/tv/img/';
+var DIAPOS = [
+  '<div class="diapo"><div class="a a1"><div class="kick">Permis B</div></div><h2 class="a a2">Ton permis <em>dès 1&nbsp;175&nbsp;€</em></h2>' +
+    '<p class="intro a a3">Code, conduite et accompagnement à l’examen : tout est dans le pack.</p>' +
+    '<div class="prix"><div class="p img a a4"><img src="' + IMG + 'e208.png" alt=""><div class="nom"><b>Boîte auto</b><small>13 h de conduite</small></div><div class="px"><small>dès</small><b>1 175 €</b></div></div>' +
+    '<div class="p img a a5"><img src="' + IMG + 'clio.jpg" alt=""><div class="nom"><b>Boîte manuelle</b><small>20 h de conduite</small></div><div class="px"><small>dès</small><b>1 555 €</b></div></div></div>' +
+    '<p class="ttc a a6">Prix TTC · conduite accompagnée et supervisée en option</p></div>',
+
+  '<div class="diapo"><div class="a a1"><div class="kick">Permis boîte auto</div></div><h2 class="a a2">Auto d’abord, <em>manuelle en 7&nbsp;h</em></h2>' +
+    '<p class="intro a a3">Plus de délai de 3 mois : la formation se fait juste après ton permis, sans repasser l’examen.</p>' +
+    '<div class="photo a a4"><img src="' + IMG + 'e208.png" alt=""></div></div>',
+
+  '<div class="diapo"><div class="a a1"><div class="kick">Deux-roues</div></div><h2 class="a a2">À toi la route <em>dès 14&nbsp;ans</em></h2>' +
+    '<div class="prix"><div class="p a a3"><div class="nom"><b>Permis AM</b><small>8 h · dès 14 ans</small></div><div class="px"><b>275 €</b></div></div>' +
+    '<div class="p img a a4"><img src="' + IMG + 'moto.png" alt=""><div class="nom"><b>Moto</b><small>A1 et A2 · 20 h</small></div><div class="px"><b>799 €</b></div></div>' +
+    '<div class="p a a5"><div class="nom"><b>Passerelle A2 → A</b><small>7 h de formation</small></div><div class="px"><b>295 €</b></div></div></div>' +
+    '<p class="ttc a a6">Prix TTC</p></div>',
+
+  '<div class="diapo"><div class="a a1"><div class="kick">Formation post-permis</div></div><h2 class="a a2">Tes 12 points, <em>plus vite</em></h2>' +
+    '<div class="pastille a a3"><span>dès</span><b>99 €</b></div>' +
+    '<div class="gain a a4"><div><b class="t">Permis classique : <em>2 ans</em> au lieu de 3</b><div class="barre"><i style="width:66.7%"></i><s style="left:66.7%">− 1 an</s></div></div>' +
+    '<div><b class="t">Conduite accompagnée : <em>18 mois</em> au lieu de 2 ans</b><div class="barre"><i style="width:75%"></i><s style="left:75%">− 6 mois</s></div></div></div>' +
+    '<p class="ttc a a5">7 h, entre 6 mois et 1 an après le permis · 99 € anciens élèves easy, 149 € sinon · prix TTC</p></div>',
+
+  '<div class="diapo"><div class="a a1"><div class="kick">Remorque</div></div><h2 class="a a2">Tracter <em>en sécurité</em></h2>' +
+    '<div class="prix"><div class="p img a a3"><img src="' + IMG + 'remorque.png" alt=""><div class="nom"><b>Permis BE</b><small>14 h · examen compris</small></div><div class="px"><b>829 €</b></div></div>' +
+    '<div class="p a a4"><div class="nom"><b>Formation B96</b><small>7 h · jusqu’à 4 250 kg</small></div><div class="px"><b>295 €</b></div></div></div>' +
+    '<p class="ttc a a5">Prix TTC</p></div>',
+
+  '<div class="diapo rouge centre" data-rouge><div class="a a1"><div class="kick">On est fermés ? Pas grave</div></div><h2 class="a a2">Scanne, <em>on te rappelle</em></h2>' +
+    '<div class="qr a a3"><img src="qr-contact.svg" alt="QR code vers le formulaire de contact"></div>' +
+    '<p class="tel a a4">02 41 32 58 41</p></div>'
+];
+
+var zone = document.getElementById('diapos'), ecran = document.getElementById('ecran'), barre = document.getElementById('t'), i = -1;
+zone.innerHTML = DIAPOS.join('');
+var els = [].slice.call(zone.querySelectorAll('.diapo'));
+function suivante() {
+  if (i >= 0) els[i].classList.remove('on');
+  i = (i + 1) % els.length;
+  var el = els[i];
+  void el.offsetWidth; el.classList.add('on');
+  ecran.classList.toggle('sur-rouge', el.hasAttribute('data-rouge'));
+  barre.style.transition = 'none'; barre.style.width = '0';
+  requestAnimationFrame(function () { requestAnimationFrame(function () { barre.style.transition = 'width ' + DUREE + 's linear'; barre.style.width = '100%'; }); });
+}
+suivante(); setInterval(suivante, DUREE * 1000);
+setInterval(function () { var n = new Date(); if (n.getHours() === 4 && n.getMinutes() < 1) location.reload(); }, 50000);
+document.addEventListener('click', function () { if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {}); });
+try { if (navigator.wakeLock) navigator.wakeLock.request('screen').catch(function () {}); } catch (e) {}
+</script>
+</body>
+</html>

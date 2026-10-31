@@ -478,7 +478,7 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
 <style>
 #nuit{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse 60% 55% at 50% 52%,#121722 0%,#0b0e14 55%,#07090d 100%);display:none;overflow:hidden;cursor:none;font-family:'DM Sans',sans-serif;color:#5d6673}
 #nuit.on{display:block}
-#nuit.noir{background:#000}#nuit.noir>*{display:none}
+#nuit.noir{background:#000;cursor:none}#nuit.noir>*{display:none}
 #nuit .n-etoile{position:absolute;width:3px;height:3px;border-radius:50%;background:#8b94a3;opacity:0;animation:nScint 7s ease-in-out infinite}
 @keyframes nScint{0%,100%{opacity:0}50%{opacity:.35}}
 #nuit .n-scene{position:absolute;left:50%;top:50%;width:32vw;transform:translate(-50%,-75%);animation:nDerive 180s ease-in-out infinite alternate}
@@ -514,7 +514,7 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
   function prochaine(d) { for (let k = 0; k < 8; k++) { const x = new Date(d); x.setDate(d.getDate() + k); x.setHours(13, 30, 0, 0); if ((x.getDay() === 1 || x.getDay() === 3) && x > d) return x; } }
   function maj() {
     const d = maintenant(), m = d.getHours() * 60 + d.getMinutes(), plage = JOUR[d.getDay()], nuit = !plage || m < plage[0] || m >= plage[1];
-    el.classList.toggle('on', nuit); el.classList.toggle('noir', m >= 60 && m < 360); if (!nuit) return; // de 1h à 6h : écran tout noir
+    el.classList.toggle('on', nuit); el.classList.toggle('noir', nuit); if (!nuit) return; // agence fermée : écran tout noir (la télé reste allumée sur la page)
     el.querySelector('.n-heure').textContent = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     const p = prochaine(d), dem = new Date(d); dem.setDate(d.getDate() + 1);
     const quand = p.toDateString() === d.toDateString() ? "aujourd'hui" : p.toDateString() === dem.toDateString() ? 'demain' : JOURS[p.getDay()];

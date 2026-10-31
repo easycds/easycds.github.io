@@ -504,14 +504,16 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
 </div>
 <script>
 (function () {
-  const NUIT_DEBUT = 18 * 60 + 30, NUIT_FIN = 8 * 60;          // de 18h30 à 8h00 (et tout le week-end) ; noir complet de 1h à 6h
+  // Écran allumé (mode jour) selon les horaires de l'agence ; mode nuit le reste du temps ; noir complet de 1h à 6h.
+  // [début, fin] en minutes depuis minuit, par jour (0 = dimanche … 6 = samedi)
+  const JOUR = { 1: [480, 1110], 2: [480, 1110], 3: [480, 1155], 4: [480, 1110], 5: [480, 1110], 6: [480, 780] };   // lun-ven 8h-18h30 (mercredi jusqu'à 19h15 pour le cours de code), samedi 8h-13h, dimanche fermé
   const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   const el = document.getElementById('nuit'), ciel = el.querySelector('.n-ciel');
   for (let i = 0; i < 38; i++) { const e = document.createElement('i'); e.className = 'n-etoile'; e.style.left = Math.random() * 100 + '%'; e.style.top = Math.random() * 62 + '%'; e.style.animationDelay = (-Math.random() * 7) + 's'; e.style.animationDuration = (5 + Math.random() * 6) + 's'; ciel.appendChild(e); }
   function maintenant() { const f = (location.hash.match(/nuit=(\d\d)(\d\d)/) || []), j = (location.hash.match(/jour=(\d)/) || []); const d = new Date(); if (f[1]) d.setHours(+f[1], +f[2], 0, 0); if (j[1]) d.setDate(d.getDate() + ((+j[1] - d.getDay() + 7) % 7)); return d; }
   function prochaine(d) { for (let k = 0; k < 8; k++) { const x = new Date(d); x.setDate(d.getDate() + k); x.setHours(13, 30, 0, 0); if ((x.getDay() === 1 || x.getDay() === 3) && x > d) return x; } }
   function maj() {
-    const d = maintenant(), m = d.getHours() * 60 + d.getMinutes(), we = d.getDay() === 0 || d.getDay() === 6, nuit = we || m >= NUIT_DEBUT || m < NUIT_FIN; // le week-end : mode nuit toute la journée
+    const d = maintenant(), m = d.getHours() * 60 + d.getMinutes(), plage = JOUR[d.getDay()], nuit = !plage || m < plage[0] || m >= plage[1];
     el.classList.toggle('on', nuit); el.classList.toggle('noir', m >= 60 && m < 360); if (!nuit) return; // de 1h à 6h : écran tout noir
     el.querySelector('.n-heure').textContent = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     const p = prochaine(d), dem = new Date(d); dem.setDate(d.getDate() + 1);

@@ -506,6 +506,7 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
 (function () {
   // Écran allumé (mode jour) selon les horaires de l'agence ; mode nuit le reste du temps ; noir complet de 1h à 6h.
   // [début, fin] en minutes depuis minuit, par jour (0 = dimanche … 6 = samedi)
+  const EN_PLUS = [['2026-10-31', 13 * 60 + 30, 13 * 60 + 32]];   // allumages ponctuels [date, début, fin] (test du 31/10 : 13h30-13h32)
   const JOUR = { 1: [480, 1110], 2: [480, 1110], 3: [480, 1155], 4: [480, 1110], 5: [480, 1110], 6: [480, 780] };   // lun-ven 8h-18h30 (mercredi jusqu'à 19h15 pour le cours de code), samedi 8h-13h, dimanche fermé
   const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   const el = document.getElementById('nuit'), ciel = el.querySelector('.n-ciel');
@@ -513,7 +514,7 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
   function maintenant() { const f = (location.hash.match(/nuit=(\d\d)(\d\d)/) || []), j = (location.hash.match(/jour=(\d)/) || []); const d = new Date(); if (f[1]) d.setHours(+f[1], +f[2], 0, 0); if (j[1]) d.setDate(d.getDate() + ((+j[1] - d.getDay() + 7) % 7)); return d; }
   function prochaine(d) { for (let k = 0; k < 8; k++) { const x = new Date(d); x.setDate(d.getDate() + k); x.setHours(13, 30, 0, 0); if ((x.getDay() === 1 || x.getDay() === 3) && x > d) return x; } }
   function maj() {
-    const d = maintenant(), m = d.getHours() * 60 + d.getMinutes(), plage = JOUR[d.getDay()], nuit = !plage || m < plage[0] || m >= plage[1];
+    const d = maintenant(), m = d.getHours() * 60 + d.getMinutes(), plage = JOUR[d.getDay()], jourIso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'), extra = EN_PLUS.some(function (x) { return x[0] === jourIso && m >= x[1] && m < x[2]; }), nuit = !extra && (!plage || m < plage[0] || m >= plage[1]);
     el.classList.toggle('on', nuit); el.classList.toggle('noir', nuit); if (!nuit) return; // agence fermée : écran tout noir (la télé reste allumée sur la page)
     el.querySelector('.n-heure').textContent = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     const p = prochaine(d), dem = new Date(d); dem.setDate(d.getDate() + 1);

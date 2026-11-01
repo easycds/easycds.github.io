@@ -1,0 +1,67 @@
+name: Avis Codes Rousseau
+# Chaque lundi matin : met à jour avis.json (note et nombre d'avis) pour la télé et le site,
+# la description Google du site, et prévient la direction (issue GitHub = e-mail) quand ça change.
+on:
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: write
+jobs:
+  avis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Lire la page des avis
+        run: |
+          python3 - <<'PY'
+          import json, re, urllib.request, html, datetime, os
+          URL = "https://auto-ecole.codesrousseau.fr/annuaire-auto-ecoles/st-sylvain-d-anjou/easy-saint-sylvain/22049"
+          req = urllib.request.Request(URL, headers={"User-Agent": "Mozilla/5.0 (easycds.fr; mise a jour des avis)"})
+          page = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+          texte = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", page)))
+          note = re.search(r"(\d[.,]\d)\s*/\s*5", texte)
+          nb = re.search(r"\(\s*(\d+)\s*avis\s*\)", texte)
+          if not (note and nb):
+              raise SystemExit("Note ou nombre d'avis introuvable : la page a peut-être changé")
+          ancien = {}
+          if os.path.exists("avis.json"):
+              ancien = json.load(open("avis.json", encoding="utf-8"))
+          data = dict(ancien)
+          data.update({"note": note.group(1).replace(".", ","), "nb": int(nb.group(1)), "source": URL})
+          if data != ancien:
+              data["maj"] = datetime.date.today().isoformat()
+              json.dump(data, open("avis.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+          print(data)
+          PY
+      - name: Mettre à jour la page d'accueil (description Google)
+        run: |
+          python3 - <<'PY'
+          import json, re
+          v = json.load(open("avis.json", encoding="utf-8"))
+          h = open("index.html", encoding="utf-8").read()
+          h2 = re.sub(r"\d[,.]\d/5 sur \d+ avis vérifiés", f"{v['note']}/5 sur {v['nb']} avis vérifiés", h)
+          h2 = re.sub(r'"ratingValue":"[\d.]+","reviewCount":"\d+"', f'"ratingValue":"{v["note"].replace(",", ".")}","reviewCount":"{v["nb"]}"', h2)
+          if h2 != h:
+              open("index.html", "w", encoding="utf-8").write(h2)
+          PY
+      - name: Enregistrer et prévenir si ça a changé
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -n "$(git status --porcelain avis.json index.html)" ]; then
+            AVANT=$(git show HEAD:avis.json | python3 -c "import json,sys; v=json.load(sys.stdin); print(f\"{v['note']}/5 sur {v['nb']} avis\")")
+            APRES=$(python3 -c "import json; v=json.load(open('avis.json')); print(f\"{v['note']}/5 sur {v['nb']} avis\")")
+            git config user.name "easy-bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add avis.json index.html
+            git commit -m "Avis Codes Rousseau : mise à jour automatique"
+            git push
+            gh issue create --title "Avis Codes Rousseau : $APRES" --body "La note des avis a changé : **$AVANT** → **$APRES**.
+
+          La télé, le site et la description Google sont déjà à jour, rien à faire.
+          Lire les nouveaux avis : https://auto-ecole.codesrousseau.fr/annuaire-auto-ecoles/st-sylvain-d-anjou/easy-saint-sylvain/22049
+
+          (Vous pouvez fermer ce message.)"
+          fi

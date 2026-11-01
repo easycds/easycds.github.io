@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff3131">
+<title>Contact · Easy Saint-Sylvain</title>
+<meta name="description" content="Une question sur le permis ? Laisse-nous tes coordonnées, l'équipe Easy de Saint-Sylvain te rappelle.">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="stylesheet" href="/fonts/polices.css">
+<style>:root{--easy:#ff3131;--easy-fonce:#e01f1f;--rose:#ffe4e4;--texte:#1c2430;--gris:#4a515c;--fond:#f4f3f1;--carte:#fff;--bord:#dcd9d5;--ok:#1e7f45;--ok-clair:#e6f6ec}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'DM Sans','Segoe UI',system-ui,sans-serif;background:var(--fond);color:var(--texte);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+a{color:#d11f1f}
+:focus-visible{outline:3px solid #1c2430;outline-offset:2px}
+.barre{background:#fff;border-bottom:1px solid #e8e6e3}
+.barre div{max-width:880px;margin:0 auto;padding:14px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.logo{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--texte)}
+.logo b{font-family:'Fredoka',sans-serif;font-weight:600;font-size:34px;line-height:1;color:var(--easy)}
+.logo span{font-weight:700;font-size:15px}
+.retour{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:22px;background:var(--fond);color:var(--texte);font-weight:700;font-size:15px;text-decoration:none}
+.intro{max-width:600px;margin:0 auto;padding:40px 20px 18px;width:100%}
+.intro .kick{display:inline-flex;align-items:center;gap:8px;color:#d11f1f;font-weight:700;font-size:16px}
+.intro h1{font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(32px,7vw,44px);line-height:1.1;margin-top:10px;text-wrap:balance}
+.intro p{margin-top:8px;font-size:17px;color:var(--gris)}
+main{flex:1;max-width:600px;margin:0 auto;padding:0 20px 48px;width:100%}
+.carte{background:var(--carte);border-radius:28px;padding:28px}
+form{display:flex;flex-direction:column;gap:14px}
+.deux{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700}
+label small{font-weight:500;color:var(--gris);font-size:14px}
+input,select,textarea{font:inherit;font-weight:400;color:inherit;width:100%;height:50px;border-radius:14px;border:1.5px solid var(--bord);background:#fff;padding:0 14px;font-size:16px}
+textarea{height:auto;min-height:96px;padding:12px 14px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--easy-fonce);box-shadow:0 0 0 4px rgba(224,31,31,.12)}
+.choix{display:flex;flex-wrap:wrap;gap:8px;position:relative}
+.choix input{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
+.choix label{flex-direction:row;align-items:center;min-height:44px;font-weight:600;font-size:14.5px;padding:0 14px;border-radius:22px;background:var(--fond);cursor:pointer;border:1.5px solid transparent}
+.choix input:checked+label{background:var(--rose);border-color:var(--easy-fonce);color:#a81616}
+.choix input:focus-visible+label{outline:3px solid #1c2430;outline-offset:2px}
+fieldset{border:0}
+legend{font-size:14px;font-weight:700;margin-bottom:8px}
+.accord{flex-direction:row;align-items:flex-start;gap:10px;font-weight:500;font-size:13px;color:var(--gris)}
+.accord input{width:22px;height:22px;flex:none;margin-top:1px;accent-color:var(--easy-fonce)}
+.piege{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+button{font:inherit;height:54px;border:0;border-radius:27px;background:var(--easy-fonce);color:#fff;font-weight:700;font-size:17px;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.erreur{color:#c41a1a;font-size:14px;font-weight:700;min-height:1em}
+.merci{display:none;padding:8px 0}
+.merci .rond{width:64px;height:64px;border-radius:50%;background:var(--ok-clair);color:var(--ok);display:grid;place-items:center;margin-bottom:14px;font-size:32px;font-weight:800}
+.merci h2{font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(28px,6vw,34px);line-height:1.1}
+.merci p{color:var(--gris);margin-top:6px}
+.envoye form{display:none}.envoye .merci{display:block}
+.direct{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.direct a{display:flex;flex-direction:column;gap:2px;background:var(--carte);border-radius:22px;padding:16px 18px;text-decoration:none;color:inherit}
+.direct a small{font-size:13px;color:var(--gris);font-weight:600}
+.direct a b{font-size:16px;color:#d11f1f}
+.direct a:last-child b{font-size:13.5px;overflow-wrap:anywhere}
+::placeholder{color:#8a9099;font-weight:400}
+.adresse{margin-top:16px;text-align:center;color:var(--gris);font-size:14.5px}
+.rgpd{margin-top:18px;font-size:12.5px;color:var(--gris);text-align:center}
+.rgpd a{color:inherit}
+footer{background:#1c2430;color:#c9ced6}
+footer div{max-width:880px;margin:0 auto;padding:22px 20px;font-size:14px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;align-items:center}
+footer b{font-family:'Fredoka',sans-serif;font-weight:600;font-size:22px;color:var(--easy)}
+footer a{color:#fff;display:inline-flex;align-items:center;min-height:44px}
+@media (max-width:420px){.deux,.direct{grid-template-columns:1fr}}
+dialog.appel{border:0;border-radius:24px;padding:24px;max-width:340px;width:calc(100% - 32px);color:#1c2430;text-align:center;box-shadow:0 20px 60px rgba(16,24,40,.25)}
+dialog.appel::backdrop{background:rgba(28,36,48,.55)}
+dialog.appel h2{margin:6px 0 6px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:22px;line-height:1.2}
+dialog.appel p{margin:0 0 18px;color:#4a515c;font-size:15px}
+dialog.appel .num{display:block;margin:0 0 18px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:26px}
+dialog.appel .oui{display:flex;align-items:center;justify-content:center;height:52px;border-radius:26px;background:#e01f1f;color:#fff;font-weight:700;font-size:16px;text-decoration:none}
+dialog.appel .non{margin-top:8px;width:100%;height:46px;border:0;border-radius:23px;background:#f4f3f1;color:#1c2430;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.reseaux{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:16px}
+.reseaux a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:22px;background:#fff;color:#1c2430;font-weight:700;font-size:15px;text-decoration:none;box-shadow:0 1px 2px rgba(16,24,40,.06)}
+</style>
+</head>
+<body>
+<header class="barre"><div>
+  <a class="logo" href="/"><b>easy</b><span>Saint-Sylvain-d'Anjou</span></a>
+  <a class="retour" href="/">Voir le site</a>
+</div></header>
+<div class="intro">
+  <span class="kick"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>L'agence Easy de Saint-Sylvain-d'Anjou</span>
+  <h1>Une question sur ton permis ?</h1>
+  <p>Laisse tes coordonnées, on te rappelle rapidement.</p>
+</div>
+<main>
+  <div class="carte" id="carte">
+    <form id="form" novalidate>
+      <div class="deux">
+        <label>Prénom<input id="prenom" autocomplete="given-name" maxlength="40"></label>
+        <label>Téléphone<input id="tel" type="tel" autocomplete="tel" inputmode="tel" maxlength="20"></label>
+      </div>
+      <label>Ce qui t'intéresse
+        <select id="formation">
+          <option>Permis B</option><option>Boîte automatique</option><option>Moto / scooter</option><option>Remorque</option><option>Stage code</option><option>Après le permis</option><option>Autre</option>
+        </select>
+      </label>
+      <label><span>Ton message <small>(facultatif)</small></span><textarea id="message" maxlength="1000"></textarea></label>
+      <div class="piege" aria-hidden="true"><label>Site web<input name="site" id="site" tabindex="-1" autocomplete="off"></label></div>
+      <label class="accord"><input type="checkbox" id="accord">J'accepte qu'Easy Saint-Sylvain utilise ces informations pour me recontacter au sujet de ma formation.</label>
+      <div class="erreur" id="erreur" role="alert"></div>
+      <button type="submit" id="envoyer">Envoyer ma demande</button>
+    </form>
+    <div class="merci" role="status">
+      <div class="rond">✓</div>
+      <h2>C’est envoyé !</h2>
+      <p>Merci <span id="qui"></span>, on te rappelle très vite.</p>
+    </div>
+  </div>
+
+  <div class="direct">
+    <a href="tel:+33241325841"><small>Appeler</small><b>02 41 32 58 41</b></a>
+    <a href="mailto:stsylvain.easy@gmail.com"><small>Écrire</small><b>stsylvain.easy@gmail.com</b></a>
+  </div>
+  <p class="adresse">3 Passage Sainte-Anne · 49480 Saint-Sylvain-d’Anjou</p>
+  <div class="reseaux"><a href="https://www.instagram.com/easy.stsylvain/" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle></svg>Instagram</a><a href="https://www.facebook.com/profile.php?id=61573413694808" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>Facebook</a></div>
+  <p class="rgpd">Tes données servent uniquement à te recontacter au sujet de ta formation. Pour les consulter ou les faire effacer : stsylvain.easy@gmail.com · <a href="/mentions-legales.html">Mentions légales et données</a></p>
+</main>
+<footer><div><span><b>easy</b>&nbsp; Saint-Sylvain-d'Anjou · agence du réseau <a href="https://easy-auto-ecole.com" target="_blank" rel="noopener" style="display:inline;min-height:0">Easy auto-école</a></span><a href="/mentions-legales.html">Mentions légales</a></div></footer>
+
+<script>
+/* Même formulaire et même envoi que la page d'accueil : script Google du compte stsylvain.easy@gmail.com */
+var RELAIS = 'https://script.google.com/macros/s/AKfycbyz1be5nciSjHEKgPqdaza34PIMeYmiw0MLyGbchtEEr7By53QYUQwRdwc2cKRJDAgf/exec';
+var t0 = Date.now();
+function val(id) { return (document.getElementById(id).value || '').trim(); }
+function erreur(t) { document.getElementById('erreur').textContent = t; }
+document.getElementById('form').addEventListener('submit', function (e) {
+  e.preventDefault(); erreur('');
+  var d = { prenom: val('prenom'), nom: '', tel: val('tel'), email: '', message: val('message'), formation: val('formation'), site: val('site') };
+  if (!d.prenom) { erreur('Indique ton prénom.'); return; }
+  if (d.tel.replace(/\D/g, '').length < 10) { erreur('Laisse ton numéro de téléphone pour qu’on te rappelle.'); return; }
+  if (!document.getElementById('accord').checked) { erreur('Coche la case d’accord pour qu’on puisse te recontacter.'); return; }
+  if (d.site || Date.now() - t0 < 3000) { fini(d); return; }   // robot : on fait comme si c'était envoyé
+  var b = document.getElementById('envoyer'); b.disabled = true; b.textContent = 'Envoi…';
+  d.accord = 'oui'; delete d.site;
+  fetch(RELAIS, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(d) })
+    .then(function () { fini(d); })
+    .catch(function () { b.disabled = false; b.textContent = 'Envoyer ma demande'; erreur('L’envoi n’a pas marché (connexion ?). Réessaie, ou appelle-nous au 02 41 32 58 41.'); });
+});
+function fini(d) {
+  document.getElementById('qui').textContent = d.prenom;
+  document.getElementById('carte').classList.add('envoye');
+  document.getElementById('carte').scrollIntoView({ block: 'start', behavior: 'smooth' });
+}
+</script>
+<dialog class="appel" id="appel" aria-labelledby="appel-t">
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d11f1f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+  <h2 id="appel-t">Appeler l'agence Easy de Saint-Sylvain-d'Anjou ?</h2>
+  <span class="num">02 41 32 58 41</span>
+  <p>Passage Sainte-Anne, Saint-Sylvain-d'Anjou</p>
+  <a class="oui" href="tel:+33241325841">Appeler</a>
+  <button class="non" type="button" id="appel-non">Annuler</button>
+</dialog>
+<script>
+(function () {
+  var d = document.getElementById('appel');
+  if (!d || typeof d.showModal !== 'function') return;
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="tel:"]');
+    if (!a || d.contains(a)) return;
+    e.preventDefault(); d.showModal();
+  });
+  document.getElementById('appel-non').onclick = function () { d.close(); };
+  d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
+  d.querySelector('.oui').addEventListener('click', function () { setTimeout(function () { d.close(); }, 300); });
+})();
+</script>
+</body>
+</html>

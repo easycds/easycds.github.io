@@ -5,6 +5,8 @@
    direction). Espace moniteurs : elle est gardée 7 jours sur l'appareil (localStorage) pour ouvrir les pages hors ligne.
    Espace direction : seulement le temps de l'onglet (sessionStorage). */
 (function () {
+  // Pas d'affichage de la connexion à l'intérieur d'un autre site (hameçonnage par cadre)
+  if (window.top !== window.self) { try { window.top.location.replace(window.location.href); } catch (e) { document.documentElement.innerHTML = ''; } return; }
   var SCRIPT = document.currentScript, ESPACE = (SCRIPT && SCRIPT.getAttribute('data-espace')) === 'direction' ? 'direction' : 'moniteurs';
   var NOM = ESPACE === 'direction' ? 'Espace direction' : 'Espace moniteurs';
   var LONG = ESPACE === 'moniteurs';   // moniteurs : clé gardée 7 jours sur l'appareil (pages utilisables hors ligne) ; direction : le temps de l'onglet

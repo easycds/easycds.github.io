@@ -247,7 +247,7 @@
     try { k = await lireCle(u, 'cle_' + ESPACE); }
     catch (x) {
       if (x.code !== 'refus') throw x;
-      if (!u.emailVerified && ESPACE === 'moniteurs') { try { await u.sendEmailVerification(); } catch (e) {} verification(u); return; }
+      if (!u.emailVerified) { try { await u.sendEmailVerification(); } catch (e) {} verification(u); return; }
       refus(u); return;
     }
     if (!k) { installation(u); return; }

@@ -772,7 +772,7 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
     return null;
   }
   function etat(d, m, H) {
-    if (location.hash.indexOf('voir=') >= 0) return 'jour';   // aperçu d'une diapo depuis l'admin
+    if (location.hash.indexOf('voir=') >= 0 || /[?&]admin=1/.test(location.search)) return 'jour';   // aperçu dans l'admin : toujours les diapos, même quand la télé dort
     if (typeof AG !== 'undefined' && TEST_JOUR[AG] && new Date() < new Date(TEST_JOUR[AG])) return 'jour';
     const plage = H[d.getDay()], jourIso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     if (EN_PLUS.some(function (x) { return x[0] === jourIso && m >= x[1] && m < x[2]; }) || (plage && m >= plage[0] && m < plage[1])) return 'jour';

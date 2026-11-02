@@ -165,7 +165,7 @@ h2 em{font-style:normal;color:var(--easy)}
 .meteo-ico svg{width:20rem;height:20rem}
 .meteo-ico b{font-size:6rem;line-height:1;color:var(--text)}
 .source-meteo{font-size:1.1rem;opacity:.5}
-.mention-legale{font-size:1.15rem;line-height:1.4;opacity:.6;margin-top:2.4rem;max-width:46rem}
+.diapo p.mention-legale{font-size:1.3rem;line-height:1.4;opacity:.6;margin-top:2.4rem;max-width:46rem}
 .annonce h2{font-size:6.6rem;max-width:96rem;margin:0 auto}
 .annonce p{color:#fff!important;font-size:2.6rem;max-width:80rem;margin:0 auto}
 .annonce .kick{color:#fff;opacity:.85}
@@ -363,7 +363,7 @@ function rendu(d){
       var ET=[['1','Inscription','On monte ton dossier à l’agence et on demande ton numéro de candidat.'],['2','Évaluation de départ','Une séance avec un moniteur pour estimer ton nombre d’heures.'],['3','Formation au code','En salle à l’agence, en ligne ou en stage, à ton rythme.'],['4','Code de la route','Quand tu es prêt, tu t’inscris toi-même dans un centre d’examen agréé.','exam'],['5','Formation pratique','Tes leçons de conduite, pas à pas jusqu’à l’autonomie.'],['a','Conduite accompagnée','Dès 15 ans : un an et 3 000 km avec un proche, et 2 rendez-vous à l’agence.','aac'],['6','Pratique du permis','Le grand jour : ton moniteur t’accompagne à l’examen.','exam']];
       var POS={1:[37.7,30.1],2:[37.7,42.8],3:[41.8,54.9],4:[65.3,57.6],5:[74.4,66.9],a:[44,74.5],6:[38.2,88.3],r1:[15.8,70.1],r2:[14,80.5]};
       var PLUS='<svg viewBox="0 0 16 16"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>';
-      var Dd=(typeof DONNEES!=='undefined'&&DONNEES&&DONNEES.durees)||{}, tot=(+Dd.etapes>=3&&+Dd.etapes<=120)?+Dd.etapes:25;
+      var Dd=(typeof DONNEES!=='undefined'&&DONNEES&&DONNEES.durees)||{}, tot=(+Dd.etapes>=3&&+Dd.etapes<=120)?+Dd.etapes:42;   // 42 s : environ 5,5 s par étape
       var deb=1.2, pas=Math.max(1.5,(tot-deb-1.5)/ET.length);
       function t(n){ return (deb+pas*n).toFixed(2)+'s'; }
       var halos='', bul='', pts='';

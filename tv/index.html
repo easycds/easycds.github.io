@@ -460,11 +460,11 @@ function poserTheme(){                     // décor de saison par-dessus l'écr
 }
 function promosActives(){
   var auj=ymd(new Date());
-  return ((DONNEES&&DONNEES.promos)||[]).filter(function(x){ return x.titre && x.ou!=='site' && (!x.du||x.du<=auj) && (!x.au||x.au>=auj); });
+  return ((DONNEES&&DONNEES.promos)||[]).filter(function(x){ return x.titre && x.ou!=='site' && x.ou!=='vitrine' && (!x.du||x.du<=auj) && (!x.au||x.au>=auj); });
 }
 function annoncesActives(){
   var auj=ymd(new Date());
-  return ((DONNEES&&DONNEES.annonces)||[]).filter(function(x){ return x.titre && x.ou!=='site' && (!x.du||x.du<=auj) && (!x.au||x.au>=auj); });
+  return ((DONNEES&&DONNEES.annonces)||[]).filter(function(x){ return x.titre && x.ou!=='site' && x.ou!=='vitrine' && (!x.du||x.du<=auj) && (!x.au||x.au>=auj); });
 }
 function recusRecents(){
   var lim=ymd(new Date(Date.now()-30*864e5));

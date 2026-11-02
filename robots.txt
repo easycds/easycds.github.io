@@ -1,5 +1,4 @@
 User-agent: *
-Allow: /$
 Allow: /contact/
 Allow: /mentions-legales.html
 Allow: /tv/img/

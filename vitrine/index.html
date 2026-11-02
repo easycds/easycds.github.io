@@ -91,6 +91,12 @@ h2 em{font-style:normal;color:var(--easy)}
 .diapo.on .barre i{animation:pousse 1.4s .9s cubic-bezier(.2,.7,.2,1) both}
 @keyframes pousse{from{width:0!important}}
 @media (prefers-reduced-motion:reduce){.a,.diapo.on .a{animation:none;opacity:1;transform:none}}
+/* annonces et promos (réglées dans l'espace direction) */
+.pastille.promo{background:#fff;color:var(--easy);margin-top:4rem}
+.pastille.promo b{font-size:11rem}
+.rouge .pastille.promo{box-shadow:0 1.6rem 4rem rgba(0,0,0,.15)}
+.diapo.annonce h2{font-size:8.4rem}
+.diapo.annonce .intro{font-size:3.6rem}
 </style>
 </head>
 <body>
@@ -101,54 +107,108 @@ h2 em{font-style:normal;color:var(--easy)}
   <div class="temps"><i id="t"></i></div>
 </div>
 <script>
-var DUREE = 9;   // secondes par diapo
+/* Écran vitrine : prix, diapos affichées, durées, annonces et promos réglables dans
+   Espace direction › Écran vitrine (document public ecran_tv/config, champ « vitrine »).
+   Sans réseau ou sans réglage, l'écran garde les valeurs par défaut ci-dessous. */
+var DUREE = 9;   // secondes par diapo, par défaut
 var IMG = '/tv/img/';
+var URL_CONFIG = 'https://firestore.googleapis.com/v1/projects/easy-cds/databases/(default)/documents/ecran_tv/config?key=AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E';
+var PRIX_DEF = { b_auto: '1 175', b_manu: '1 555', am: '275', moto: '799', passerelle: '295', post: '99', post_autre: '149', be: '829', b96: '295' };
+var CONFIG = {};
+
+function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+// « 1175 » ou « 1 175 » → « 1&nbsp;175 € » ; un texte libre (« -15 % ») reste tel quel
+function euros(v) {
+  v = String(v == null ? '' : v).trim();
+  if (/^\d[\d\s]*([.,]\d+)?$/.test(v)) { var n = v.replace(/\s/g, '').split(/[.,]/); v = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') + (n[1] ? ',' + n[1] : '') + '\u00a0€'; }
+  return esc(v).replace(/ (€|%)/g, '\u00a0$1');
+}
+function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function jourMois(s) { return new Date(s + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }); }
+function actifs(l) {
+  var auj = ymd(new Date());
+  return (l || []).filter(function (x) { return x && x.titre && x.ou !== 'tv' && (!x.du || x.du <= auj) && (!x.au || x.au >= auj); });
+}
+
 var DIAPOS = [
-  '<div class="diapo"><div class="a a1"><div class="kick">Permis B</div></div><h2 class="a a2">Ton permis <em>dès 1&nbsp;175&nbsp;€</em></h2>' +
+  { k: 'promos' },
+  { k: 'b', html: function (p) { return '<div class="diapo"><div class="a a1"><div class="kick">Permis B</div></div><h2 class="a a2">Ton permis <em>dès ' + euros(p.b_auto) + '</em></h2>' +
     '<p class="intro a a3">Code, conduite et accompagnement à l’examen : tout est dans le pack.</p>' +
-    '<div class="prix"><div class="p img a a4"><img src="' + IMG + 'e208.webp" alt=""><div class="nom"><b>Boîte auto</b><small>13 h de conduite</small></div><div class="px"><small>dès</small><b>1 175 €</b></div></div>' +
-    '<div class="p img a a5"><img src="' + IMG + 'clio.jpg" alt=""><div class="nom"><b>Boîte manuelle</b><small>20 h de conduite</small></div><div class="px"><small>dès</small><b>1 555 €</b></div></div></div>' +
-    '<p class="ttc a a6">Prix TTC · conduite accompagnée et supervisée en option</p></div>',
-
-  '<div class="diapo"><div class="a a1"><div class="kick">Permis boîte auto</div></div><h2 class="a a2">Auto d’abord, <em>manuelle en 7&nbsp;h</em></h2>' +
+    '<div class="prix"><div class="p img a a4"><img src="' + IMG + 'e208.webp" alt=""><div class="nom"><b>Boîte auto</b><small>13 h de conduite</small></div><div class="px"><small>dès</small><b>' + euros(p.b_auto) + '</b></div></div>' +
+    '<div class="p img a a5"><img src="' + IMG + 'clio.jpg" alt=""><div class="nom"><b>Boîte manuelle</b><small>20 h de conduite</small></div><div class="px"><small>dès</small><b>' + euros(p.b_manu) + '</b></div></div></div>' +
+    '<p class="ttc a a6">Prix TTC · conduite accompagnée et supervisée en option</p></div>'; } },
+  { k: 'auto', html: function () { return '<div class="diapo"><div class="a a1"><div class="kick">Permis boîte auto</div></div><h2 class="a a2">Auto d’abord, <em>manuelle en 7&nbsp;h</em></h2>' +
     '<p class="intro a a3">Plus de délai de 3 mois : la formation se fait juste après ton permis, sans repasser l’examen.</p>' +
-    '<div class="photo a a4"><img src="' + IMG + 'e208.webp" alt=""></div></div>',
-
-  '<div class="diapo"><div class="a a1"><div class="kick">Deux-roues</div></div><h2 class="a a2">À toi la route <em>dès 14&nbsp;ans</em></h2>' +
-    '<div class="prix"><div class="p a a3"><div class="nom"><b>Permis AM</b><small>8 h · dès 14 ans</small></div><div class="px"><b>275 €</b></div></div>' +
-    '<div class="p img a a4"><img src="' + IMG + 'moto.webp" alt=""><div class="nom"><b>Moto</b><small>A1 et A2 · 20 h</small></div><div class="px"><b>799 €</b></div></div>' +
-    '<div class="p a a5"><div class="nom"><b>Passerelle A2 → A</b><small>7 h de formation</small></div><div class="px"><b>295 €</b></div></div></div>' +
-    '<p class="ttc a a6">Prix TTC</p></div>',
-
-  '<div class="diapo"><div class="a a1"><div class="kick">Formation post-permis</div></div><h2 class="a a2">Tes 12 points, <em>plus vite</em></h2>' +
-    '<div class="pastille a a3"><span>dès</span><b>99 €</b></div>' +
+    '<div class="photo a a4"><img src="' + IMG + 'e208.webp" alt=""></div></div>'; } },
+  { k: 'annonces' },
+  { k: 'moto', html: function (p) { return '<div class="diapo"><div class="a a1"><div class="kick">Deux-roues</div></div><h2 class="a a2">À toi la route <em>dès 14&nbsp;ans</em></h2>' +
+    '<div class="prix"><div class="p a a3"><div class="nom"><b>Permis AM</b><small>8 h · dès 14 ans</small></div><div class="px"><b>' + euros(p.am) + '</b></div></div>' +
+    '<div class="p img a a4"><img src="' + IMG + 'moto.webp" alt=""><div class="nom"><b>Moto</b><small>A1 et A2 · 20 h</small></div><div class="px"><b>' + euros(p.moto) + '</b></div></div>' +
+    '<div class="p a a5"><div class="nom"><b>Passerelle A2 → A</b><small>7 h de formation</small></div><div class="px"><b>' + euros(p.passerelle) + '</b></div></div></div>' +
+    '<p class="ttc a a6">Prix TTC</p></div>'; } },
+  { k: 'post', html: function (p) { return '<div class="diapo"><div class="a a1"><div class="kick">Formation post-permis</div></div><h2 class="a a2">Tes 12 points, <em>plus vite</em></h2>' +
+    '<div class="pastille a a3"><span>dès</span><b>' + euros(p.post) + '</b></div>' +
     '<div class="gain a a4"><div><b class="t">Permis classique : <em>2 ans</em> au lieu de 3</b><div class="barre"><i style="width:66.7%"></i><s style="left:66.7%">− 1 an</s></div></div>' +
     '<div><b class="t">Conduite accompagnée : <em>18 mois</em> au lieu de 2 ans</b><div class="barre"><i style="width:75%"></i><s style="left:75%">− 6 mois</s></div></div></div>' +
-    '<p class="ttc a a5">7 h, entre 6 mois et 1 an après le permis · 99 € anciens élèves Easy, 149 € sinon · prix TTC</p></div>',
-
-  '<div class="diapo"><div class="a a1"><div class="kick">Remorque</div></div><h2 class="a a2">Tracter <em>en sécurité</em></h2>' +
-    '<div class="prix"><div class="p img a a3"><img src="' + IMG + 'remorque.webp" alt=""><div class="nom"><b>Permis BE</b><small>14 h · examen compris</small></div><div class="px"><b>829 €</b></div></div>' +
-    '<div class="p a a4"><div class="nom"><b>Formation B96</b><small>7 h · jusqu’à 4 250 kg</small></div><div class="px"><b>295 €</b></div></div></div>' +
-    '<p class="ttc a a5">Prix TTC</p></div>',
-
-  '<div class="diapo rouge centre" data-rouge><div class="a a1"><div class="kick">On est fermés ? Pas grave</div></div><h2 class="a a2">Scanne, <em>on te rappelle</em></h2>' +
+    '<p class="ttc a a5">7 h, entre 6 mois et 1 an après le permis · ' + euros(p.post) + ' anciens élèves Easy, ' + euros(p.post_autre) + ' sinon · prix TTC</p></div>'; } },
+  { k: 'remorque', html: function (p) { return '<div class="diapo"><div class="a a1"><div class="kick">Remorque</div></div><h2 class="a a2">Tracter <em>en sécurité</em></h2>' +
+    '<div class="prix"><div class="p img a a3"><img src="' + IMG + 'remorque.webp" alt=""><div class="nom"><b>Permis BE</b><small>14 h · examen compris</small></div><div class="px"><b>' + euros(p.be) + '</b></div></div>' +
+    '<div class="p a a4"><div class="nom"><b>Formation B96</b><small>7 h · jusqu’à 4 250 kg</small></div><div class="px"><b>' + euros(p.b96) + '</b></div></div></div>' +
+    '<p class="ttc a a5">Prix TTC</p></div>'; } },
+  { k: 'qr', html: function () { return '<div class="diapo rouge centre" data-rouge><div class="a a1"><div class="kick">On est fermés ? Pas grave</div></div><h2 class="a a2">Scanne, <em>on te rappelle</em></h2>' +
     '<div class="qr a a3"><img src="qr-contact.svg" alt="QR code vers le formulaire de contact"></div>' +
-    '<p class="tel a a4">02 41 32 58 41</p></div>'
+    '<p class="tel a a4">02 41 32 58 41</p></div>'; } }
 ];
 
-var zone = document.getElementById('diapos'), ecran = document.getElementById('ecran'), barre = document.getElementById('t'), i = -1;
-zone.innerHTML = DIAPOS.join('');
-var els = [].slice.call(zone.querySelectorAll('.diapo'));
+function construire() {
+  var v = CONFIG.vitrine || {}, p = {}, off = v.off || {}, dur = v.durees || {}, liste = [];
+  for (var c in PRIX_DEF) p[c] = (v.prix && String(v.prix[c] || '').trim()) || PRIX_DEF[c];
+  DIAPOS.forEach(function (d) {
+    if (off[d.k]) return;
+    var s = +dur[d.k] >= 3 && +dur[d.k] <= 120 ? +dur[d.k] : DUREE;
+    if (d.k === 'promos') actifs(CONFIG.promos).forEach(function (x) {
+      liste.push({ s: s, html: '<div class="diapo rouge" data-rouge><div class="a a1"><div class="kick">Promo du moment</div></div><h2 class="a a2">' + esc(x.titre) + '</h2>' +
+        (x.prix ? '<div class="pastille promo a a3"><b>' + euros(x.prix) + '</b></div>' : '') + (x.texte ? '<p class="intro a a4">' + esc(x.texte) + '</p>' : '') +
+        (x.au ? '<p class="ttc a a5">Jusqu’au ' + jourMois(x.au) + '</p>' : '') + '</div>' });
+    });
+    else if (d.k === 'annonces') actifs(CONFIG.annonces).forEach(function (x) {
+      liste.push({ s: s, html: '<div class="diapo annonce"><div class="a a1"><div class="kick">À l’agence</div></div><h2 class="a a2">' + esc(x.titre) + '</h2>' +
+        (x.texte ? '<p class="intro a a3">' + esc(x.texte) + '</p>' : '') + '</div>' });
+    });
+    else liste.push({ s: s, html: d.html(p) });
+  });
+  if (!liste.length) liste.push({ s: DUREE, html: DIAPOS[DIAPOS.length - 1].html(p) });
+  return liste;
+}
+
+var zone = document.getElementById('diapos'), ecran = document.getElementById('ecran'), barre = document.getElementById('t'), i = -1, LISTE = [], els = [], minuterie = null, signature = '';
+function monter() {
+  LISTE = construire();
+  zone.innerHTML = LISTE.map(function (d) { return d.html; }).join('');
+  els = [].slice.call(zone.querySelectorAll('.diapo'));
+  i = -1; clearTimeout(minuterie); suivante();
+}
 function suivante() {
-  if (i >= 0) els[i].classList.remove('on');
+  if (i >= 0 && els[i]) els[i].classList.remove('on');
   i = (i + 1) % els.length;
-  var el = els[i];
+  var el = els[i], s = LISTE[i].s;
   void el.offsetWidth; el.classList.add('on');
   ecran.classList.toggle('sur-rouge', el.hasAttribute('data-rouge'));
   barre.style.transition = 'none'; barre.style.width = '0';
-  requestAnimationFrame(function () { requestAnimationFrame(function () { barre.style.transition = 'width ' + DUREE + 's linear'; barre.style.width = '100%'; }); });
+  requestAnimationFrame(function () { requestAnimationFrame(function () { barre.style.transition = 'width ' + s + 's linear'; barre.style.width = '100%'; }); });
+  minuterie = setTimeout(suivante, s * 1000);
 }
-suivante(); setInterval(suivante, DUREE * 1000);
+// réglages : au démarrage puis toutes les 2 minutes ; l'écran ne se remonte que si quelque chose a changé
+function charger() {
+  fetch(URL_CONFIG + '&t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+    if (!j || !j.fields || !j.fields.json) return;
+    var d = JSON.parse(j.fields.json.stringValue || '{}');
+    var sig = JSON.stringify([d.vitrine || {}, actifs(d.annonces), actifs(d.promos)]);
+    if (sig === signature) return;
+    signature = sig; CONFIG = d; monter();
+  }).catch(function () {});
+}
+monter(); charger(); setInterval(charger, 120000);
 setInterval(function () { var n = new Date(); if (n.getHours() === 4 && n.getMinutes() < 1) location.reload(); }, 50000);
 document.addEventListener('click', function () { if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {}); });
 try { if (navigator.wakeLock) navigator.wakeLock.request('screen').catch(function () {}); } catch (e) {}

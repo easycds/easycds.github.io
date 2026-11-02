@@ -8,12 +8,12 @@
 <meta name="description" content="Une question sur le permis ? Laisse-nous tes coordonnées, l'équipe Easy de Saint-Sylvain te rappelle.">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="stylesheet" href="/fonts/polices.css">
-<style>:root{--easy:#ff3131;--easy-fonce:#e01f1f;--rose:#ffe4e4;--texte:#1c2430;--gris:#4a515c;--fond:#f4f3f1;--carte:#fff;--bord:#dcd9d5;--ok:#1e7f45;--ok-clair:#e6f6ec}
+<style>:root{--easy:#ff3131;--easy-fonce:#ff3131;--rose:#ffe4e4;--texte:#000000;--gris:#4a515c;--fond:#f1f0ef;--carte:#fff;--bord:#dcd9d5;--ok:#1e7f45;--ok-clair:#e6f6ec}
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{font-family:'DM Sans','Segoe UI',system-ui,sans-serif;background:var(--fond);color:var(--texte);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
-a{color:#d11f1f}
-:focus-visible{outline:3px solid #1c2430;outline-offset:2px}
+a{color:#ff3131}
+:focus-visible{outline:3px solid #000000;outline-offset:2px}
 .barre{background:#fff;border-bottom:1px solid #e8e6e3}
 .barre div{max-width:880px;margin:0 auto;padding:14px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
 .logo{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--texte)}
@@ -21,7 +21,7 @@ a{color:#d11f1f}
 .logo span{font-weight:700;font-size:15px}
 .retour{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:22px;background:var(--fond);color:var(--texte);font-weight:700;font-size:15px;text-decoration:none}
 .intro{max-width:600px;margin:0 auto;padding:40px 20px 18px;width:100%}
-.intro .kick{display:inline-flex;align-items:center;gap:8px;color:#d11f1f;font-weight:700;font-size:16px}
+.intro .kick{display:inline-flex;align-items:center;gap:8px;color:#ff3131;font-weight:700;font-size:16px}
 .intro h1{font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(32px,7vw,44px);line-height:1.1;margin-top:10px;text-wrap:balance}
 .intro p{margin-top:8px;font-size:17px;color:var(--gris)}
 main{flex:1;max-width:600px;margin:0 auto;padding:0 20px 48px;width:100%}
@@ -36,8 +36,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--easy-fon
 .choix{display:flex;flex-wrap:wrap;gap:8px;position:relative}
 .choix input{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
 .choix label{flex-direction:row;align-items:center;min-height:44px;font-weight:600;font-size:14.5px;padding:0 14px;border-radius:22px;background:var(--fond);cursor:pointer;border:1.5px solid transparent}
-.choix input:checked+label{background:var(--rose);border-color:var(--easy-fonce);color:#a81616}
-.choix input:focus-visible+label{outline:3px solid #1c2430;outline-offset:2px}
+.choix input:checked+label{background:var(--rose);border-color:var(--easy-fonce);color:#ff3131}
+.choix input:focus-visible+label{outline:3px solid #000000;outline-offset:2px}
 fieldset{border:0}
 legend{font-size:14px;font-weight:700;margin-bottom:8px}
 .accord{flex-direction:row;align-items:flex-start;gap:10px;font-weight:500;font-size:13px;color:var(--gris)}
@@ -45,7 +45,7 @@ legend{font-size:14px;font-weight:700;margin-bottom:8px}
 .piege{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 button{font:inherit;height:54px;border:0;border-radius:27px;background:var(--easy-fonce);color:#fff;font-weight:700;font-size:17px;cursor:pointer}
 button:disabled{opacity:.6;cursor:wait}
-.erreur{color:#c41a1a;font-size:14px;font-weight:700;min-height:1em}
+.erreur{color:#ff3131;font-size:14px;font-weight:700;min-height:1em}
 .merci{display:none;padding:8px 0}
 .merci .rond{width:64px;height:64px;border-radius:50%;background:var(--ok-clair);color:var(--ok);display:grid;place-items:center;margin-bottom:14px;font-size:32px;font-weight:800}
 .merci h2{font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(28px,6vw,34px);line-height:1.1}
@@ -54,26 +54,26 @@ button:disabled{opacity:.6;cursor:wait}
 .direct{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .direct a{display:flex;flex-direction:column;gap:2px;background:var(--carte);border-radius:22px;padding:16px 18px;text-decoration:none;color:inherit}
 .direct a small{font-size:13px;color:var(--gris);font-weight:600}
-.direct a b{font-size:16px;color:#d11f1f}
+.direct a b{font-size:16px;color:#ff3131}
 .direct a:last-child b{font-size:13.5px;overflow-wrap:anywhere}
 ::placeholder{color:#8a9099;font-weight:400}
 .adresse{margin-top:16px;text-align:center;color:var(--gris);font-size:14.5px}
 .rgpd{margin-top:18px;font-size:12.5px;color:var(--gris);text-align:center}
 .rgpd a{color:inherit}
-footer{background:#1c2430;color:#c9ced6}
+footer{background:#000000;color:#c9ced6}
 footer div{max-width:880px;margin:0 auto;padding:22px 20px;font-size:14px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;align-items:center}
 footer b{font-family:'Fredoka',sans-serif;font-weight:600;font-size:22px;color:var(--easy)}
 footer a{color:#fff;display:inline-flex;align-items:center;min-height:44px}
 @media (max-width:420px){.deux,.direct{grid-template-columns:1fr}}
-dialog.appel{border:0;border-radius:24px;padding:24px;max-width:340px;width:calc(100% - 32px);color:#1c2430;text-align:center;box-shadow:0 20px 60px rgba(16,24,40,.25)}
+dialog.appel{border:0;border-radius:24px;padding:24px;max-width:340px;width:calc(100% - 32px);color:#000000;text-align:center;box-shadow:0 20px 60px rgba(16,24,40,.25)}
 dialog.appel::backdrop{background:rgba(28,36,48,.55)}
 dialog.appel h2{margin:6px 0 6px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:22px;line-height:1.2}
 dialog.appel p{margin:0 0 18px;color:#4a515c;font-size:15px}
 dialog.appel .num{display:block;margin:0 0 18px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:26px}
-dialog.appel .oui{display:flex;align-items:center;justify-content:center;height:52px;border-radius:26px;background:#e01f1f;color:#fff;font-weight:700;font-size:16px;text-decoration:none}
-dialog.appel .non{margin-top:8px;width:100%;height:46px;border:0;border-radius:23px;background:#f4f3f1;color:#1c2430;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+dialog.appel .oui{display:flex;align-items:center;justify-content:center;height:52px;border-radius:26px;background:#ff3131;color:#fff;font-weight:700;font-size:16px;text-decoration:none}
+dialog.appel .non{margin-top:8px;width:100%;height:46px;border:0;border-radius:23px;background:#f1f0ef;color:#000000;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
 .reseaux{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:16px}
-.reseaux a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:22px;background:#fff;color:#1c2430;font-weight:700;font-size:15px;text-decoration:none;box-shadow:0 1px 2px rgba(16,24,40,.06)}
+.reseaux a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:22px;background:#fff;color:#000000;font-weight:700;font-size:15px;text-decoration:none;box-shadow:0 1px 2px rgba(16,24,40,.06)}
 </style>
 </head>
 <body>
@@ -147,7 +147,7 @@ function fini(d) {
 }
 </script>
 <dialog class="appel" id="appel" aria-labelledby="appel-t">
-  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d11f1f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ff3131" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
   <h2 id="appel-t">Appeler l'agence Easy de Saint-Sylvain-d'Anjou ?</h2>
   <span class="num">02 41 32 58 41</span>
   <p>Passage Sainte-Anne, Saint-Sylvain-d'Anjou</p>

@@ -615,6 +615,7 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
   // Sans réglage, Saint-Sylvain garde les horaires ci-dessous et l'écran noir dès la fermeture.
   // [début, fin] en minutes depuis minuit, par jour (0 = dimanche … 6 = samedi)
   const EN_PLUS = [];   // allumages ponctuels en plus des horaires : ['AAAA-MM-JJ', début en minutes, fin en minutes]
+  const TEST_JOUR = { 2: '2026-11-03T19:10:00' };   // essai : agence n° → diapos en continu jusqu'à cette date (s'arrête tout seul)
   const JOUR = { 1: [480, 1110], 2: [480, 1110], 3: [480, 1155], 4: [480, 1110], 5: [480, 1110], 6: [480, 780] };   // lun-ven 8h-18h30 (mercredi jusqu'à 19h15 pour le cours de code), samedi 8h-13h, dimanche fermé
   const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   const el = document.getElementById('nuit'), ciel = el.querySelector('.n-ciel');
@@ -634,7 +635,7 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
     return null;
   }
   function etat(d, m, H) {
-    if (+reglages().allumeJusqua > Date.now()) return 'jour';   // test lancé depuis l'admin : diapos allumées en continu jusqu'à cette heure
+    if (typeof AG !== 'undefined' && TEST_JOUR[AG] && new Date() < new Date(TEST_JOUR[AG])) return 'jour';
     const plage = H[d.getDay()], jourIso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     if (EN_PLUS.some(function (x) { return x[0] === jourIso && m >= x[1] && m < x[2]; }) || (plage && m >= plage[0] && m < plage[1])) return 'jour';
     const V = reglages().veille || {}, soir = V.soir ? min(V.soir) : null, matin = V.matin ? min(V.matin) : null;

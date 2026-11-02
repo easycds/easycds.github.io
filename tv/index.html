@@ -366,7 +366,9 @@ function a(n){ return ' class="a a'+n+'"'; }
    A = Centré, B = Moitié-moitié, C = Typographique. Sans choix (ou style inconnu) : la diapo d'origine, rendue plus bas. */
 var STYLES={'illu:clio':'A','promo':'A','slogan':'A','programme':'AB','illu:permis':'AB','etapes':'AB','boite':'AB','illu:moto':'AB','illu:remorque':'AB','stages':'A','creneaux:salle':'AB','aides':'A','illu:perf':'AB','reçus':'AC','fin':'AC'};
 var FONDU={permis:1,e208:1};   // illustrations dont le rond rose est coupé en bas : bord adouci à l'affichage
-function styleDe(d){ var k=cleDuree(d), s=((typeof DONNEES!=='undefined'&&DONNEES&&DONNEES.styles)||{})[k]; return s&&STYLES[k]&&STYLES[k].indexOf(s)>=0?s:''; }
+/* Aperçu d'une seule diapo depuis l'admin : adresse #voir=<clé>&style=<A|B|C ou vide> (la diapo tourne en boucle, mode jour forcé) */
+function apercu(){ var m=location.hash.match(/voir=([^&]+)/); if(!m) return null; return {k:decodeURIComponent(m[1]), st:(location.hash.match(/style=([ABC])/)||[])[1]||''}; }
+function styleDe(d){ var ap=apercu(), k0=cleDuree(d); if(ap&&ap.k===k0) return ap.st&&STYLES[k0]&&STYLES[k0].indexOf(ap.st)>=0?ap.st:''; var k=k0, s=((typeof DONNEES!=='undefined'&&DONNEES&&DONNEES.styles)||{})[k]; return s&&STYLES[k]&&STYLES[k].indexOf(s)>=0?s:''; }
 function stBloc(sorte,inner,o){ o=o||{};
   return '<div class="diapo st'+(o.rouge?' rouge':'')+'"'+(o.rouge?' data-rouge':'')+(o.bg?' style="background:'+o.bg+'"':'')+(o.d?' data-d="'+o.d+'"':'')+'><div class="st-'+sorte+'"'+(o.cols?' style="grid-template-columns:'+o.cols+'"':'')+'>'+inner+'</div>'+(o.signe?'<div class="st-sr st-signe"></div>':'')+'</div>'; }
 function stImg(f,h,fondu){ return '<img class="st-img'+(fondu?' st-fondu':'')+'" src="'+IMG+f+'" style="max-height:'+h+'rem" alt="">'; }
@@ -520,7 +522,8 @@ function cours(){
   return c.filter(function(x){ return x&&x.de&&x.a&&x.jour!=null; }).map(function(x){ var h=hm(x.de)[0]; return {jour:+x.jour, de:x.de, a:x.a, quand:h>=17?'ce soir':h<12?'ce matin':'cet après-midi', heure:heureTxt(x.de)}; });
 }
 function programme(){
-  var n=new Date(), c=cours().filter(function(c){ return c.jour===n.getDay(); })[0];
+  var n=new Date(), c=cours().filter(function(c){ return c.jour===n.getDay(); })[0], ap=apercu();
+  if(!c && ap && ap.k==='programme'){ var c0=cours()[0]||{de:'18:00',a:'19:00',quand:'ce soir',heure:'18 h'}, dd=new Date(Date.now()+85*60000); return {c:c0, deb:dd, fin:new Date(dd.getTime()+3600000)}; }   // aperçu : exemple
   if(!c) return null;
   var deb=new Date(n), fin=new Date(n); deb.setHours(hm(c.de)[0],hm(c.de)[1],0,0); fin.setHours(hm(c.a)[0],hm(c.a)[1],0,0);
   return n<fin ? {c:c, deb:deb, fin:fin} : null;
@@ -660,10 +663,20 @@ function construire(){
     else if(d.type==='promos') promosActives().forEach(function(x){ liste.push({type:'promo', titre:x.titre, prix:x.prix, texte:x.texte, au:x.au}); });
     else liste.push(d);
   });
-  var OFF=(DONNEES&&DONNEES.off)||{};   // diapos masquées pour cette agence (Administratif › Écran TV)
-  liste=liste.filter(function(d){ return !OFF[cleDuree(d)]; });
+  var OFF=(DONNEES&&DONNEES.off)||{}, ap=apercu();   // diapos masquées pour cette agence (Administratif › Écran TV)
+  if(ap){   // aperçu depuis l'admin : seulement la diapo demandée (même masquée), avec un exemple si elle n'a rien à montrer
+    liste=liste.filter(function(d){ return cleDuree(d)===ap.k; });
+    if(!liste.length && ap.k==='promo') liste=[{type:'promo', titre:'Permis moto', prix:'-15 %', texte:'Exemple de promo'}];
+    if(!liste.length && ap.k==='annonce') liste=[{type:'annonce', titre:'Exemple d’annonce', texte:'Ajoute une annonce pour la voir ici.'}];
+    if(!liste.length) liste=DIAPOS.filter(function(d){ return cleDuree(d)===ap.k; });
+  }
+  else liste=liste.filter(function(d){ return !OFF[cleDuree(d)]; });
   if(!liste.length) liste=[DIAPOS[DIAPOS.length-1]];
-  zone.innerHTML=liste.map(function(d){ return rendu(d).replace('<div class="diapo', '<div data-t="'+cleDuree(d)+'" class="diapo'); }).join(''); poserTheme();
+  var vraieMeteo=METEO; if(ap && ap.k==='meteo' && !conseilMeteo()) METEO={code:61, temp:8};   // aperçu météo : exemple de pluie
+  var html=liste.map(function(d){ return rendu(d).replace('<div class="diapo', '<div data-t="'+cleDuree(d)+'" class="diapo'); }).join('');
+  METEO=vraieMeteo;
+  if(!html) html='<div class="diapo st"><div class="st-c"><div class="kick">Aperçu</div><h2 class="f">Rien à afficher pour l’instant</h2><p>Cette diapo apparaîtra dès qu’il y aura quelque chose à montrer (stage à venir, cours de code…).</p></div></div>';
+  zone.innerHTML=html; poserTheme();
   [].forEach.call(zone.querySelectorAll('.illu:not(.photo) img'), function(im){ var f=function(){ if(im.naturalWidth/im.naturalHeight>1.45 && !im.closest('.diapo').querySelector('.creneaux')) im.parentNode.classList.add('large'); }; if(im.complete) f(); else im.addEventListener('load', f); });
   els=[].slice.call(zone.querySelectorAll('.diapo'));
   majComptes(); aRefaire=false;
@@ -683,7 +696,8 @@ function suivante(){
 }
 majMeteo(); setInterval(majMeteo, 20*60000);
 majDonnees(); setInterval(majDonnees, 60000); ecouterDirect();   // la lecture toutes les minutes reste en secours
-setTimeout(function boucle(){ suivante(); setTimeout(boucle, dureeActuelle()*1000); }, 1500);   // chaque diapo a sa propre durée (réglable dans l'admin)   // laisse 1,5 s pour charger météo et annonces
+setTimeout(function boucle(){ suivante(); setTimeout(boucle, dureeActuelle()*1000); }, 1500);
+addEventListener('hashchange', function(){ aRefaire=true; suivante(); if(window.EASY_NUIT) window.EASY_NUIT(); });   // aperçu demandé par l'admin : tout de suite   // chaque diapo a sa propre durée (réglable dans l'admin)   // laisse 1,5 s pour charger météo et annonces
 
 // Note Codes Rousseau, mise à jour chaque lundi par le robot GitHub : avis.json (Saint-Sylvain), avis-2.json (Les Banchais)…
 function majAvis(){ if(AG!==1){ fetch('/avis-'+AG+'.json?'+Date.now()).then(function(r){return r.ok?r.json():null;}).then(function(v){ if(v&&v.note){ window.AVIS_AUTO=v; aRefaire=true; } }).catch(function(){}); return; } fetch('/avis.json?'+Date.now()).then(function(r){return r.json();}).then(function(v){ if(!v||!v.note) return; DIAPOS.forEach(function(d){ if(d.type==='avis'){ d.note=v.note; d.nb=v.nb+' avis'; } }); aRefaire=true; }).catch(function(){}); }
@@ -758,6 +772,7 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
     return null;
   }
   function etat(d, m, H) {
+    if (location.hash.indexOf('voir=') >= 0) return 'jour';   // aperçu d'une diapo depuis l'admin
     if (typeof AG !== 'undefined' && TEST_JOUR[AG] && new Date() < new Date(TEST_JOUR[AG])) return 'jour';
     const plage = H[d.getDay()], jourIso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     if (EN_PLUS.some(function (x) { return x[0] === jourIso && m >= x[1] && m < x[2]; }) || (plage && m >= plage[0] && m < plage[1])) return 'jour';

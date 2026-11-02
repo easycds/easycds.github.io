@@ -262,13 +262,30 @@
     connexion('');
   }
 
+  // Accès gardé sur l'appareil : en arrière-plan (cadre invisible), on vérifie que le compte a toujours le droit.
+  // Un moniteur retiré de l'équipe est déconnecté dès qu'il ouvre une page avec du réseau (au plus une fois toutes les 10 min).
+  function verifierEnFond() {
+    try {
+      if (navigator.onLine === false) return;
+      var cle = 'easy-verif-' + ESPACE, t = +(localStorage.getItem(cle) || 0);
+      if (Date.now() - t < 10 * 60 * 1000) return;
+      localStorage.setItem(cle, String(Date.now()));
+    } catch (e) {}
+    setTimeout(function () {
+      var f = document.createElement('iframe');
+      f.src = '/verif-acces.html?e=' + ESPACE; f.title = 'Vérification'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+      f.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden';
+      (document.body || document.documentElement).appendChild(f);
+    }, 2000);
+  }
+
   async function demarrer() {
     if (!window.crypto || !crypto.subtle || typeof DecompressionStream === 'undefined') {
       document.body.innerHTML = '<p style="font-family:system-ui;padding:24px">Ce navigateur est trop ancien pour ouvrir cette page. Mets-le à jour (Chrome, Safari, Edge ou Firefox récents).</p>'; return;
     }
     if (/[?&]sortir\b/.test(location.search)) { try { history.replaceState(null, '', location.pathname); } catch (e) {} await sortir(); return; }
     var k = cleStockee();
-    if (k) { try { if (await ouvrir(k)) return; } catch (e) { try { MAG().removeItem(STOCK); } catch (x) {} } }
+    if (k) { try { if (await ouvrir(k)) { verifierEnFond(); return; } } catch (e) { try { MAG().removeItem(STOCK); } catch (x) {} } }
     if (!document.getElementById('easy-chiffre')) return;
     afficher('<form><h1>' + NOM + '</h1><p class="ea-sous">Ouverture…</p></form>');
     try {

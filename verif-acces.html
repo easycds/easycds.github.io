@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<title>Vérification</title>
+</head>
+<body>
+<!-- Vérification discrète, ouverte par verrou.js dans un cadre invisible quand une page s'ouvre avec l'accès gardé sur l'appareil.
+     Si le compte n'a plus le droit de lire le code commun (moniteur retiré de l'équipe), la page qui l'a ouverte est fermée (?sortir). -->
+<script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-auth-compat.js"></script>
+<script>
+(async function () {
+  if (window.top === window.self) return; // ne sert que dans le cadre ouvert par verrou.js
+  var parentOk = false; try { parentOk = parent.location.origin === location.origin; } catch (e) {}
+  if (!parentOk) return;
+  var ESPACE = /[?&]e=direction\b/.test(location.search) ? 'direction' : 'moniteurs';
+  var CONF = { apiKey: 'AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E', authDomain: 'easy-cds.firebaseapp.com', projectId: 'easy-cds' };
+  var DOCS = 'https://firestore.googleapis.com/v1/projects/easy-cds/databases/(default)/documents/acces/';
+  try {
+    var a = firebase.auth(firebase.initializeApp(CONF));
+    var u = await new Promise(function (ok) { var stop = a.onAuthStateChanged(function (x) { stop(); ok(x); }); });
+    var refuse = !u;
+    if (u) {
+      var r = await fetch(DOCS + 'cle_' + ESPACE, { headers: { Authorization: 'Bearer ' + (await u.getIdToken()) }, cache: 'no-store' });
+      refuse = r.status === 401 || r.status === 403;
+    }
+    if (refuse) parent.location.replace(parent.location.pathname + '?sortir');
+  } catch (e) {} // pas de réseau ou souci passager : on ne coupe rien
+})();
+</script>
+</body>
+</html>

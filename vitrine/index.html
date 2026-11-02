@@ -101,18 +101,26 @@ h2 em{font-style:normal;color:var(--easy)}
 </head>
 <body>
 <div class="ecran" id="ecran">
-  <div class="haut"><div class="logo"><b>easy</b><span>auto-école · Saint-Sylvain</span></div><span class="beta">bêta</span></div>
+  <div class="haut"><div class="logo"><b>easy</b><span id="agence">auto-école · Saint-Sylvain</span></div><span class="beta">bêta</span></div>
   <div id="diapos"></div>
-  <div class="pied"><span class="num">02 41 32 58 41</span><span>easycds.fr/contact</span></div>
+  <div class="pied"><span class="num" id="num">02 41 32 58 41</span></div>
   <div class="temps"><i id="t"></i></div>
 </div>
+<div id="absente" style="position:fixed;inset:0;z-index:10;background:#000;display:none;align-items:flex-end;justify-content:center;padding-bottom:8vh"><p style="font:500 2.2vh 'DM Sans',sans-serif;color:#4b5361;text-align:center;padding:0 4vw"></p></div>
 <script>
 /* Écran vitrine : prix, diapos affichées, durées, annonces et promos réglables dans
-   Espace direction › Écran vitrine (document public ecran_tv/config, champ « vitrine »).
+   Espace direction › Écran vitrine, pour chaque agence (même document que la télé, champ « vitrine »).
+   Une seule page, recopiée à la publication en /vitrine2/ … /vitrine10/ :
+   /vitrine = agence 1, Saint-Sylvain (ecran_tv/config) ; /vitrine2 = Les Banchais (ecran_tv/tv2) ; etc.
+   Nom et téléphone de l'agence : réglés dans Espace direction › Écran TV › l'agence.
    Sans réseau ou sans réglage, l'écran garde les valeurs par défaut ci-dessous. */
 var DUREE = 9;   // secondes par diapo, par défaut
 var IMG = '/tv/img/';
-var URL_CONFIG = 'https://firestore.googleapis.com/v1/projects/easy-cds/databases/(default)/documents/ecran_tv/config?key=AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E';
+var AG = +((location.pathname.match(/\/vitrine(\d+)(\/|$)/) || [])[1] || 1);
+var URL_CONFIG = 'https://firestore.googleapis.com/v1/projects/easy-cds/databases/(default)/documents/ecran_tv/' + (AG === 1 ? 'config' : 'tv' + AG) + '?key=AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E';
+var SS = { nom: 'Saint-Sylvain', tel: '02 41 32 58 41' };   // agence 1, tant que rien n'est réglé
+function agence() { return CONFIG.agence || {}; }
+function tel() { var g = agence(); return g.tel != null ? g.tel : AG === 1 ? SS.tel : ''; }
 var PRIX_DEF = { b_auto: '1 175', b_manu: '1 555', am: '275', moto: '799', passerelle: '295', post: '99', post_autre: '149', be: '829', b96: '295' };
 var CONFIG = {};
 
@@ -155,9 +163,9 @@ var DIAPOS = [
     '<div class="prix"><div class="p img a a3"><img src="' + IMG + 'remorque.webp" alt=""><div class="nom"><b>Permis BE</b><small>14 h · examen compris</small></div><div class="px"><b>' + euros(p.be) + '</b></div></div>' +
     '<div class="p a a4"><div class="nom"><b>Formation B96</b><small>7 h · jusqu’à 4 250 kg</small></div><div class="px"><b>' + euros(p.b96) + '</b></div></div></div>' +
     '<p class="ttc a a5">Prix TTC</p></div>'; } },
-  { k: 'qr', html: function () { return '<div class="diapo rouge centre" data-rouge><div class="a a1"><div class="kick">On est fermés ? Pas grave</div></div><h2 class="a a2">Scanne, <em>on te rappelle</em></h2>' +
-    '<div class="qr a a3"><img src="qr-contact.svg" alt="QR code vers le formulaire de contact"></div>' +
-    '<p class="tel a a4">02 41 32 58 41</p></div>'; } }
+  { k: 'qr', html: function () { return '<div class="diapo rouge centre" data-rouge><div class="a a1"><div class="kick">On est fermés ? Pas grave</div></div><h2 class="a a2">Scanne, <em>tout est en ligne</em></h2>' +
+    '<div class="qr a a3"><img src="/vitrine/qr-site.svg" alt="QR code vers easy-auto-ecole.com"></div>' +
+    (tel() ? '<p class="tel a a4">' + esc(tel()) + '</p>' : '') + '</div>'; } }
 ];
 
 function construire() {
@@ -183,6 +191,9 @@ function construire() {
 
 var zone = document.getElementById('diapos'), ecran = document.getElementById('ecran'), barre = document.getElementById('t'), i = -1, LISTE = [], els = [], minuterie = null, signature = '';
 function monter() {
+  var g = agence();
+  document.getElementById('agence').textContent = 'auto-école' + ((g.nom || (AG === 1 ? SS.nom : '')) ? ' · ' + (g.nom || SS.nom) : '');
+  document.getElementById('num').textContent = tel();
   LISTE = construire();
   zone.innerHTML = LISTE.map(function (d) { return d.html; }).join('');
   els = [].slice.call(zone.querySelectorAll('.diapo'));
@@ -200,14 +211,18 @@ function suivante() {
 }
 // réglages : au démarrage puis toutes les 2 minutes ; l'écran ne se remonte que si quelque chose a changé
 function charger() {
-  fetch(URL_CONFIG + '&t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+  fetch(URL_CONFIG + '&t=' + Date.now(), { cache: 'no-store' }).then(function (r) { if (r.status === 404 && AG !== 1) absente(); return r.ok ? r.json() : null; }).then(function (j) {
     if (!j || !j.fields || !j.fields.json) return;
     var d = JSON.parse(j.fields.json.stringValue || '{}');
-    var sig = JSON.stringify([d.vitrine || {}, actifs(d.annonces), actifs(d.promos)]);
+    var g = d.agence || {}, sig = JSON.stringify([d.vitrine || {}, actifs(d.annonces), actifs(d.promos), g.nom, g.tel]);
+    document.getElementById('absente').style.display = 'none';
     if (sig === signature) return;
     signature = sig; CONFIG = d; monter();
   }).catch(function () {});
 }
+// Agences 2, 3… : écran noir tant que les réglages ne sont pas arrivés ; message si l'agence n'existe pas encore
+function absente() { var e = document.getElementById('absente'); e.style.display = 'flex'; e.querySelector('p').textContent = 'Écran vitrine n° ' + AG + ' : agence pas encore créée dans l’espace direction.'; signature = ''; }
+if (AG !== 1) document.getElementById('absente').style.display = 'flex';
 monter(); charger(); setInterval(charger, 120000);
 setInterval(function () { var n = new Date(); if (n.getHours() === 4 && n.getMinutes() < 1) location.reload(); }, 50000);
 document.addEventListener('click', function () { if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {}); });

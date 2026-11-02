@@ -97,6 +97,10 @@ h2 em{font-style:normal;color:var(--easy)}
 .rouge .pastille.promo{box-shadow:0 1.6rem 4rem rgba(0,0,0,.15)}
 .diapo.annonce h2{font-size:8.4rem}
 .diapo.annonce .intro{font-size:3.6rem}
+/* le sourire Easy signe l'annonce (comme sur la télé), en rouge sur fond clair */
+.diapo.annonce .sourire{width:28rem;aspect-ratio:834/264;margin-top:5rem;background:var(--easy);-webkit-mask:url(/tv/img/sourire_blanc.png) center/contain no-repeat;mask:url(/tv/img/sourire_blanc.png) center/contain no-repeat;opacity:0}
+.diapo.on.annonce .sourire{animation:sourit 1.2s cubic-bezier(.3,1.6,.5,1) .9s both}
+@keyframes sourit{from{opacity:0;transform:scaleX(.2)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -181,7 +185,7 @@ function construire() {
     });
     else if (d.k === 'annonces') actifs(CONFIG.annonces).forEach(function (x) {
       liste.push({ s: s, html: '<div class="diapo annonce"><div class="a a1"><div class="kick">À l’agence</div></div><h2 class="a a2">' + esc(x.titre) + '</h2>' +
-        (x.texte ? '<p class="intro a a3">' + esc(x.texte) + '</p>' : '') + '</div>' });
+        (x.texte ? '<p class="intro a a3">' + esc(x.texte) + '</p>' : '') + '<div class="sourire"></div></div>' });
     });
     else liste.push({ s: s, html: d.html(p) });
   });

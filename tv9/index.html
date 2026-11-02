@@ -169,6 +169,7 @@ h2 em{font-style:normal;color:var(--easy)}
 .annonce h2{font-size:6.6rem;max-width:96rem;margin:0 auto}
 .annonce p{color:#fff!important;font-size:2.6rem;max-width:80rem;margin:0 auto}
 .annonce .kick{color:#fff;opacity:.85}
+.annonce .sourire{width:22rem;margin-top:1rem}
 .promo h2{font-size:7rem;max-width:96rem;margin:0 auto}
 .promo .kick{color:#fff;opacity:.85}
 .prix{display:inline-block;background:#fff;color:var(--easy);border-radius:2.4rem;padding:1.2rem 3.6rem;font-size:7rem;line-height:1}
@@ -333,7 +334,7 @@ function rendu(d){
     case 'saison':
       return '<div class="diapo"><div class="txt">'+(d.kick?'<div'+a(1)+'><div class="kick">'+d.kick+'</div></div>':'')+'<h2 class="f a a2">'+d.titre+'</h2><p'+a(3)+'>'+d.texte+'</p></div><div class="illu saison-ico">'+d.ico+'</div></div>';
     case 'annonce':
-      return '<div class="diapo rouge centre annonce" data-rouge><div'+a(1)+'><div class="kick">À savoir</div></div><h2 class="f a a2">'+esc(d.titre)+'</h2>'+(d.texte?'<p'+a(3)+'>'+esc(d.texte)+'</p>':'')+'</div>';
+      return '<div class="diapo rouge centre annonce" data-rouge><div'+a(1)+'><div class="kick">À savoir</div></div><h2 class="f a a2">'+esc(d.titre)+'</h2>'+(d.texte?'<p'+a(3)+'>'+esc(d.texte)+'</p>':'')+'<img class="sourire" src="'+IMG+'sourire_blanc.png" alt="">'+'</div>';   // le sourire Easy signe l'annonce (même animation que le slogan)
     case 'programme':
       var p=programme(); if(!p) return '';
       return '<div class="diapo"><div class="txt"><div'+a(1)+'><div class="kick">Aujourd’hui · cours de code</div></div><h2 class="f a a2">Rendez-vous <em>'+p.c.quand+' '+p.c.heure+'</em></h2><p'+a(3)+'>En salle, avec un moniteur. Viens avec tes questions !</p><div class="compte f a a4" data-debut="'+p.deb.getTime()+'" data-fin="'+p.fin.getTime()+'"></div></div><div class="illu"><img src="'+IMG+'salle.webp" alt=""></div></div>';

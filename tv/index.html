@@ -43,7 +43,7 @@ h2 em{font-style:normal;color:var(--easy)}
 /* boîte auto : le parcours en 3 étapes */
 .parcours{flex:none;width:50rem;display:flex;flex-direction:column;gap:1.6rem;position:relative}
 .parcours::before{content:"";position:absolute;left:5.6rem;top:4rem;bottom:4rem;border-left:.5rem dashed var(--rose);z-index:0}
-.parcours>div{position:relative;z-index:1;background:var(--card);border-radius:2.4rem;box-shadow:0 .6rem 2.4rem rgba(28,36,48,.1);display:flex;align-items:center;gap:2.4rem;padding:2rem 2.6rem}
+.parcours>div{position:relative;z-index:1;background:var(--card);border-radius:2.4rem;box-shadow:0 .6rem 2.4rem rgba(0,0,0,.1);display:flex;align-items:center;gap:2.4rem;padding:2rem 2.6rem}
 .parcours i{flex:none;width:6rem;height:6rem;border-radius:1.8rem;background:var(--rose);color:var(--easy);display:grid;place-items:center;font-style:normal}
 .parcours i svg{width:3.6rem;height:3.6rem}
 .parcours b{display:block;font-family:'Fredoka',sans-serif;font-weight:600;font-size:3rem;line-height:1.05}
@@ -54,16 +54,16 @@ h2 em{font-style:normal;color:var(--easy)}
 .diapo.on .parcours>div{animation:monte .7s cubic-bezier(.2,.7,.2,1) both}
 .diapo.on .parcours>div:nth-child(2){animation-delay:.5s}.diapo.on .parcours>div:nth-child(3){animation-delay:1s}
 .etapes-auto{display:flex;align-items:center;gap:.8rem;margin-top:3rem}
-.etapes-auto>div{display:flex;align-items:center;gap:.9rem;background:var(--card);border-radius:1.6rem;box-shadow:0 .4rem 1.6rem rgba(28,36,48,.08);padding:.8rem 1.4rem .8rem .8rem;font-size:1.9rem;font-weight:700;white-space:nowrap}
+.etapes-auto>div{display:flex;align-items:center;gap:.9rem;background:var(--card);border-radius:1.6rem;box-shadow:0 .4rem 1.6rem rgba(0,0,0,.08);padding:.8rem 1.4rem .8rem .8rem;font-size:1.9rem;font-weight:700;white-space:nowrap}
 .etapes-auto i{flex:none;width:4.4rem;height:4.4rem;border-radius:1.2rem;background:var(--rose);color:var(--easy);display:grid;place-items:center;font-style:normal;font-family:'Fredoka',sans-serif;font-weight:600;font-size:2.6rem}
 .etapes-auto i svg{width:2.6rem;height:2.6rem}
 .etapes-auto>div.fin{background:var(--easy);color:#fff}
 .etapes-auto>div.fin i{background:#fff}
 .etapes-auto>b{font-size:2.6rem;color:var(--easy)}
 .voiture-auto{flex:none;width:60rem;margin-right:-3rem}
-.voiture-auto img{width:100%;display:block;background:#fff;border-radius:3rem;box-shadow:0 .6rem 2.4rem rgba(28,36,48,.1)}
+.voiture-auto img{width:100%;display:block;background:#fff;border-radius:3rem;box-shadow:0 .6rem 2.4rem rgba(0,0,0,.1)}
 .diapo.on .voiture-auto img{animation:roule 1.4s cubic-bezier(.2,.7,.2,1) both}
-.gain{flex:none;width:60rem;background:var(--card);border-radius:3rem;box-shadow:0 .6rem 2.4rem rgba(28,36,48,.1);padding:3.4rem 3.6rem;display:flex;flex-direction:column;gap:3.2rem}
+.gain{flex:none;width:60rem;background:var(--card);border-radius:3rem;box-shadow:0 .6rem 2.4rem rgba(0,0,0,.1);padding:3.4rem 3.6rem;display:flex;flex-direction:column;gap:3.2rem}
 .gain h3{font-size:1.5rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .gain .ligne b{display:block;font-family:'Fredoka',sans-serif;font-weight:600;font-size:2.4rem;white-space:nowrap;margin-bottom:1.2rem}
 .gain .ligne b em{font-style:normal;color:var(--easy)}
@@ -77,13 +77,13 @@ h2 em{font-style:normal;color:var(--easy)}
 .badge12 b{width:6rem;height:6rem;border-radius:50%;background:#fff;color:var(--easy);display:grid;place-items:center;font-family:'Fredoka',sans-serif;font-size:3rem;line-height:1}
 /* financement : les logos des aides */
 .aides{flex:none;width:50rem;display:grid;grid-template-columns:1fr 1fr;gap:1.8rem}
-.aides div{background:var(--card);border-radius:2.6rem;box-shadow:0 .6rem 2.4rem rgba(28,36,48,.1);display:flex;align-items:center;justify-content:center;padding:2.2rem;height:17rem}
+.aides div{background:var(--card);border-radius:2.6rem;box-shadow:0 .6rem 2.4rem rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;padding:2.2rem;height:17rem}
 .aides div.grand{grid-column:1/-1;height:26rem;padding:2.4rem}
 .aides img{max-width:100%;max-height:100%}
 .diapo.on .aides div{animation:monte .7s cubic-bezier(.2,.7,.2,1) both}
 .diapo.on .aides div:nth-child(2){animation-delay:.25s}.diapo.on .aides div:nth-child(3){animation-delay:.4s}
 @keyframes monte{from{opacity:0;transform:translateY(3rem) scale(.96)}to{opacity:1;transform:none}}
-.illu{flex:none;width:44rem;height:38rem;background:var(--card);border-radius:3rem;box-shadow:0 .6rem 2.4rem rgba(28,36,48,.1);display:flex;align-items:center;justify-content:center;padding:2.4rem}
+.illu{flex:none;width:44rem;height:38rem;background:var(--card);border-radius:3rem;box-shadow:0 .6rem 2.4rem rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;padding:2.4rem}
 .illu img{max-width:100%;max-height:100%}
 .illu.large{width:62rem;height:38rem;padding:1.6rem}   /* image très large (voiture) : carte plus large */
 .illu.photo{width:66rem;height:37.2rem;padding:0;background:none;box-shadow:none;border-radius:0;margin-right:-5rem}
@@ -97,7 +97,7 @@ h2 em{font-style:normal;color:var(--easy)}
 .sourire{width:24rem}
 
 .liste{margin-top:2.4rem;display:flex;flex-direction:column;gap:1.1rem;max-width:56rem}
-.liste div{background:var(--card);border-radius:1.4rem;padding:1.2rem 1.8rem;display:flex;justify-content:space-between;align-items:center;gap:2rem;font-size:2rem;font-weight:700;box-shadow:0 .2rem .8rem rgba(28,36,48,.06)}
+.liste div{background:var(--card);border-radius:1.4rem;padding:1.2rem 1.8rem;display:flex;justify-content:space-between;align-items:center;gap:2rem;font-size:2rem;font-weight:700;box-shadow:0 .2rem .8rem rgba(0,0,0,.06)}
 .liste span{font-size:1.15rem;letter-spacing:.1em;padding:.45rem 1rem;border-radius:2rem;background:var(--rose);color:var(--easy-dark)}
 .liste span.libre{background:#e6f4ec;color:#1f7a44}
 .creneaux{display:flex;gap:1.6rem;margin-top:2.4rem}
@@ -107,7 +107,7 @@ h2 em{font-style:normal;color:var(--easy)}
 .etapes{display:flex;flex-direction:column;gap:1.2rem;margin-top:2.2rem}
 .etapes div{display:flex;align-items:center;gap:1.4rem;font-size:1.9rem}
 .etapes i{font-style:normal;flex:none;width:3.4rem;height:3.4rem;border-radius:50%;background:var(--easy);color:#fff;font-weight:700;font-size:1.6rem;display:flex;align-items:center;justify-content:center}
-.qr{flex:none;width:30rem;background:var(--card);border-radius:3rem;padding:2.6rem;box-shadow:0 .6rem 2.4rem rgba(28,36,48,.1);text-align:center}
+.qr{flex:none;width:30rem;background:var(--card);border-radius:3rem;padding:2.6rem;box-shadow:0 .6rem 2.4rem rgba(0,0,0,.1);text-align:center}
 .qr svg{width:100%;height:auto;display:block}
 .qr b{display:block;margin-top:1.4rem;font-size:1.6rem;color:var(--easy)}
 .note{display:flex;gap:4rem;align-items:center}
@@ -123,7 +123,7 @@ h2 em{font-style:normal;color:var(--easy)}
 .av-b .verif{display:inline-flex;align-items:center;gap:.6rem;margin-left:1rem;color:#1f7a44;background:#e6f4ec;border-radius:2rem;padding:.3rem 1.2rem .3rem .9rem}
 .av-b .verif::before{content:"✓";font-weight:800}
 .bulles{display:grid;grid-template-columns:1fr 1fr;gap:2rem 4rem;margin-top:3rem;align-items:start}
-.bulle{position:relative;background:var(--card);border-radius:2.4rem 2.4rem 2.4rem .6rem;padding:1.7rem 2.4rem;font-size:1.85rem;line-height:1.35;box-shadow:0 .8rem 2.6rem rgba(28,36,48,.1);opacity:0;transform:translateY(3rem) scale(.9)}
+.bulle{position:relative;background:var(--card);border-radius:2.4rem 2.4rem 2.4rem .6rem;padding:1.7rem 2.4rem;font-size:1.85rem;line-height:1.35;box-shadow:0 .8rem 2.6rem rgba(0,0,0,.1);opacity:0;transform:translateY(3rem) scale(.9)}
 .diapo.on .bulle{animation:bulle .7s cubic-bezier(.3,1.5,.5,1) forwards}
 .bulle:nth-child(2n){margin-top:2.6rem;margin-bottom:-2.6rem}
 .bulle.d{border-radius:2.4rem 2.4rem .6rem 2.4rem;background:var(--easy);color:#fff}
@@ -133,7 +133,7 @@ h2 em{font-style:normal;color:var(--easy)}
 @keyframes etoile{to{opacity:1;transform:none}}
 @keyframes bulle{to{opacity:1;transform:none}}
 .avis{display:flex;flex-direction:column;gap:1.4rem;flex:1;max-width:60rem}
-.avis div{background:var(--card);border-radius:1.6rem;padding:1.6rem 2rem;font-size:1.8rem;font-style:italic;line-height:1.4;box-shadow:0 .2rem .8rem rgba(28,36,48,.06)}
+.avis div{background:var(--card);border-radius:1.6rem;padding:1.6rem 2rem;font-size:1.8rem;font-style:italic;line-height:1.4;box-shadow:0 .2rem .8rem rgba(0,0,0,.06)}
 .avis small{display:block;margin-top:.6rem;font-style:normal;font-weight:700;color:var(--easy);font-size:1.3rem}
 
 /* animations d'entrée (déclenchées à chaque passage) */
@@ -151,7 +151,7 @@ h2 em{font-style:normal;color:var(--easy)}
 @keyframes sort{to{opacity:0;transform:translateY(-1.5rem)}}
 
 /* barre de temps */
-.temps{position:absolute;left:4.5rem;right:4.5rem;bottom:2.4rem;height:.35rem;border-radius:1rem;background:rgba(28,36,48,.08);z-index:5;overflow:hidden}
+.temps{position:absolute;left:4.5rem;right:4.5rem;bottom:2.4rem;height:.35rem;border-radius:1rem;background:rgba(0,0,0,.08);z-index:5;overflow:hidden}
 .temps i{display:block;height:100%;width:0;background:var(--easy);border-radius:1rem}
 .ecran.sur-rouge .temps{background:rgba(255,255,255,.25)}
 .ecran.sur-rouge .temps i{background:#fff}
@@ -188,7 +188,7 @@ h2 em{font-style:normal;color:var(--easy)}
 .chauve{animation:vole 3s ease-in-out infinite}
 .saison-ico svg{width:24rem;height:24rem}
 .et-d{gap:6rem;padding:8rem 7rem 5rem 9rem}
-.et-aff{flex:none;height:56rem;background:#fff;border-radius:2.6rem;box-shadow:0 .8rem 3rem rgba(28,36,48,.12);padding:2.4rem 2.6rem 1.6rem 2rem;opacity:0}
+.et-aff{flex:none;height:56rem;background:#fff;border-radius:2.6rem;box-shadow:0 .8rem 3rem rgba(0,0,0,.12);padding:2.4rem 2.6rem 1.6rem 2rem;opacity:0}
 .diapo.on .et-aff{animation:monte .8s .1s cubic-bezier(.2,.7,.2,1) forwards}
 .et-cadre{position:relative;height:100%;aspect-ratio:768/1376}
 .et-cadre img{display:block;width:100%;height:100%}
@@ -199,7 +199,7 @@ h2 em{font-style:normal;color:var(--easy)}
 @keyframes et-pulse{50%{box-shadow:0 0 0 1.4rem rgba(255,49,49,.22)}}
 .et-d .txt h2{margin-bottom:4rem}
 .et-zone{position:relative;height:19rem}
-.et-b{position:absolute;left:0;right:0;top:0;background:var(--card);border-radius:3rem 3rem 3rem .8rem;padding:2.8rem 3.4rem;box-shadow:0 1rem 3rem rgba(28,36,48,.1);display:flex;gap:2.6rem;align-items:flex-start;opacity:0;transform:translateY(3rem) scale(.9)}
+.et-b{position:absolute;left:0;right:0;top:0;background:var(--card);border-radius:3rem 3rem 3rem .8rem;padding:2.8rem 3.4rem;box-shadow:0 1rem 3rem rgba(0,0,0,.1);display:flex;gap:2.6rem;align-items:flex-start;opacity:0;transform:translateY(3rem) scale(.9)}
 .diapo.on .et-b{animation-name:bulle,et-part;animation-duration:.7s,.45s;animation-timing-function:cubic-bezier(.3,1.5,.5,1),ease;animation-fill-mode:forwards,forwards}
 @keyframes et-part{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-2rem) scale(.97)}}
 .et-b .n{flex:none;width:7rem;height:7rem;border-radius:50%;background:var(--text);color:#fff;display:grid;place-items:center;font-size:3.6rem}
@@ -282,7 +282,7 @@ var DIAPOS = [
   {type:'fin', titre:'Simple,<br>Easy.'}
 ];
 // Thèmes de saison (activés dans Administratif › Écran TV)
-var S_CITROUILLE='<svg viewBox="0 0 120 110"><path d="M60 22c-4-10 2-18 10-20l3 5c-6 2-8 8-7 15z" fill="#4c7a34"/><ellipse cx="34" cy="64" rx="30" ry="38" fill="#f07f1a"/><ellipse cx="86" cy="64" rx="30" ry="38" fill="#f07f1a"/><ellipse cx="60" cy="64" rx="30" ry="42" fill="#ff9327"/><path d="M40 52l10 8-12 2zM80 52l-10 8 12 2z" fill="#3a2410"/><path d="M38 78q22 18 44 0l-6 4-4-4-5 5-5-5-5 5-5-5-4 4z" fill="#3a2410"/></svg>', S_CHAUVE='<svg viewBox="0 0 100 40"><path d="M50 14c-3-6-8-6-9-2-6-8-20-10-30-4 8 0 12 6 11 12 6-4 14-2 18 4 2-6 6-8 10-8s8 2 10 8c4-6 12-8 18-4-1-6 3-12 11-12-10-6-24-4-30 4-1-4-6-4-9 2z" fill="#000000"/></svg>', S_TOILE='<svg viewBox="0 0 200 200" fill="none" stroke="rgba(28,36,48,.35)" stroke-width="2"><path d="M200 0L40 0M200 0L60 90M200 0L120 150M200 0L200 160"/><path d="M160 0q8 18 22 22 4 14 18 18"/><path d="M110 0q14 32 40 40 8 26 34 32 6 8 16 10"/><path d="M60 0q22 50 60 60 14 40 50 50 16 10 30 12"/></svg>', S_SAPIN='<svg viewBox="0 0 160 200"><rect x="70" y="160" width="20" height="30" rx="3" fill="#7a4b22"/><path d="M80 10l46 60h-20l34 44h-24l34 50H10l34-50H20l34-44H34z" fill="#2f8f4e"/><path d="M80 2l5 10 11 1-8 7 3 11-11-6-11 6 3-11-8-7 11-1z" fill="#f2c200"/><circle cx="66" cy="72" r="6" fill="#ff3131"/><circle cx="98" cy="96" r="6" fill="#f2c200"/><circle cx="58" cy="122" r="6" fill="#3b82c4"/><circle cx="104" cy="140" r="6" fill="#ff3131"/><circle cx="80" cy="118" r="5" fill="#fff"/></svg>', S_CADEAU='<svg viewBox="0 0 80 80"><rect x="8" y="30" width="64" height="44" rx="4" fill="#2f9e6b"/><rect x="4" y="20" width="72" height="14" rx="3" fill="#25804a"/><rect x="34" y="20" width="12" height="54" fill="#f2c200"/><path d="M40 20c-14-16-26-6-14 0M40 20c14-16 26-6 14 0" stroke="#f2c200" stroke-width="5" fill="none"/></svg>', S_FLOCON='<svg viewBox="0 0 40 40" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M20 3v34M5 11l30 18M5 29l30-18M20 3l-4 4M20 3l4 4M20 37l-4-4M20 37l4-4"/></svg>';
+var S_CITROUILLE='<svg viewBox="0 0 120 110"><path d="M60 22c-4-10 2-18 10-20l3 5c-6 2-8 8-7 15z" fill="#4c7a34"/><ellipse cx="34" cy="64" rx="30" ry="38" fill="#f07f1a"/><ellipse cx="86" cy="64" rx="30" ry="38" fill="#f07f1a"/><ellipse cx="60" cy="64" rx="30" ry="42" fill="#ff9327"/><path d="M40 52l10 8-12 2zM80 52l-10 8 12 2z" fill="#3a2410"/><path d="M38 78q22 18 44 0l-6 4-4-4-5 5-5-5-5 5-5-5-4 4z" fill="#3a2410"/></svg>', S_CHAUVE='<svg viewBox="0 0 100 40"><path d="M50 14c-3-6-8-6-9-2-6-8-20-10-30-4 8 0 12 6 11 12 6-4 14-2 18 4 2-6 6-8 10-8s8 2 10 8c4-6 12-8 18-4-1-6 3-12 11-12-10-6-24-4-30 4-1-4-6-4-9 2z" fill="#000000"/></svg>', S_TOILE='<svg viewBox="0 0 200 200" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="2"><path d="M200 0L40 0M200 0L60 90M200 0L120 150M200 0L200 160"/><path d="M160 0q8 18 22 22 4 14 18 18"/><path d="M110 0q14 32 40 40 8 26 34 32 6 8 16 10"/><path d="M60 0q22 50 60 60 14 40 50 50 16 10 30 12"/></svg>', S_SAPIN='<svg viewBox="0 0 160 200"><rect x="70" y="160" width="20" height="30" rx="3" fill="#7a4b22"/><path d="M80 10l46 60h-20l34 44h-24l34 50H10l34-50H20l34-44H34z" fill="#2f8f4e"/><path d="M80 2l5 10 11 1-8 7 3 11-11-6-11 6 3-11-8-7 11-1z" fill="#f2c200"/><circle cx="66" cy="72" r="6" fill="#ff3131"/><circle cx="98" cy="96" r="6" fill="#f2c200"/><circle cx="58" cy="122" r="6" fill="#3b82c4"/><circle cx="104" cy="140" r="6" fill="#ff3131"/><circle cx="80" cy="118" r="5" fill="#fff"/></svg>', S_CADEAU='<svg viewBox="0 0 80 80"><rect x="8" y="30" width="64" height="44" rx="4" fill="#2f9e6b"/><rect x="4" y="20" width="72" height="14" rx="3" fill="#25804a"/><rect x="34" y="20" width="12" height="54" fill="#f2c200"/><path d="M40 20c-14-16-26-6-14 0M40 20c14-16 26-6 14 0" stroke="#f2c200" stroke-width="5" fill="none"/></svg>', S_FLOCON='<svg viewBox="0 0 40 40" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M20 3v34M5 11l30 18M5 29l30-18M20 3l-4 4M20 3l4 4M20 37l-4-4M20 37l4-4"/></svg>';
 var SAISONS = {
   halloween: [{type:'saison', kick:'Halloween', titre:'Petits monstres <em>dans la rue</em>', texte:'Le soir d’Halloween, des enfants déguisés traversent partout, souvent sans regarder. Ralentis en ville et allume tes feux tôt.', ico:S_CITROUILLE}],
   noel: [{type:'slogan', titre:'Joyeuses fêtes<br>de la part d’Easy !'},

@@ -456,11 +456,11 @@ function recevoir(j){                      // nouveau contenu : on le prend ; «
   if((urlMeteo()||'')!==meteoPour) majMeteo();
   attente(false); if(window.EASY_NUIT) window.EASY_NUIT();
 }
-// Stages code (agences 2, 3…) : lus dans le document de Saint-Sylvain
+// Stages code et thème de saison (agences 2, 3…) : lus dans le document de Saint-Sylvain
 var COMMUN=null, brutCommun='';
 function recevoirCommun(j){
   if(!j||j===brutCommun) return; brutCommun=j;
-  try{ COMMUN={stages:JSON.parse(j).stages}; aRefaire=true; }catch(e){}
+  try{ var c=JSON.parse(j); COMMUN={stages:c.stages, theme:c.theme||'', themeForce:!!c.themeForce}; aRefaire=true; poserTheme(); }catch(e){}
 }
 // Agences 2, 3… : écran noir tant que les réglages ne sont pas arrivés ; message si l'agence n'existe pas encore dans l'admin
 function attente(on, txt){
@@ -487,9 +487,10 @@ function majDonnees(){
   lireDoc(DONNEES_URL, recevoir, AG!==1?nonConfiguree:null);
   if(AG!==1) lireDoc(COMMUN_URL, recevoirCommun);
 }
-function themeActif(){                    // le thème de saison ne s'affiche que pendant sa saison (Halloween : octobre ; Noël : 1er décembre - 6 janvier)
-  var t=(DONNEES&&DONNEES.theme)||'', d=new Date(), m=d.getMonth()+1, j=d.getDate();
-  if(t==='halloween' && m!==10) return '';
+function themeActif(){                    // thème de saison, commun à toutes les agences (rangé avec Saint-Sylvain) :
+  var c=AG===1?DONNEES:COMMUN, t=(c&&c.theme)||'', d=new Date(), m=d.getMonth()+1, j=d.getDate();
+  if(c&&c.themeForce) return t;            // « Tout de suite » : affiché quelle que soit la date
+  if(t==='halloween' && m!==10) return '';  // sinon pendant sa saison : Halloween en octobre ; Noël du 1er décembre au 6 janvier
   if(t==='noel' && !(m===12 || (m===1 && j<=6))) return '';
   return t;
 }

@@ -634,6 +634,7 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
     return null;
   }
   function etat(d, m, H) {
+    if (+reglages().allumeJusqua > Date.now()) return 'jour';   // test lancé depuis l'admin : diapos allumées en continu jusqu'à cette heure
     const plage = H[d.getDay()], jourIso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     if (EN_PLUS.some(function (x) { return x[0] === jourIso && m >= x[1] && m < x[2]; }) || (plage && m >= plage[0] && m < plage[1])) return 'jour';
     const V = reglages().veille || {}, soir = V.soir ? min(V.soir) : null, matin = V.matin ? min(V.matin) : null;

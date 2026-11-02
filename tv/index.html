@@ -232,6 +232,7 @@ h2 em{font-style:normal;color:var(--easy)}
   <div class="pied">02 41 32 58 41</div>
   <div class="temps"><i id="t"></i></div>
 </div>
+<div id="attente" style="position:fixed;inset:0;z-index:10000;background:#000;display:none;align-items:flex-end;justify-content:center;padding-bottom:6vh"><p style="font:500 1.3vw 'DM Sans',sans-serif;color:#4b5361"></p></div>
 
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore-compat.js"></script>
@@ -240,7 +241,16 @@ h2 em{font-style:normal;color:var(--easy)}
    CONTENU DE L'ÉCRAN — c'est ici qu'on modifie les diapos.
    ===================================================================== */
 var DUREE = 10;            // secondes par diapo
-var IMG = 'img/';          // dossier des illustrations
+var IMG = '/tv/img/';      // dossier des illustrations (chemin complet : la page est aussi servie en /tv2/, /tv3/…)
+
+/* Plusieurs agences, une seule page : à la publication, cette page est recopiée en /tv2/ … /tv10/.
+   /tv = agence 1, Saint-Sylvain (document Firestore ecran_tv/config) ; /tv2 = Les Banchais (ecran_tv/tv2) ; etc.
+   Les réglages de chaque agence (DONNEES.agence) se font dans Administratif › Écran TV.
+   Tant qu'un réglage n'existe pas, Saint-Sylvain garde les valeurs écrites dans cette page. */
+var AG = +((location.pathname.match(/\/tv(\d+)(\/|$)/) || [])[1] || 1);
+var DOC = AG === 1 ? 'config' : 'tv' + AG;
+var AGENCE_DEF = { tel: '02 41 32 58 41', lat: 47.507, lon: -0.484 };   // Saint-Sylvain
+function agence(){ return (DONNEES && DONNEES.agence) || {}; }
 
 // Stage code : les sessions passées disparaissent toutes seules
 var STAGES = [
@@ -258,7 +268,9 @@ var COURS = [
 // Météo de Saint-Sylvain-d'Anjou (Open-Meteo, gratuit, sans clé)
 var METEO_URL = 'https://api.open-meteo.com/v1/forecast?latitude=47.507&longitude=-0.484&current=temperature_2m,weather_code&timezone=Europe%2FParis';
 // Contenu modifiable depuis Administratif › Écran TV (Firebase)
-var DONNEES_URL = 'https://firestore.googleapis.com/v1/projects/easy-cds/databases/(default)/documents/ecran_tv/config?key=AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E';
+var FS_URL = 'https://firestore.googleapis.com/v1/projects/easy-cds/databases/(default)/documents/ecran_tv/', FS_CLE = '?key=AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E';
+var DONNEES_URL = FS_URL + DOC + FS_CLE;
+var COMMUN_URL = FS_URL + 'config' + FS_CLE;   // les stages code sont les mêmes pour toutes les agences : rangés avec Saint-Sylvain
 
 var DIAPOS = [
   {type:'illu', img:'clio', photo:true, kick:'', titre:'Bienvenue <em>chez Easy</em>', texte:'Ici, on apprend à conduire simplement.'},
@@ -334,12 +346,15 @@ function rendu(d){
       return '<div class="diapo rouge" data-rouge><div class="txt"><h2 class="f a a1">'+d.titre+'</h2><p'+a(2)+'>'+d.texte+'</p><img class="sourire a a3" style="width:16rem;margin-top:2rem" src="'+IMG+'sourire_blanc.png" alt=""></div><div class="illu"><img src="'+IMG+d.img+'.webp" alt=""></div></div>';
     case 'stages':
       var auj=new Date(); auj.setHours(0,0,0,0);
-      var l=((DONNEES&&DONNEES.stages)||STAGES).slice().sort(function(x,y){ return x.du<y.du?-1:1; }).filter(function(s){ return new Date(s.au+'T23:59:00')>=auj; });
+      var l=((AG===1?DONNEES&&DONNEES.stages:COMMUN&&COMMUN.stages)||STAGES).slice().sort(function(x,y){ return x.du<y.du?-1:1; }).filter(function(s){ return new Date(s.au+'T23:59:00')>=auj; });
       if(!l.length) return '';
       r=l.slice(0,5).map(function(s,i){ return '<div'+a(i+3)+'>'+periode(s)+'<span class="'+(s.complet?'':'libre')+'">'+(s.complet?'COMPLET':'PLACES DISPO')+'</span></div>'; }).join('');
       return '<div class="diapo"><div class="txt"><div'+a(1)+'><div class="kick">'+d.kick+'</div></div><h2 class="f a a2">'+d.titre+'</h2><p'+a(2)+'>'+d.texte+'</p></div><div class="liste" style="flex:1">'+r+'</div></div>';
     case 'creneaux':
-      r=d.creneaux.map(function(c,i){ return '<div'+a(i+3)+'><b class="f">'+c[0]+'</b><small>'+c[1]+'</small></div>'; }).join('');
+      var cr=d.creneaux;
+      if(agence().cours || AG!==1) cr=cours().map(function(c){ return [JOURS_NOM[c.jour], heureTxt(c.de)+' – '+heureTxt(c.a)]; });
+      if(!cr.length) return '';   // pas de cours de code en salle dans cette agence
+      r=cr.map(function(c,i){ return '<div'+a(i+3)+'><b class="f">'+c[0]+'</b><small>'+c[1]+'</small></div>'; }).join('');
       return '<div class="diapo"><div class="txt"><div'+a(1)+'><div class="kick">'+d.kick+'</div></div><h2 class="f a a2">'+d.titre+'</h2><div class="creneaux">'+r+'</div><p'+a(5)+' style="margin-top:2rem">Avec un moniteur pour t’accompagner.</p></div><div class="illu"><img src="'+IMG+d.img+'.webp" alt=""></div></div>';
     case 'parrainage':
       r=d.etapes.map(function(e,i){ return '<div'+a(i+3)+'><i>'+(i+1)+'</i>'+e+'</div>'; }).join('');
@@ -360,6 +375,7 @@ function rendu(d){
       });
       return '<div class="diapo et-d" data-d="'+tot+'"><div class="et-aff"><div class="et-cadre"><img src="'+IMG+'etapes.webp" alt="">'+halos+'</div></div><div class="txt"><div'+a(1)+'><div class="kick">Ton parcours</div></div><h2 class="f a a2">Les étapes vers<br>ton permis <em>chez Easy</em></h2><div class="et-zone">'+bul+'</div><div class="et-suivi">'+pts+'</div></div></div>';
     case 'avis':   // la note en grand, et les avis qui arrivent comme des messages
+      if(AG!==1){ var g=agence().avis; if(!g||!g.liste||!g.liste.length) return ''; d={kick:d.kick, note:g.note||'', nb:g.nb?g.nb+' avis':'', avis:g.liste}; }
       var places=[['',''],['',' d'],['',' d'],['','']];
       var dep=(window.TOUR_AVIS=(window.TOUR_AVIS||0)+1)%d.avis.length, choix=d.avis.slice(dep).concat(d.avis.slice(0,dep)).slice(0,4);   // 4 avis par tour, pas toujours les mêmes
       var bul=choix.map(function(v,i){ return '<div class="bulle'+places[i][1]+'" style="animation-delay:'+(0.9+i*0.55).toFixed(2)+'s">« '+v[0]+' »<small><i>'+v[1].charAt(0)+'</i>'+v[1]+'</small></div>'; }).join('');
@@ -372,10 +388,19 @@ function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){ retu
 function ymd(d){ return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
 
 // ---- Programme du jour
+var JOURS_NOM=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+function hm(v){ if(typeof v==='number') return [v,0]; var p=String(v||'').split(':'); return [+p[0]||0,+p[1]||0]; }
+function heureTxt(v){ var x=hm(v); return x[0]+' h'+(x[1]?' '+('0'+x[1]).slice(-2):''); }
+// Cours de code en salle : ceux réglés dans l'admin pour l'agence, sinon ceux écrits plus haut (Saint-Sylvain)
+function cours(){
+  var c=agence().cours;
+  if(!c) return AG===1?COURS:[];
+  return c.filter(function(x){ return x&&x.de&&x.a&&x.jour!=null; }).map(function(x){ var h=hm(x.de)[0]; return {jour:+x.jour, de:x.de, a:x.a, quand:h>=17?'ce soir':h<12?'ce matin':'cet après-midi', heure:heureTxt(x.de)}; });
+}
 function programme(){
-  var n=new Date(), c=COURS.filter(function(c){ return c.jour===n.getDay(); })[0];
+  var n=new Date(), c=cours().filter(function(c){ return c.jour===n.getDay(); })[0];
   if(!c) return null;
-  var deb=new Date(n), fin=new Date(n); deb.setHours(c.de,0,0,0); fin.setHours(c.a,0,0,0);
+  var deb=new Date(n), fin=new Date(n); deb.setHours(hm(c.de)[0],hm(c.de)[1],0,0); fin.setHours(hm(c.a)[0],hm(c.a)[1],0,0);
   return n<fin ? {c:c, deb:deb, fin:fin} : null;
 }
 function majComptes(){
@@ -404,8 +429,15 @@ function conseilMeteo(){
   if(pluie) return {kick:'Météo · il pleut', titre:'Pluie : on <em>lève le pied</em>', texte:'Sur route mouillée, on freine plus long. Garde au moins 3 secondes avec le véhicule devant. 110&nbsp;km/h sur autoroute, 100&nbsp;km/h sur voie rapide.', ico:ICO.pluie};
   return null;
 }
+function urlMeteo(){   // ville de l'agence (réglée dans l'admin), sinon Saint-Sylvain
+  var g=agence();
+  if(g.lat==null||g.lon==null) return AG===1?METEO_URL:null;
+  return 'https://api.open-meteo.com/v1/forecast?latitude='+(+g.lat)+'&longitude='+(+g.lon)+'&current=temperature_2m,weather_code&timezone=Europe%2FParis';
+}
+var meteoPour='';
 function majMeteo(){
-  fetch(METEO_URL).then(function(r){ return r.json(); }).then(function(v){
+  var u=urlMeteo(); meteoPour=u||''; if(!u){ METEO=null; return; }
+  fetch(u).then(function(r){ return r.json(); }).then(function(v){
     if(!v||!v.current) return;
     var m={code:v.current.weather_code, temp:v.current.temperature_2m};
     if(!METEO||METEO.code!==m.code||Math.round(METEO.temp)!==Math.round(m.temp)) aRefaire=true;
@@ -420,20 +452,40 @@ function recevoir(j){                      // nouveau contenu : on le prend ; «
   var v; try{ v=JSON.parse(j); }catch(e){ return; }
   if(DONNEES && (v.recharger||0)!==(DONNEES.recharger||0)){ location.reload(); return; }
   brut=j; DONNEES=v; aRefaire=true; poserTheme();   // le décor change tout de suite, les diapos de saison au passage suivant
+  document.querySelector('.pied').textContent = agence().tel!=null ? agence().tel : AG===1 ? AGENCE_DEF.tel : '';
+  if((urlMeteo()||'')!==meteoPour) majMeteo();
+  attente(false); if(window.EASY_NUIT) window.EASY_NUIT();
 }
+// Stages code (agences 2, 3…) : lus dans le document de Saint-Sylvain
+var COMMUN=null, brutCommun='';
+function recevoirCommun(j){
+  if(!j||j===brutCommun) return; brutCommun=j;
+  try{ COMMUN={stages:JSON.parse(j).stages}; aRefaire=true; }catch(e){}
+}
+// Agences 2, 3… : écran noir tant que les réglages ne sont pas arrivés ; message si l'agence n'existe pas encore dans l'admin
+function attente(on, txt){
+  var el=document.getElementById('attente'); if(!el) return;
+  el.style.display=on?'flex':'none'; el.querySelector('p').textContent=txt||'';
+}
+if(AG!==1) attente(true);
 function ecouterDirect(){                  // en direct : chaque changement fait dans Administratif arrive en 1 à 2 secondes
   try{
     if(!window.firebase) return;
     var app=firebase.initializeApp({apiKey:'AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E', projectId:'easy-cds'}, 'tv');
-    app.firestore().collection('ecran_tv').doc('config').onSnapshot(function(s){ var d=s.exists&&s.data(); if(d&&d.json) recevoir(d.json); }, function(){});
+    app.firestore().collection('ecran_tv').doc(DOC).onSnapshot(function(s){ var d=s.exists&&s.data(); if(d&&d.json) recevoir(d.json); else if(!s.exists&&AG!==1) nonConfiguree(); }, function(){});
+    if(AG!==1) app.firestore().collection('ecran_tv').doc('config').onSnapshot(function(s){ var d=s.exists&&s.data(); if(d&&d.json) recevoirCommun(d.json); }, function(){});
   }catch(e){}
 }
-function majDonnees(){
-  fetch(DONNEES_URL+'&t='+Date.now(),{cache:'no-store'}).then(function(r){ return r.ok?r.json():null; }).then(function(v){
+function nonConfiguree(){ DONNEES=null; brut=''; attente(true, 'Écran n° '+AG+' : agence pas encore créée dans Administratif › Écran TV.'); }
+function lireDoc(url, cb, absent){
+  fetch(url+'&t='+Date.now(),{cache:'no-store'}).then(function(r){ if(r.status===404&&absent) absent(); return r.ok?r.json():null; }).then(function(v){
     var j=v&&v.fields&&v.fields.json&&v.fields.json.stringValue;
-    if(!j||j===brut) return;
-    recevoir(j);
+    if(j) cb(j);
   }).catch(function(){});
+}
+function majDonnees(){
+  lireDoc(DONNEES_URL, recevoir, AG!==1?nonConfiguree:null);
+  if(AG!==1) lireDoc(COMMUN_URL, recevoirCommun);
 }
 function themeActif(){                    // le thème de saison ne s'affiche que pendant sa saison (Halloween : octobre ; Noël : 1er décembre - 6 janvier)
   var t=(DONNEES&&DONNEES.theme)||'', d=new Date(), m=d.getMonth()+1, j=d.getDate();
@@ -485,6 +537,9 @@ function construire(){
     else if(d.type==='promos') promosActives().forEach(function(x){ liste.push({type:'promo', titre:x.titre, prix:x.prix, texte:x.texte, au:x.au}); });
     else liste.push(d);
   });
+  var OFF=(DONNEES&&DONNEES.off)||{};   // diapos masquées pour cette agence (Administratif › Écran TV)
+  liste=liste.filter(function(d){ return !OFF[cleDuree(d)]; });
+  if(!liste.length) liste=[DIAPOS[DIAPOS.length-1]];
   zone.innerHTML=liste.map(function(d){ return rendu(d).replace('<div class="diapo', '<div data-t="'+cleDuree(d)+'" class="diapo'); }).join(''); poserTheme();
   [].forEach.call(zone.querySelectorAll('.illu:not(.photo) img'), function(im){ var f=function(){ if(im.naturalWidth/im.naturalHeight>1.45 && !im.closest('.diapo').querySelector('.creneaux')) im.parentNode.classList.add('large'); }; if(im.complete) f(); else im.addEventListener('load', f); });
   els=[].slice.call(zone.querySelectorAll('.diapo'));
@@ -508,7 +563,7 @@ majDonnees(); setInterval(majDonnees, 60000); ecouterDirect();   // la lecture t
 setTimeout(function boucle(){ suivante(); setTimeout(boucle, dureeActuelle()*1000); }, 1500);   // chaque diapo a sa propre durée (réglable dans l'admin)   // laisse 1,5 s pour charger météo et annonces
 
 // Note Codes Rousseau, mise à jour chaque semaine par GitHub (avis.json)
-function majAvis(){ fetch('/avis.json?'+Date.now()).then(function(r){return r.json();}).then(function(v){ if(!v||!v.note) return; DIAPOS.forEach(function(d){ if(d.type==='avis'){ d.note=v.note; d.nb=v.nb+' avis'; } }); aRefaire=true; }).catch(function(){}); }
+function majAvis(){ if(AG!==1) return; fetch('/avis.json?'+Date.now()).then(function(r){return r.json();}).then(function(v){ if(!v||!v.note) return; DIAPOS.forEach(function(d){ if(d.type==='avis'){ d.note=v.note; d.nb=v.nb+' avis'; } }); aRefaire=true; }).catch(function(){}); }
 majAvis(); setInterval(majAvis, 6*3600000);
 function horloge(){
   var n=new Date();
@@ -525,7 +580,7 @@ document.addEventListener('click',function(){ if(document.documentElement.reques
 try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(){}); }catch(e){}
 </script>
 
-<!-- ===== Écran de nuit : le sourire dort (de 18h30 à 8h00) ===== -->
+<!-- ===== Écran de nuit : le sourire dort, ou écran noir (réglable par agence) ===== -->
 <style>
 #nuit{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse 60% 55% at 50% 52%,#121722 0%,#0b0e14 55%,#07090d 100%);display:none;overflow:hidden;cursor:none;font-family:'DM Sans',sans-serif;color:#5d6673}
 #nuit.on{display:block}
@@ -536,7 +591,7 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
 @keyframes nDerive{0%{margin-left:-2.2vw;margin-top:-1.4vh}50%{margin-left:1.8vw;margin-top:1.2vh}100%{margin-left:-.6vw;margin-top:2vh}}
 #nuit .n-visage{position:relative;animation:nSouffle 6s ease-in-out infinite}
 @keyframes nSouffle{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
-#nuit .n-sourire{width:100%;aspect-ratio:834/264;background:#5a1c1e;-webkit-mask:url(img/sourire_blanc.png) center/contain no-repeat;mask:url(img/sourire_blanc.png) center/contain no-repeat}
+#nuit .n-sourire{width:100%;aspect-ratio:834/264;background:#5a1c1e;-webkit-mask:url(/tv/img/sourire_blanc.png) center/contain no-repeat;mask:url(/tv/img/sourire_blanc.png) center/contain no-repeat}
 #nuit .n-z{position:absolute;right:-3vw;top:-4vw;font:600 3.2vw 'Fredoka',sans-serif;color:#4a5260;opacity:0;animation:nZ 6s ease-in infinite}
 #nuit .n-z:nth-child(2){animation-delay:2s;font-size:2.4vw}#nuit .n-z:nth-child(3){animation-delay:4s;font-size:1.8vw}
 @keyframes nZ{0%{opacity:0;transform:translate(0,0)}20%{opacity:.8}100%{opacity:0;transform:translate(4vw,-9vw)}}
@@ -555,7 +610,9 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
 </div>
 <script>
 (function () {
-  // Écran allumé (mode jour) selon les horaires de l'agence ; mode nuit le reste du temps ; noir complet de 1h à 6h.
+  // Trois états : allumé (diapos) aux horaires de l'agence ; « le sourire dort » si l'agence l'a choisi ; sinon écran noir.
+  // Horaires et veille de chaque agence : Administratif › Écran TV (DONNEES.agence.horaires / .veille).
+  // Sans réglage, Saint-Sylvain garde les horaires ci-dessous et l'écran noir dès la fermeture.
   // [début, fin] en minutes depuis minuit, par jour (0 = dimanche … 6 = samedi)
   const EN_PLUS = [];   // allumages ponctuels en plus des horaires : ['AAAA-MM-JJ', début en minutes, fin en minutes]
   const JOUR = { 1: [480, 1110], 2: [480, 1110], 3: [480, 1155], 4: [480, 1110], 5: [480, 1110], 6: [480, 780] };   // lun-ven 8h-18h30 (mercredi jusqu'à 19h15 pour le cours de code), samedi 8h-13h, dimanche fermé
@@ -563,16 +620,37 @@ try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').catch(function(
   const el = document.getElementById('nuit'), ciel = el.querySelector('.n-ciel');
   for (let i = 0; i < 38; i++) { const e = document.createElement('i'); e.className = 'n-etoile'; e.style.left = Math.random() * 100 + '%'; e.style.top = Math.random() * 62 + '%'; e.style.animationDelay = (-Math.random() * 7) + 's'; e.style.animationDuration = (5 + Math.random() * 6) + 's'; ciel.appendChild(e); }
   function maintenant() { const f = (location.hash.match(/nuit=(\d\d)(\d\d)/) || []), j = (location.hash.match(/jour=(\d)/) || []); const d = new Date(); if (f[1]) d.setHours(+f[1], +f[2], 0, 0); if (j[1]) d.setDate(d.getDate() + ((+j[1] - d.getDay() + 7) % 7)); return d; }
-  function prochaine(d) { for (let k = 0; k < 8; k++) { const x = new Date(d); x.setDate(d.getDate() + k); x.setHours(13, 30, 0, 0); if ((x.getDay() === 1 || x.getDay() === 3) && x > d) return x; } }
-  function maj() {
-    const d = maintenant(), m = d.getHours() * 60 + d.getMinutes(), plage = JOUR[d.getDay()], jourIso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'), extra = EN_PLUS.some(function (x) { return x[0] === jourIso && m >= x[1] && m < x[2]; }), nuit = !extra && (!plage || m < plage[0] || m >= plage[1]);
-    el.classList.toggle('on', nuit); el.classList.toggle('noir', nuit); if (!nuit) return; // agence fermée : écran tout noir (la télé reste allumée sur la page)
-    el.querySelector('.n-heure').textContent = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    const p = prochaine(d), dem = new Date(d); dem.setDate(d.getDate() + 1);
-    const quand = p.toDateString() === d.toDateString() ? "aujourd'hui" : p.toDateString() === dem.toDateString() ? 'demain' : JOURS[p.getDay()];
-    el.querySelector('.n-msg').innerHTML = "L'agence est fermée · on se retrouve <b>" + quand + ' à 13h30</b>';
+  const min = v => { const p = String(v || '').split(':'); return (+p[0] || 0) * 60 + (+p[1] || 0); };
+  function reglages() { return (typeof agence === 'function' && agence()) || {}; }
+  function horaires() {
+    const h = reglages().horaires; if (!h) return JOUR;
+    const r = {}; for (let k = 0; k < 7; k++) { const p = h[k]; if (p && p[0] && p[1] && min(p[1]) > min(p[0])) r[k] = [min(p[0]), min(p[1])]; } return r;
   }
-  const im = new Image(); im.onload = () => { if (im.naturalWidth) el.querySelector('.n-sourire').style.aspectRatio = im.naturalWidth + '/' + im.naturalHeight; }; im.src = 'img/sourire_blanc.png';
+  function prochaine(d, H) {
+    if (!reglages().horaires && (typeof AG === 'undefined' || AG === 1)) {   // Saint-Sylvain : accueil le lundi et le mercredi à 13h30
+      for (let k = 0; k < 8; k++) { const x = new Date(d); x.setDate(d.getDate() + k); x.setHours(13, 30, 0, 0); if ((x.getDay() === 1 || x.getDay() === 3) && x > d) return x; }
+    }
+    for (let k = 0; k < 8; k++) { const x = new Date(d); x.setDate(d.getDate() + k); const p = H[x.getDay()]; if (!p) continue; x.setHours(Math.floor(p[0] / 60), p[0] % 60, 0, 0); if (x > d) return x; }
+    return null;
+  }
+  function etat(d, m, H) {
+    const plage = H[d.getDay()], jourIso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    if (EN_PLUS.some(function (x) { return x[0] === jourIso && m >= x[1] && m < x[2]; }) || (plage && m >= plage[0] && m < plage[1])) return 'jour';
+    const V = reglages().veille || {}, soir = V.soir ? min(V.soir) : null, matin = V.matin ? min(V.matin) : null;
+    if (plage) return (m >= plage[1] && soir != null && m < soir) || (m < plage[0] && matin != null && m >= matin) ? 'sourire' : 'noir';
+    return V.fermes === 'sourire' && m >= (matin != null ? matin : 480) && m < (soir != null ? soir : 1200) ? 'sourire' : 'noir';   // jour fermé (dimanche…)
+  }
+  function maj() {
+    const d = maintenant(), m = d.getHours() * 60 + d.getMinutes(), H = horaires(), e = etat(d, m, H);
+    el.classList.toggle('on', e !== 'jour'); el.classList.toggle('noir', e === 'noir'); if (e === 'jour') return; // agence fermée : sourire qui dort ou écran tout noir (la télé reste allumée sur la page)
+    el.querySelector('.n-heure').textContent = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const p = prochaine(d, H), dem = new Date(d); dem.setDate(d.getDate() + 1);
+    if (!p) { el.querySelector('.n-msg').textContent = "L'agence est fermée"; return; }
+    const quand = p.toDateString() === d.toDateString() ? "aujourd'hui" : p.toDateString() === dem.toDateString() ? 'demain' : JOURS[p.getDay()];
+    el.querySelector('.n-msg').innerHTML = "L'agence est fermée · on se retrouve <b>" + quand + ' à ' + p.getHours() + 'h' + (p.getMinutes() ? String(p.getMinutes()).padStart(2, '0') : '') + '</b>';
+  }
+  window.EASY_NUIT = maj;   // relancé dès que les réglages de l'agence arrivent
+  const im = new Image(); im.onload = () => { if (im.naturalWidth) el.querySelector('.n-sourire').style.aspectRatio = im.naturalWidth + '/' + im.naturalHeight; }; im.src = '/tv/img/sourire_blanc.png';
   maj(); setInterval(maj, 20000);
 })();
 </script>

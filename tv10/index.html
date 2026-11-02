@@ -219,6 +219,60 @@ h2 em{font-style:normal;color:var(--easy)}
 .et-suivi svg,.et-b .n svg{width:1.8rem;height:1.8rem}
 .et-b .n svg{width:3rem;height:3rem}
 @media (prefers-reduced-motion:reduce){.flocon,.chauve,.guirlande i{animation:none}}
+/* ===== Styles au choix (Administratif › Écran TV › Diapos), maquettes retenues le 2/11/2026 : A = Centré, B = Moitié-moitié, C = Typographique =====
+   Fond blanc (la couleur exacte du fond des illustrations) : les images se fondent dans le décor, sans cadre ni ombre. */
+.diapo.st{display:block;padding:0;background:#fff}
+.diapo.st.rouge{background:transparent}
+.st-c{position:absolute;inset:8.75rem 10rem 6.9rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.st-s{position:absolute;inset:8.75rem 10rem 6.9rem;display:grid;grid-template-columns:1fr 1fr;gap:7.5rem;align-items:center}
+.st-s>.txt{text-align:left}
+.st-droite{display:flex;align-items:center;justify-content:center;min-width:0}
+.st-img{display:block;max-width:100%;object-fit:contain;margin:0 auto}
+.st-fondu{-webkit-mask-image:linear-gradient(to bottom,#000 86%,transparent);mask-image:linear-gradient(to bottom,#000 86%,transparent)}
+.diapo.st .kick{font-size:1.2rem;letter-spacing:.22em;margin-bottom:1.6rem}
+.diapo.st h2{font-size:5.25rem;line-height:1.06;margin:0;color:#111;font-weight:600}
+.diapo.st h2.xl{font-size:7.75rem}
+.diapo.st p{font-size:2rem;line-height:1.45;color:#5b6270;margin-top:1.6rem;max-width:55rem}
+.st-c p{margin-left:auto;margin-right:auto}
+.diapo.st.rouge h2,.diapo.st.rouge p,.diapo.st.rouge .kick{color:#fff}
+.diapo.st.rouge .kick{opacity:.8}
+.st-fig{font-size:12.5rem;line-height:1;color:var(--easy)}
+.st-lignes{width:100%;max-width:47.5rem;margin-top:2.5rem}
+.st-c .st-lignes{margin:2.5rem auto 0}
+.st-lignes>div{display:flex;justify-content:space-between;align-items:baseline;gap:2rem;padding:1.4rem 0;border-top:.125rem solid #e8e6e3;font-family:'Fredoka',sans-serif;font-weight:500;font-size:2.4rem;text-align:left}
+.st-lignes>div:last-child{border-bottom:.125rem solid #e8e6e3}
+.st-lignes em{font:700 1.1rem 'DM Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;font-style:normal;color:#5b6270;white-space:nowrap}
+.st-lignes em.ok{color:#057a55}
+.st-lignes b{font-weight:500;color:var(--easy);white-space:nowrap}
+.st-sr{aspect-ratio:400/127;background:var(--easy);-webkit-mask:url(/tv/img/sourire_blanc.png) center/contain no-repeat;mask:url(/tv/img/sourire_blanc.png) center/contain no-repeat}
+.diapo.st.rouge .st-sr{background:#fff}
+.diapo.on .st-sr{animation:sourit 1.2s cubic-bezier(.3,1.6,.5,1) .6s both}
+.st-signe{position:absolute;left:50%;bottom:5.75rem;width:7.5rem;margin-left:-3.75rem}
+.st-noms{display:flex;flex-wrap:wrap;gap:1.1rem 2.5rem;justify-content:center;margin-top:2.75rem;font-family:'Fredoka',sans-serif;font-weight:500;font-size:3.4rem}
+.st-noms span:not(:last-child)::after{content:'·';color:var(--easy);margin-left:2.5rem}
+.st-logos{display:flex;gap:4.4rem;align-items:center;justify-content:center;margin-top:3.1rem}
+.st-logos img{height:9.4rem}
+.st-mention{font-size:1rem;line-height:1.45;color:#9aa1ab;max-width:54rem;margin:1.9rem auto 0}
+.diapo.st .compte{display:block;background:none;color:var(--easy);padding:0;margin-top:1.9rem;border-radius:0;font-family:'Fredoka',sans-serif;font-size:2.5rem}
+.diapo.st .compte small{display:inline;color:#5b6270;font:600 1.9rem 'DM Sans',sans-serif;letter-spacing:.04em;text-transform:none;opacity:1;margin:0 .8rem 0 0}
+.st-etp{display:flex;width:100%;margin-top:3.5rem}
+.st-etp>div{flex:1;position:relative;text-align:center}
+.st-etp>div::before{content:'';position:absolute;top:1.3rem;left:-50%;right:50%;height:.125rem;background:#e8e6e3}
+.st-etp>div:first-child::before{display:none}
+.st-etp i{position:relative;display:grid;place-items:center;width:2.75rem;height:2.75rem;margin:0 auto 1.1rem;border-radius:50%;font:600 1.25rem 'Fredoka',sans-serif;font-style:normal;border:.125rem solid #e8e6e3;background:#fff;color:#9aa1ab}
+.st-etp b{display:block;font:500 1.4rem/1.2 'Fredoka',sans-serif;padding:0 .5rem;color:#111}
+.diapo.on .st-etp i{animation-name:st-pon,st-pfait;animation-duration:.4s,.4s;animation-fill-mode:forwards,forwards}
+.diapo.on .st-etp b{animation-name:st-bon,st-boff;animation-duration:.4s,.4s;animation-fill-mode:forwards,forwards}
+@keyframes st-pon{to{background:#111;border-color:#111;color:#fff;transform:scale(1.25)}}
+@keyframes st-pfait{to{background:var(--easy);border-color:var(--easy);color:#fff;transform:none}}
+@keyframes st-bon{to{color:var(--easy)}}
+@keyframes st-boff{to{color:#111}}
+.st-pile{position:relative;width:100%}
+.st-pile>div{position:absolute;left:0;right:0;top:0;opacity:0}
+.diapo.on .st-pile>div{animation-name:st-in,st-out;animation-duration:.6s,.4s;animation-fill-mode:forwards,forwards;animation-timing-function:cubic-bezier(.2,.7,.2,1),ease}
+@keyframes st-in{from{opacity:0;transform:translateY(1.6rem)}to{opacity:1;transform:none}}
+@keyframes st-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-1.2rem)}}
+@media (prefers-reduced-motion:reduce){.diapo.on .st-sr,.diapo.on .st-etp i,.diapo.on .st-etp b{animation:none}}
 @media (prefers-reduced-motion:reduce){.a,.diapo.on .a,.diapo.on .illu,.diapo.on .qr,.diapo.on .illu img,.diapo.on .sourire,.diapo.on .et-aff{animation:none;opacity:1;transform:none}.fond{transition:none}}
 </style>
 </head>
@@ -308,8 +362,75 @@ var MOIS=['janvier','février','mars','avril','mai','juin','juillet','août','se
 function jour(s){ var d=new Date(s+'T12:00:00'); return d.getDate(); }
 function periode(s){ var a=new Date(s.du+'T12:00:00'), b=new Date(s.au+'T12:00:00'); return 'Du '+a.getDate()+(a.getMonth()!==b.getMonth()?' '+MOIS[a.getMonth()]:'')+' au '+b.getDate()+' '+MOIS[b.getMonth()]; }
 function a(n){ return ' class="a a'+n+'"'; }
+/* ===== Styles au choix : chaque diapo peut prendre un des styles retenus le 2/11/2026 (réglé par agence dans Administratif › Écran TV › Diapos).
+   A = Centré, B = Moitié-moitié, C = Typographique. Sans choix (ou style inconnu) : la diapo d'origine, rendue plus bas. */
+var STYLES={'illu:clio':'A','promo':'A','slogan':'A','programme':'AB','illu:permis':'AB','etapes':'AB','boite':'AB','illu:moto':'AB','illu:remorque':'AB','stages':'A','creneaux:salle':'AB','aides':'A','illu:perf':'AB','reçus':'AC','fin':'AC'};
+var FONDU={permis:1,e208:1};   // illustrations dont le rond rose est coupé en bas : bord adouci à l'affichage
+function styleDe(d){ var k=cleDuree(d), s=((typeof DONNEES!=='undefined'&&DONNEES&&DONNEES.styles)||{})[k]; return s&&STYLES[k]&&STYLES[k].indexOf(s)>=0?s:''; }
+function stBloc(sorte,inner,o){ o=o||{};
+  return '<div class="diapo st'+(o.rouge?' rouge':'')+'"'+(o.rouge?' data-rouge':'')+(o.bg?' style="background:'+o.bg+'"':'')+(o.d?' data-d="'+o.d+'"':'')+'><div class="st-'+sorte+'"'+(o.cols?' style="grid-template-columns:'+o.cols+'"':'')+'>'+inner+'</div>'+(o.signe?'<div class="st-sr st-signe"></div>':'')+'</div>'; }
+function stImg(f,h,fondu){ return '<img class="st-img'+(fondu?' st-fondu':'')+'" src="'+IMG+f+'" style="max-height:'+h+'rem" alt="">'; }
+function stK(t,n){ return t?'<div'+a(n)+'><div class="kick">'+t+'</div></div>':''; }
+function stLignes(l){ return '<div class="st-lignes">'+l.map(function(x,i){ return '<div class="a a'+Math.min(i+3,6)+'"><span>'+x[0]+'</span>'+(x.length<3?'<b>'+x[1]+'</b>':'<em class="'+(x[2]?'ok':'')+'">'+x[1]+'</em>')+'</div>'; }).join('')+'</div>'; }
+function stNb(t){ return String(t).replace(/([^\s<>]+-[^\s<>]+)/g,'<span style="white-space:nowrap">$1</span>'); }   // pas de coupure dans « Rendez-vous », « Après-midi »…
+function stEm(t,sep){ var p=String(t).split('<br>'); return p.length===2?p[0]+sep+'<em>'+p[1]+'</em>':t; }
+function stDate(s){ var x=new Date(s+'T12:00:00'); return x.getDate()+' '+MOIS[x.getMonth()]; }
+function stEt(liste){ return liste.length<2?liste.join(''):liste.slice(0,-1).join(', ')+' et '+liste[liste.length-1]; }
+var ST_ETAPES=[['1','Inscription','On monte ton dossier à l’agence et on demande ton numéro de candidat.'],['2','Évaluation de départ','Une séance avec un moniteur pour estimer ton nombre d’heures.'],['3','Formation au code','En salle à l’agence, en ligne ou en stage, à ton rythme.'],['4','Code de la route','Quand tu es prêt, tu t’inscris toi-même dans un centre d’examen agréé.'],['5','Formation pratique','Tes leçons de conduite, pas à pas jusqu’à l’autonomie.'],['+','Conduite accompagnée','Dès 15 ans : un an et 3 000 km avec un proche, et 2 rendez-vous à l’agence.'],['6','Pratique du permis','Le grand jour : ton moniteur t’accompagne à l’examen.']];
+function renduStyle(d,st){
+  var f,cr,l,n,auj;
+  switch(d.type){
+    case 'illu': case 'boite':
+      var img=d.type==='boite'?'e208':d.img; f=img+(d.photo?'.jpg':'.webp');
+      var bg=d.photo?'#f4f3f1':'';   // la photo de la voiture a un fond gris très clair
+      if(st==='A') return stBloc('c','<div class="a a1">'+stImg(f,d.photo?29.4:27,FONDU[img])+'</div><h2 class="f a a2" style="margin-top:2rem">'+String(d.titre).replace(/<br>/g,' ')+'</h2>'+(d.texte?'<p class="a a3">'+d.texte+'</p>':''),{bg:bg});
+      return stBloc('s','<div class="txt">'+stK(d.kick,1)+'<h2 class="f xl a a2">'+stNb(d.titre)+'</h2>'+(d.texte?'<p class="a a3">'+d.texte+'</p>':'')+'</div><div class="st-droite a a3">'+stImg(f,36,FONDU[img])+'</div>',{bg:bg});
+    case 'promo':
+      return stBloc('c',stK('Offre du moment',1)+(d.prix?'<div class="st-fig f a a2">'+esc(d.prix)+'</div><h2 class="f a a3" style="margin-top:1.2rem"><em>'+esc(d.titre)+'</em></h2>':'<h2 class="f xl a a2">'+esc(d.titre)+'</h2>')+((d.texte||d.au)?'<p class="a a4">'+esc(d.texte||'')+(d.au?(d.texte?' · ':'')+'jusqu’au '+stDate(d.au):'')+'</p>':''));
+    case 'slogan': case 'fin':
+      if(st==='C') return stBloc('c','<h2 class="f xl a a1" style="font-size:9.4rem">'+String(d.titre).replace(/<br>/g,' ')+'</h2>',{rouge:1,signe:1});
+      return stBloc('c','<div class="a a1"><div class="st-sr" style="width:'+(d.type==='fin'?18.75:16.25)+'rem;margin:0 auto 3.5rem"></div></div><h2 class="f xl a a2">'+stEm(d.titre,d.type==='fin'?' ':'<br>')+'</h2>');
+    case 'programme':
+      var p=programme(); if(!p) return '';
+      var cpt='<div class="compte a a4" data-debut="'+p.deb.getTime()+'" data-fin="'+p.fin.getTime()+'"></div>';
+      if(st==='A') return stBloc('c','<div class="a a1">'+stImg('salle.webp',23.75)+'</div><div class="a a2" style="margin-top:1.9rem"><div class="kick" style="margin-bottom:1.2rem">Aujourd’hui · cours de code</div></div><h2 class="f a a3">Rendez-vous <em>'+p.c.quand+' à '+p.c.heure+'</em></h2>'+cpt);
+      return stBloc('s','<div class="txt">'+stK('Aujourd’hui · cours de code',1)+'<h2 class="f xl a a2">'+p.c.quand.charAt(0).toUpperCase()+p.c.quand.slice(1)+'<br><em>à '+p.c.heure+'</em></h2><p class="a a3">En salle, avec un moniteur. Viens avec tes questions !</p>'+cpt+'</div><div class="st-droite a a3">'+stImg('salle.webp',35)+'</div>');
+    case 'etapes':
+      var Dd=(DONNEES&&DONNEES.durees)||{}, tot=(+Dd.etapes>=3&&+Dd.etapes<=120)?+Dd.etapes:42, deb=1.2, pas=Math.max(1.5,(tot-deb-1.5)/ST_ETAPES.length);
+      var t=function(k){ return (deb+pas*k).toFixed(2)+'s'; }, der=ST_ETAPES.length-1;
+      var ret=function(k){ return 'animation-delay:'+t(k)+','+(k<der?t(k+1):'999s'); };
+      if(st==='A'){
+        var pts=ST_ETAPES.map(function(e,k){ return '<div><i style="'+ret(k)+'">'+e[0]+'</i><b style="'+ret(k)+'">'+e[1].replace('Conduite accompagnée','Accompagnée').replace('Évaluation de départ','Évaluation').replace('Formation au code','Code').replace('Code de la route','Examen code').replace('Formation pratique','Conduite').replace('Pratique du permis','Examen pratique')+'</b></div>'; }).join('');
+        var det=ST_ETAPES.map(function(e,k){ return '<div style="'+ret(k)+'"><p style="margin-top:0"><b style="color:#111">'+e[1]+'</b> — '+e[2]+'</p></div>'; }).join('');
+        return stBloc('c',stK('Ton parcours',1)+'<h2 class="f a a2">Les étapes vers ton permis <em>chez Easy</em></h2><div class="st-etp a a3">'+pts+'</div><div class="st-pile" style="height:8rem;margin-top:3.2rem">'+det+'</div>',{d:tot});
+      }
+      var POS={1:[37.7,30.1],2:[37.7,42.8],3:[41.8,54.9],4:[65.3,57.6],5:[74.4,66.9],a:[44,74.5],6:[38.2,88.3],r1:[15.8,70.1],r2:[14,80.5]}, halos='';
+      ST_ETAPES.forEach(function(e,k){ var q=e[0]==='+'?'a':e[0]; (q==='a'?['a','r1','r2']:[q]).forEach(function(z){ halos+='<span class="et-h" style="left:'+POS[z][0]+'%;top:'+POS[z][1]+'%;animation-delay:'+t(k)+','+(k<der?t(k+1):'999s')+','+t(k)+'"></span>'; }); });
+      var det2=ST_ETAPES.map(function(e,k){ return '<div style="'+ret(k)+'"><div class="kick">Ton parcours · étape '+(k+1)+' sur 7</div><h2 class="f xl">'+e[1]+'</h2><p>'+e[2]+'</p></div>'; }).join('');
+      return stBloc('s','<div class="st-droite a a1"><div class="et-cadre" style="height:50rem">'+'<img src="'+IMG+'etapes.webp" alt="">'+halos+'</div></div><div class="txt"><div class="st-pile" style="height:30rem">'+det2+'</div></div>',{d:tot,cols:'30rem 1fr'});
+    case 'stages':
+      auj=new Date(); auj.setHours(0,0,0,0);
+      l=((AG===1?DONNEES&&DONNEES.stages:COMMUN&&COMMUN.stages)||STAGES).slice().sort(function(x,y){ return x.du<y.du?-1:1; }).filter(function(s){ return new Date(s.au+'T23:59:00')>=auj; });
+      if(!l.length) return '';
+      return stBloc('c',stK(d.kick,1)+'<h2 class="f xl a a2">'+stNb(d.titre)+'</h2>'+stLignes(l.slice(0,4).map(function(s){ return [periode(s), s.complet?'Complet':'Places dispo', s.complet?0:1]; }))+(d.texte?'<p class="a a6" style="font-size:1.6rem">'+d.texte+'</p>':''));
+    case 'creneaux':
+      cr=d.creneaux;
+      if(agence().cours || AG!==1) cr=cours().map(function(c){ return [JOURS_NOM[c.jour], heureTxt(c.de)+' – '+heureTxt(c.a)]; });
+      if(!cr.length) return '';
+      if(st==='A') return stBloc('c','<div class="a a1">'+stImg(d.img+'.webp',23.75)+'</div><h2 class="f a a2" style="margin-top:1.5rem">'+d.titre+'</h2>'+stLignes(cr));
+      return stBloc('s','<div class="txt">'+stK(d.kick,1)+'<h2 class="f xl a a2">'+stNb(d.titre)+'</h2>'+stLignes(cr)+'</div><div class="st-droite a a3">'+stImg(d.img+'.webp',34)+'</div>');
+    case 'aides':
+      return stBloc('c',stK(d.kick,1)+'<h2 class="f xl a a2">'+stNb(d.titre)+'</h2><div class="st-logos a a3"><img src="'+IMG+'logo_permis1euro.png" alt="Le permis à un euro par jour"><img src="'+IMG+'logo_cpf.png" style="height:6.9rem" alt="Mon Compte Formation"><img src="'+IMG+'logo_irp.png" style="height:8.1rem" alt="IRP Auto"></div><div class="st-mention a a4">Permis à 1 € par jour : un crédit vous engage et doit être remboursé. Vérifiez vos capacités de remboursement avant de vous engager. Sous réserve d’acceptation par l’organisme prêteur.</div>');
+    case 'reçus':
+      n=recusRecents().map(esc);
+      if(st==='C') return stBloc('c',stK('Félicitations',1)+'<h2 class="f xl a a2">'+(n.length&&n.length<=4?'Bravo '+stEt(n):d.titre)+'</h2><p class="a a3">'+(n.length===1?'Toute l’équipe est fière de toi.':n.length?'Toute l’équipe est fière de vous.':d.texte)+'</p>',{rouge:1,signe:1});
+      return stBloc('c',stK('Félicitations',1)+'<h2 class="f xl a a2">'+(n.length===1?'Bravo <em>'+n[0]+'</em> !':n.length?'Bravo à nos <em>reçus</em>':d.titre)+'</h2>'+(n.length>1?'<div class="st-noms a a3">'+n.map(function(x){ return '<span>'+x+'</span>'; }).join('')+'</div>':'<p class="a a3">'+(n.length?'Félicitations pour ton permis, toute l’équipe est fière de toi.':d.texte)+'</p>'),{signe:1});
+  }
+  return null;
+}
 function rendu(d){
   var t, r='';
+  var st=styleDe(d); if(st){ var hs=renduStyle(d,st); if(hs!==null) return hs; }   // style choisi dans l'admin
   switch(d.type){
     case 'illu':
       return '<div class="diapo"><div class="txt">'+(d.kick?'<div'+a(1)+'><div class="kick">'+d.kick+'</div></div>':'')+'<h2 class="f a a2">'+d.titre+'</h2><p'+a(3)+'>'+d.texte+'</p></div><div class="illu'+(d.photo?' photo':'')+'"><img src="'+IMG+d.img+(d.photo?'.jpg':'.webp')+'" alt=""></div></div>';

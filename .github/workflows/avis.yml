@@ -1,6 +1,9 @@
 name: Avis Codes Rousseau
-# Chaque lundi matin : met à jour avis.json (note et nombre d'avis) pour la télé et le site,
-# la description Google du site, et prévient la direction (issue GitHub = e-mail) quand ça change.
+# Chaque lundi matin : relève la note et le nombre d'avis Codes Rousseau de chaque agence,
+# pour la télé et le site : avis.json (Saint-Sylvain), avis-2.json (Les Banchais), avis-N.json (agence N),
+# met à jour la description Google du site, et prévient la direction (issue GitHub = e-mail) quand ça change.
+# Agences : Saint-Sylvain et Les Banchais ci-dessous, puis toute agence dont la page Codes Rousseau
+# est renseignée dans Espace direction › Écran TV › Avis (Firestore ecran_tv/tvN, agence.avisUrl).
 on:
   schedule:
     - cron: '17 5 * * 1'
@@ -13,27 +16,53 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Lire la page des avis
+      - name: Lire les pages des avis
         run: |
           python3 - <<'PY'
           import json, re, urllib.request, html, datetime, os
-          URL = "https://auto-ecole.codesrousseau.fr/annuaire-auto-ecoles/st-sylvain-d-anjou/easy-saint-sylvain/22049"
-          req = urllib.request.Request(URL, headers={"User-Agent": "Mozilla/5.0 (easycds.fr; mise a jour des avis)"})
-          page = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
-          texte = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", page)))
-          note = re.search(r"(\d[.,]\d)\s*/\s*5", texte)
-          nb = re.search(r"\(\s*(\d+)\s*avis\s*\)", texte)
-          if not (note and nb):
-              raise SystemExit("Note ou nombre d'avis introuvable : la page a peut-être changé")
-          ancien = {}
-          if os.path.exists("avis.json"):
-              ancien = json.load(open("avis.json", encoding="utf-8"))
-          data = dict(ancien)
-          data.update({"note": note.group(1).replace(".", ","), "nb": int(nb.group(1)), "source": URL})
-          if data != ancien:
+          PAGES = {
+            1: ("Saint-Sylvain", "https://auto-ecole.codesrousseau.fr/annuaire-auto-ecoles/st-sylvain-d-anjou/easy-saint-sylvain/22049"),
+            2: ("Les Banchais", "https://auto-ecole.codesrousseau.fr/annuaire-auto-ecoles/st-barthelemy-d-anjou/easy-les-banchais/22061"),
+          }
+          # Autres agences : la page saisie dans l'admin (lecture publique de ecran_tv)
+          try:
+            req = urllib.request.Request("https://firestore.googleapis.com/v1/projects/easy-cds/databases/(default)/documents/ecran_tv?pageSize=50&key=AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E", headers={"Referer": "https://easycds.fr/"})
+            for d in json.load(urllib.request.urlopen(req, timeout=30)).get("documents", []):
+              m = re.search(r"/(config|tv(\d+))$", d["name"])
+              if not m: continue
+              n = 1 if m.group(1) == "config" else int(m.group(2))
+              a = json.loads(d.get("fields", {}).get("json", {}).get("stringValue", "{}")).get("agence", {}) or {}
+              u = a.get("avisUrl", "")
+              nom = a.get("nom") or (PAGES[n][0] if n in PAGES else f"Agence {n}")
+              if u.startswith("https://auto-ecole.codesrousseau.fr/"): PAGES[n] = (nom, u)
+              elif n in PAGES: PAGES[n] = (nom, PAGES[n][1])
+          except Exception as e:
+            print("Liste des agences (Firestore) indisponible :", e)
+          changes, erreurs = [], []
+          for n, (nom, url) in sorted(PAGES.items()):
+            f = "avis.json" if n == 1 else f"avis-{n}.json"
+            try:
+              req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (easycds.fr; mise a jour des avis)"})
+              page = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+            except Exception as e:
+              erreurs.append(f"{nom} : page illisible ({e})"); continue
+            texte = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", page)))
+            note = re.search(r"(\d[.,]\d)\s*/\s*5", texte)
+            nb = re.search(r"\(\s*(\d+)\s*avis\s*\)", texte)
+            if not (note and nb):
+              erreurs.append(f"{nom} : note ou nombre d'avis introuvable, la page a peut-être changé"); continue
+            ancien = json.load(open(f, encoding="utf-8")) if os.path.exists(f) else {}
+            data = dict(ancien)
+            data.update({"note": note.group(1).replace(".", ","), "nb": int(nb.group(1)), "source": url, "agence": nom})
+            if data != ancien:
               data["maj"] = datetime.date.today().isoformat()
-              json.dump(data, open("avis.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-          print(data)
+              json.dump(data, open(f, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+              if ancien.get("note") != data["note"] or ancien.get("nb") != data["nb"]:
+                avant = f"{ancien['note']}/5 sur {ancien['nb']} avis" if ancien.get("note") else "première relève"
+                changes.append(f"- **{nom}** : {avant} → **{data['note']}/5 sur {data['nb']} avis** · {url}")
+            print(n, nom, data)
+          open("/tmp/changes.md", "w", encoding="utf-8").write("\n".join(changes))
+          open("/tmp/erreurs.md", "w", encoding="utf-8").write("\n".join(erreurs))
           PY
       - name: Mettre à jour la page d'accueil (description Google)
         run: |
@@ -50,18 +79,20 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ -n "$(git status --porcelain avis.json index.html)" ]; then
-            AVANT=$(git show HEAD:avis.json | python3 -c "import json,sys; v=json.load(sys.stdin); print(f\"{v['note']}/5 sur {v['nb']} avis\")")
-            APRES=$(python3 -c "import json; v=json.load(open('avis.json')); print(f\"{v['note']}/5 sur {v['nb']} avis\")")
+          if [ -n "$(git status --porcelain -- 'avis*.json' index.html)" ]; then
             git config user.name "easy-bot"
             git config user.email "actions@users.noreply.github.com"
-            git add avis.json index.html
+            git add -- avis*.json index.html
             git commit -m "Avis Codes Rousseau : mise à jour automatique"
             git push
-            gh issue create --title "Avis Codes Rousseau : $APRES" --body "La note des avis a changé : **$AVANT** → **$APRES**.
+          fi
+          if [ -s /tmp/changes.md ]; then
+            gh issue create --title "Avis Codes Rousseau : la note a changé" --body "$(cat /tmp/changes.md)
 
           La télé, le site et la description Google sont déjà à jour, rien à faire.
-          Lire les nouveaux avis : https://auto-ecole.codesrousseau.fr/annuaire-auto-ecoles/st-sylvain-d-anjou/easy-saint-sylvain/22049
 
           (Vous pouvez fermer ce message.)"
+          fi
+          if [ -s /tmp/erreurs.md ]; then
+            echo "Problème de lecture :"; cat /tmp/erreurs.md; exit 1
           fi

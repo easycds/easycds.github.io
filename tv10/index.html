@@ -375,7 +375,7 @@ function rendu(d){
       });
       return '<div class="diapo et-d" data-d="'+tot+'"><div class="et-aff"><div class="et-cadre"><img src="'+IMG+'etapes.webp" alt="">'+halos+'</div></div><div class="txt"><div'+a(1)+'><div class="kick">Ton parcours</div></div><h2 class="f a a2">Les étapes vers<br>ton permis <em>chez Easy</em></h2><div class="et-zone">'+bul+'</div><div class="et-suivi">'+pts+'</div></div></div>';
     case 'avis':   // la note en grand, et les avis qui arrivent comme des messages
-      if(AG!==1){ var g=agence().avis; if(!g||!g.liste||!g.liste.length) return ''; d={kick:d.kick, note:g.note||'', nb:g.nb?g.nb+' avis':'', avis:g.liste}; }
+      if(AG!==1){ var g=agence().avis, au=window.AVIS_AUTO||{}; if(!g||!g.liste||!g.liste.length) return ''; var nb=au.nb||g.nb; d={kick:d.kick, note:au.note||g.note||'', nb:nb?nb+' avis':'', avis:g.liste}; }
       var places=[['',''],['',' d'],['',' d'],['','']];
       var dep=(window.TOUR_AVIS=(window.TOUR_AVIS||0)+1)%d.avis.length, choix=d.avis.slice(dep).concat(d.avis.slice(0,dep)).slice(0,4);   // 4 avis par tour, pas toujours les mêmes
       var bul=choix.map(function(v,i){ return '<div class="bulle'+places[i][1]+'" style="animation-delay:'+(0.9+i*0.55).toFixed(2)+'s">« '+v[0]+' »<small><i>'+v[1].charAt(0)+'</i>'+v[1]+'</small></div>'; }).join('');
@@ -562,8 +562,8 @@ majMeteo(); setInterval(majMeteo, 20*60000);
 majDonnees(); setInterval(majDonnees, 60000); ecouterDirect();   // la lecture toutes les minutes reste en secours
 setTimeout(function boucle(){ suivante(); setTimeout(boucle, dureeActuelle()*1000); }, 1500);   // chaque diapo a sa propre durée (réglable dans l'admin)   // laisse 1,5 s pour charger météo et annonces
 
-// Note Codes Rousseau, mise à jour chaque semaine par GitHub (avis.json)
-function majAvis(){ if(AG!==1) return; fetch('/avis.json?'+Date.now()).then(function(r){return r.json();}).then(function(v){ if(!v||!v.note) return; DIAPOS.forEach(function(d){ if(d.type==='avis'){ d.note=v.note; d.nb=v.nb+' avis'; } }); aRefaire=true; }).catch(function(){}); }
+// Note Codes Rousseau, mise à jour chaque lundi par le robot GitHub : avis.json (Saint-Sylvain), avis-2.json (Les Banchais)…
+function majAvis(){ if(AG!==1){ fetch('/avis-'+AG+'.json?'+Date.now()).then(function(r){return r.ok?r.json():null;}).then(function(v){ if(v&&v.note){ window.AVIS_AUTO=v; aRefaire=true; } }).catch(function(){}); return; } fetch('/avis.json?'+Date.now()).then(function(r){return r.json();}).then(function(v){ if(!v||!v.note) return; DIAPOS.forEach(function(d){ if(d.type==='avis'){ d.note=v.note; d.nb=v.nb+' avis'; } }); aRefaire=true; }).catch(function(){}); }
 majAvis(); setInterval(majAvis, 6*3600000);
 function horloge(){
   var n=new Date();

@@ -503,7 +503,7 @@ function rendu(d){
       });
       return '<div class="diapo et-d" data-d="'+tot+'"><div class="et-aff"><div class="et-cadre"><img src="'+IMG+'etapes.webp" alt="">'+halos+'</div></div><div class="txt"><div'+a(1)+'><div class="kick">Ton parcours</div></div><h2 class="f a a2">Les étapes vers<br>ton permis <em>chez Easy</em></h2><div class="et-zone">'+bul+'</div><div class="et-suivi">'+pts+'</div></div></div>';
     case 'avis':   // la note en grand, et les avis qui arrivent comme des messages
-      if(AG!==1){ var g=agence().avis, au=window.AVIS_AUTO||{}; if(!g||!g.liste||!g.liste.length) return ''; var nb=au.nb||g.nb; d={kick:d.kick, note:au.note||g.note||'', nb:nb?nb+' avis':'', avis:g.liste}; }
+      if(AG!==1){ var g=agence().avis, au=window.AVIS_AUTO||{}; if(!g||!g.liste||!g.liste.length) return ''; var nb=au.nb||g.nb; d={kick:d.kick, note:esc(au.note||g.note||''), nb:nb?esc(nb)+' avis':'', avis:g.liste.map(function(v){ return [esc(v[0]), esc(v[1]||'Anonyme')]; })}; }   // avis saisis dans l'admin : protégés
       var places=[['',''],['',' d'],['',' d'],['','']];
       var dep=(window.TOUR_AVIS=(window.TOUR_AVIS||0)+1)%d.avis.length, choix=d.avis.slice(dep).concat(d.avis.slice(0,dep)).slice(0,4);   // 4 avis par tour, pas toujours les mêmes
       var bul=choix.map(function(v,i){ return '<div class="bulle'+places[i][1]+'" style="animation-delay:'+(0.9+i*0.55).toFixed(2)+'s">« '+v[0]+' »<small><i>'+v[1].charAt(0)+'</i>'+v[1]+'</small></div>'; }).join('');

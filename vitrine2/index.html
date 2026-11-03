@@ -182,6 +182,9 @@ function lignes(l, a) {
 }
 // chiffre géant (promo) : la taille s'adapte à la longueur pour tenir sur une ligne
 function fig(t) { var n = String(t).replace(/&nbsp;/g, ' ').length; return '<div class="fig a a2" style="font-size:' + Math.min(20.625, 56 / (n * .6)).toFixed(2) + 'rem">' + t + '</div>'; }
+// titre saisi dans l'espace direction : plus petit s'il est long, pour qu'aucun mot ne dépasse de l'écran
+function taille(t, max) { t = String(t || ''); var mot = Math.max.apply(null, t.split(/\s+/).map(function (x) { return x.length; }));
+  return Math.min(max, 56 / (mot * .58), t.length > 34 ? 6.875 : 99).toFixed(2) + 'rem'; }
 var STYLES = { qr: 'AC' };   // diapos à plusieurs styles : la première lettre est celle par défaut
 var DIAPOS = [
   { k: 'promos' },
@@ -222,11 +225,11 @@ function construire() {
     var s = +dur[d.k] >= 3 && +dur[d.k] <= 120 ? +dur[d.k] : DUREE;
     if (d.k === 'promos') (ap && !actifs(CONFIG.promos).length ? [{ titre: 'Permis moto', prix: '-15 %', texte: 'Sur le pack A2 (exemple).' }] : actifs(CONFIG.promos)).forEach(function (x) {
       liste.push({ s: s, html: '<div class="diapo n rouge" data-rouge><div class="c"><div class="kick a a1">Promo du moment</div>' +
-        (x.prix ? fig(euros(x.prix)) + '<h2 class="m a a3" style="margin-top:2rem">' + esc(x.titre) + '</h2>' : '<h2 class="a a2">' + esc(x.titre) + '</h2>') +
+        (x.prix ? fig(euros(x.prix)) + '<h2 class="m a a3" style="margin-top:2rem;font-size:' + taille(x.titre, 6.875) + '">' + esc(x.titre) + '</h2>' : '<h2 class="a a2" style="font-size:' + taille(x.titre, 8.75) + '">' + esc(x.titre) + '</h2>') +
         (x.texte ? '<p class="intro a a4">' + esc(x.texte) + '</p>' : '') + (x.au ? '<p class="ttc a a5">Jusqu’au ' + jourMois(x.au) + '</p>' : '') + '</div><div class="signe"></div></div>' });
     });
     else if (d.k === 'annonces') (ap && !actifs(CONFIG.annonces).length ? [{ titre: 'Ouvert ce samedi matin', texte: 'Exemple : l’agence vous accueille de 9 h à 12 h.' }] : actifs(CONFIG.annonces)).forEach(function (x) {
-      liste.push({ s: s, html: '<div class="diapo n rouge" data-rouge><div class="c"><div class="kick a a1">À l’agence</div><h2 class="a a2">' + esc(x.titre) + '</h2>' +
+      liste.push({ s: s, html: '<div class="diapo n rouge" data-rouge><div class="c"><div class="kick a a1">À l’agence</div><h2 class="a a2" style="font-size:' + taille(x.titre, 8.75) + '">' + esc(x.titre) + '</h2>' +
         (x.texte ? '<p class="intro a a3">' + esc(x.texte) + '</p>' : '') + '</div><div class="signe"></div></div>' });
     });
     else liste.push({ s: s, html: d.html(p, st) });

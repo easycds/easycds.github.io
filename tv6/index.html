@@ -222,6 +222,7 @@ h2 em{font-style:normal;color:var(--easy)}
 /* ===== Styles au choix (Administratif › Écran TV › Diapos), maquettes retenues le 2/11/2026 : A = Centré, B = Moitié-moitié, C = Typographique =====
    Fond blanc (la couleur exacte du fond des illustrations) : les images se fondent dans le décor, sans cadre ni ombre. */
 .diapo.st{display:block;padding:0;background:#fff}
+.st-meteo svg{width:13rem;height:13rem;display:block;margin:0 auto 2.4rem}
 .diapo.st.rouge{background:transparent}
 .st-c{position:absolute;inset:8.75rem 10rem 6.9rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .st-s{position:absolute;inset:8.75rem 10rem 6.9rem;display:grid;grid-template-columns:1fr 1fr;gap:7.5rem;align-items:center}
@@ -364,7 +365,7 @@ function periode(s){ var a=new Date(s.du+'T12:00:00'), b=new Date(s.au+'T12:00:0
 function a(n){ return ' class="a a'+n+'"'; }
 /* ===== Styles au choix : chaque diapo peut prendre un des styles retenus le 2/11/2026 (réglé par agence dans Administratif › Écran TV › Diapos).
    A = Centré, B = Moitié-moitié, C = Typographique. Sans choix (ou style inconnu) : la diapo d'origine, rendue plus bas. */
-var STYLES={'illu:clio':'A','promo':'A','slogan':'A','programme':'AB','illu:permis':'AB','etapes':'AB','boite':'AB','illu:moto':'AB','illu:remorque':'AB','stages':'A','creneaux:salle':'AB','aides':'A','illu:perf':'AB','reçus':'AC','fin':'AC'};
+var STYLES={'illu:clio':'A','promo':'A','slogan':'A','programme':'AB','illu:permis':'AB','etapes':'AB','boite':'AB','illu:moto':'AB','illu:remorque':'AB','stages':'A','creneaux:salle':'AB','aides':'A','illu:perf':'AB','reçus':'AC','fin':'AC','meteo':'A'};
 var FONDU={permis:1,e208:1};   // illustrations dont le rond rose est coupé en bas : bord adouci à l'affichage
 /* Aperçu d'une seule diapo depuis l'admin : adresse #voir=<clé>&style=<A|B|C ou vide> (la diapo tourne en boucle, mode jour forcé) */
 function apercu(){ var m=location.hash.match(/voir=([^&]+)/); if(!m) return null; return {k:decodeURIComponent(m[1]), st:(location.hash.match(/style=([ABC])/)||[])[1]||''}; }
@@ -421,6 +422,9 @@ function renduStyle(d,st){
       if(!cr.length) return '';
       if(st==='A') return stBloc('c','<div class="a a1">'+stImg(d.img+'.webp',23.75)+'</div><h2 class="f a a2" style="margin-top:1.5rem">'+d.titre+'</h2>'+stLignes(cr));
       return stBloc('s','<div class="txt">'+stK(d.kick,1)+'<h2 class="f xl a a2">'+stNb(d.titre)+'</h2>'+stLignes(cr)+'</div><div class="st-droite a a3">'+stImg(d.img+'.webp',34)+'</div>');
+    case 'meteo':   // 6A : centré, avec le pictogramme de la météo au-dessus
+      var m=conseilMeteo(); if(!m) return '';
+      return stBloc('c','<div class="a a1"><div class="st-meteo">'+m.ico+'</div></div>'+stK(m.kick+(/°/.test(m.kick)?'':' · '+Math.round(METEO.temp)+' °C'),2)+'<h2 class="f xl a a3">'+m.titre+'</h2><p class="a a4">'+m.texte+'</p><small class="source-meteo a a5" style="margin-top:2rem">Météo : Open-Meteo</small>');
     case 'aides':
       return stBloc('c',stK(d.kick,1)+'<h2 class="f xl a a2">'+stNb(d.titre)+'</h2><div class="st-logos a a3"><img src="'+IMG+'logo_permis1euro.png" alt="Le permis à un euro par jour"><img src="'+IMG+'logo_cpf.png" style="height:6.9rem" alt="Mon Compte Formation"><img src="'+IMG+'logo_irp.png" style="height:8.1rem" alt="IRP Auto"></div><div class="st-mention a a4">Permis à 1 € par jour : un crédit vous engage et doit être remboursé. Vérifiez vos capacités de remboursement avant de vous engager. Sous réserve d’acceptation par l’organisme prêteur.</div>');
     case 'reçus':
@@ -449,7 +453,7 @@ function rendu(d){
         '<div class="voiture-auto"><img src="'+IMG+'e208.webp" alt=""></div></div>';
     case 'postpermis':
       function ligne(t,avant,apres,max,txt){ var w=(apres/max*100).toFixed(1); return '<div class="ligne"><b>'+t+' : <em>'+txt+'</em> au lieu de '+avant+' ans</b><div class="barre"><i style="width:'+w+'%"></i><s style="left:'+w+'%">'+(avant-apres===1?'− 1 an':'− 6 mois')+'</s></div><div class="ech"><span>Permis</span><span>'+avant+' ans</span></div></div>'; }
-      return '<div class="diapo"><div class="txt"><div'+a(1)+'><div class="kick">'+d.kick+'</div></div><h2 class="f a a2">'+d.titre+'</h2><p'+a(3)+'>'+d.texte+'</p></div>'+
+      return '<div class="diapo" style="background:#fff"><div class="txt"><div'+a(1)+'><div class="kick">'+d.kick+'</div></div><h2 class="f a a2">'+d.titre+'</h2><p'+a(3)+'>'+d.texte+'</p></div>'+   // fond blanc comme les nouvelles diapos (3/11/2026)
         '<div class="gain"><h3>Ta période probatoire</h3>'+ligne('Permis classique',3,2,3,'2 ans')+ligne('Conduite accompagnée',2,1.5,2,'18 mois')+'</div></div>';
     case 'aides':
       return '<div class="diapo"><div class="txt"><div'+a(1)+'><div class="kick">'+d.kick+'</div></div><h2 class="f a a2">'+d.titre+'</h2><p'+a(3)+'>'+d.texte+'</p><p class="mention-legale">Permis à 1 € par jour : un crédit vous engage et doit être remboursé. Vérifiez vos capacités de remboursement avant de vous engager. Sous réserve d’acceptation par l’organisme prêteur.</p></div>'+

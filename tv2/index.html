@@ -394,7 +394,7 @@ function renduStyle(d,st){
   switch(d.type){
     case 'illu': case 'boite':
       var img=d.type==='boite'?'e208':d.img; f=img+(d.photo?'.jpg':'.webp');
-      var bg=d.photo?'#f4f3f1':'';   // la photo de la voiture a un fond gris très clair
+      var bg='';   // la photo de la voiture est sur fond blanc (fondu, ombre gardée)
       if(st==='A') return stBloc('c','<div class="a a1">'+stImg(f,d.photo?29.4:27,FONDU[img])+'</div><h2 class="f a a2" style="margin-top:2rem">'+String(d.titre).replace(/<br>/g,' ')+'</h2>'+(d.texte?'<p class="a a3">'+d.texte+'</p>':''),{bg:bg});
       return stBloc('s','<div class="txt">'+stK(d.kick,1)+'<h2 class="f xl a a2">'+stNb(d.titre)+'</h2>'+(d.texte?'<p class="a a3">'+d.texte+'</p>':'')+'</div><div class="st-droite a a3">'+stImg(f,36,FONDU[img])+'</div>',{bg:bg});
     case 'promo':
@@ -448,7 +448,7 @@ function rendu(d){
   var st=styleDe(d); if(st){ var hs=renduStyle(d,st); if(hs!==null) return hs; }   // style choisi dans l'admin
   switch(d.type){
     case 'illu':
-      return '<div class="diapo"><div class="txt">'+(d.kick?'<div'+a(1)+'><div class="kick">'+d.kick+'</div></div>':'')+'<h2 class="f a a2">'+d.titre+'</h2><p'+a(3)+'>'+d.texte+'</p></div><div class="illu'+(d.photo?' photo':'')+'"><img src="'+IMG+d.img+(d.photo?'.jpg':'.webp')+'" alt=""></div></div>';
+      return '<div class="diapo"'+(d.photo?' style="background:#fff"':'')+'><div class="txt">'+(d.kick?'<div'+a(1)+'><div class="kick">'+d.kick+'</div></div>':'')+'<h2 class="f a a2">'+d.titre+'</h2><p'+a(3)+'>'+d.texte+'</p></div><div class="illu'+(d.photo?' photo':'')+'"><img src="'+IMG+d.img+(d.photo?'.jpg':'.webp')+'" alt=""></div></div>';
     case 'slogan': case 'fin':
       return '<div class="diapo rouge centre" data-rouge><h2 class="f a a1">'+d.titre+'</h2><img class="sourire" src="'+IMG+'sourire_blanc.png" alt=""></div>';
     case 'promo':

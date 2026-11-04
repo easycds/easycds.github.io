@@ -89,5 +89,13 @@ footer b{font-family:'Fredoka',sans-serif;font-weight:600;font-size:22px;color:#
 </main>
 
 <footer><div><b>easy</b>&nbsp; Saint-Sylvain-d'Anjou · agence du réseau <a href="https://easy-auto-ecole.com" target="_blank" rel="noopener" style="color:#fff">Easy auto-école</a></div></footer>
+<script>
+/* Ouvertes depuis une page de l'espace (outils, pédagogie, direction…) : « Retour » y ramène, au lieu de la page d'accueil */
+(function () { try {
+  var r = document.referrer ? new URL(document.referrer) : null;
+  if (!r || r.origin !== location.origin || r.pathname === '/' || r.pathname === location.pathname) return;
+  var a = document.querySelector('a.retour'); if (a) { a.href = r.pathname + r.search + r.hash; a.textContent = 'Retour'; }
+} catch (e) {} })();
+</script>
 </body>
 </html>

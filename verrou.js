@@ -47,6 +47,7 @@
     '#easy-acces .ea-pied{font-size:12px;color:var(--light);text-align:center;padding-top:8px}#easy-acces .ea-pied a{color:inherit}' +
     '#easy-acces .secoue{animation:easy-secoue .35s}@keyframes easy-secoue{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}' +
     '#easy-acces .ea-champs{display:flex;flex-direction:column;gap:10px;text-align:left}#easy-acces .ea-champs span{display:block;font-size:13.5px;font-weight:600;margin:0 0 5px 4px}' +
+    '#easy-acces .ea-petit{font-size:13.5px;margin-top:8px}' +
     '#easy-acces .ea-liens{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:10px}' +
     '#easy-acces .ea-lien{background:none;border:0;color:var(--muted);font:inherit;font-size:14px;font-weight:600;padding:10px 6px;min-height:44px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}' +
     '#easy-acces .ea-lien:hover{color:var(--text)}#easy-acces .ea-info{margin:0 0 18px;color:var(--muted);font-size:15px;line-height:1.5}#easy-acces .ea-info b{color:var(--text)}' +
@@ -185,21 +186,23 @@
       if (mdp.value.length < 8) { erreur(f, 'Mot de passe trop court (8 caractères minimum)'); return; }
       if (mdp.value !== mdp2.value) { erreur(f, 'Les deux mots de passe ne sont pas pareils'); return; }
       occuper(f, true, 'Création…');
-      try { var a = await auth(); var r = await a.createUserWithEmailAndPassword(mail.value.trim(), mdp.value); await r.user.sendEmailVerification(); verification(r.user); }
+      try { var a = await auth(); var r = await a.createUserWithEmailAndPassword(mail.value.trim(), mdp.value); await envoyerVerif(r.user); verification(r.user); }
       catch (x) { occuper(f, false); erreur(f, msgErreur(x)); }
     };
   }
 
+  function envoyerVerif(u) { return u.sendEmailVerification({ url: location.origin + location.pathname }); }   // le lien du mail ramène sur cette page une fois l'adresse confirmée
   function verification(u) {
-    var d = afficher('<form><h1>Vérifie ton e-mail</h1><p class="ea-info">On t’a envoyé un e-mail à <b>' + echap(u.email) + '</b>.<br>Clique sur le lien dedans (regarde aussi les spams), puis reviens ici.</p>' +
-      '<button class="ea-ok" type="submit">C’est fait</button><div class="err" aria-live="polite"></div>' +
+    var d = afficher('<form><h1>Un e-mail d’Easy t’attend</h1><p class="ea-info">On vient d’envoyer un message à <b>' + echap(u.email) + '</b> de la part d’<b>Easy Auto-école</b>.<br>Ouvre-le et touche le bouton de confirmation : ça ne prend que quelques secondes.</p>' +
+      '<p class="ea-info ea-petit">Rien reçu ? Regarde dans « Indésirables » ou « Spam » et déplace le message dans ta boîte normale. Tu peux aussi le renvoyer juste en dessous.</p>' +
+      '<button class="ea-ok" type="submit">J’ai confirmé, continuer</button><div class="err" aria-live="polite"></div>' +
       '<div class="ea-liens"><button type="button" class="ea-lien" data-a="renvoi">Renvoyer l’e-mail</button><button type="button" class="ea-lien" data-a="autre">Changer de compte</button></div></form>');
     var f = d.querySelector('form');
-    f.querySelector('[data-a=renvoi]').onclick = async function () { try { await u.sendEmailVerification(); var e = f.querySelector('.err'); e.textContent = 'E-mail renvoyé'; e.classList.add('ok'); } catch (x) { erreur(f, msgErreur(x)); } };
+    f.querySelector('[data-a=renvoi]').onclick = async function () { try { await envoyerVerif(u); var e = f.querySelector('.err'); e.textContent = 'E-mail renvoyé à ' + u.email + ' (vérifie aussi les indésirables)'; e.classList.add('ok'); } catch (x) { erreur(f, /too-many-requests/.test(x && x.code) ? 'Attends une minute avant de renvoyer' : msgErreur(x)); } };
     f.querySelector('[data-a=autre]').onclick = sortir;
     f.onsubmit = async function (e) {
       e.preventDefault(); occuper(f, true, 'Vérification…');
-      try { await u.reload(); if (!u.emailVerified) { occuper(f, false); erreur(f, 'Pas encore validé : clique bien sur le lien de l’e-mail'); return; } await u.getIdToken(true); await avecCompte(u); }
+      try { await u.reload(); if (!u.emailVerified) { occuper(f, false); erreur(f, 'Pas encore confirmé : ouvre l’e-mail d’Easy Auto-école et touche le bouton, puis reviens ici'); return; } await u.getIdToken(true); await avecCompte(u); }
       catch (x) { occuper(f, false); erreur(f, msgErreur(x)); }
     };
   }
@@ -247,7 +250,7 @@
     try { k = await lireCle(u, 'cle_' + ESPACE); }
     catch (x) {
       if (x.code !== 'refus') throw x;
-      if (!u.emailVerified) { try { await u.sendEmailVerification(); } catch (e) {} verification(u); return; }
+      if (!u.emailVerified) { try { await envoyerVerif(u); } catch (e) {} verification(u); return; }
       refus(u); return;
     }
     if (!k) { installation(u); return; }

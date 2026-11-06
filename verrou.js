@@ -251,13 +251,13 @@
       refus(u); return;
     }
     if (!k) { installation(u); return; }
-    garder(k);
+    garder(k); try { MAG().setItem('easy-compte', (u.email || '').toLowerCase()); } catch (e) {}   // pour les pages qui réservent une carte à un compte
     if (await ouvrir(k)) return;
     if (ecran) ecran.remove(); document.documentElement.classList.remove('easy-verrou');
   }
 
   async function sortir() {
-    try { sessionStorage.removeItem('easy-cle-moniteurs'); localStorage.removeItem('easy-cle-moniteurs'); sessionStorage.removeItem('easy-cle-direction'); localStorage.removeItem('easy-est-direction'); } catch (e) {}
+    try { sessionStorage.removeItem('easy-cle-moniteurs'); localStorage.removeItem('easy-cle-moniteurs'); sessionStorage.removeItem('easy-cle-direction'); localStorage.removeItem('easy-est-direction'); sessionStorage.removeItem('easy-compte'); localStorage.removeItem('easy-compte'); } catch (e) {}
     try { var a = await auth(); await a.signOut(); } catch (e) {}
     connexion('');
   }

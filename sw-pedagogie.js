@@ -40,3 +40,24 @@ self.addEventListener('fetch', function (e) {
     }).catch(function () { return caches.match(url.pathname); })
   );
 });
+
+/* Notifications (7/11/2026) : messages de la direction, envoyés par le robot du dépôt privé (Firebase Cloud Messaging, message « data »).
+   Toujours afficher une notification à chaque message reçu (obligatoire sur iPhone/iPad). */
+self.addEventListener('push', function (e) {
+  var d = {};
+  try { var j = e.data ? e.data.json() : {}; d = j.data || j || {}; } catch (x) {}
+  var titre = d.titre || 'Easy';
+  e.waitUntil(self.registration.showNotification(titre, {
+    body: d.corps || '',
+    icon: '/easy-192.png', badge: '/favicon-48.png', tag: 'easy-' + Date.now(),
+    data: { lien: d.lien || '/outils/' }
+  }));
+});
+self.addEventListener('notificationclick', function (e) {
+  e.notification.close();
+  var lien = new URL((e.notification.data && e.notification.data.lien) || '/outils/', self.location.origin).href;
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (l) {
+    for (var i = 0; i < l.length; i++) if ('navigate' in l[i]) return l[i].navigate(lien).then(function (c) { return c && c.focus(); });
+    return self.clients.openWindow(lien);
+  }));
+});

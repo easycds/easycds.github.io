@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#ff3131">
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="light">
-<title>Ton compte · Easy Auto-école</title>
+<title>Ton compte · Easy auto-école</title>
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="stylesheet" href="/fonts/polices.css">
 <style>
@@ -52,7 +52,7 @@ form{text-align:left}
   <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
   <h1>Un instant…</h1><p>On vérifie ton lien.</p>
 </div></main>
-<div class="pied">Easy Auto-école Saint-Sylvain · <a href="/mentions-legales.html">Mentions légales</a></div>
+<div class="pied">Easy auto-école Saint-Sylvain · <a href="/mentions-legales.html">Mentions légales</a></div>
 <script>
 (function () {
   var CONF = { apiKey: 'AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E', authDomain: 'easy-cds.firebaseapp.com', projectId: 'easy-cds' }, SDK = 'https://www.gstatic.com/firebasejs/13.1.0/';
@@ -73,7 +73,7 @@ form{text-align:left}
     return 'Ça n’a pas fonctionné. Retourne sur la page de connexion et demande un nouvel e-mail.';
   }
   var boutonSuite = '<a class="btn" href="' + echap(suite) + '">Ouvrir Mes outils</a>';
-  var pasDeLien = function () { montrer('non', 'Ce lien est incomplet', 'Ouvre le lien directement depuis l’e-mail reçu d’Easy Auto-école.', '<a class="btn" href="/outils/">Aller à la connexion</a>'); };
+  var pasDeLien = function () { montrer('non', 'Ce lien est incomplet', 'Ouvre le lien directement depuis l’e-mail reçu d’Easy auto-école.', '<a class="btn" href="/outils/">Aller à la connexion</a>'); };
   if (!mode || !code) { pasDeLien(); return; }
   script(SDK + 'firebase-app-compat.js').then(function () { return script(SDK + 'firebase-auth-compat.js'); }).then(function () {
     var a = firebase.auth(firebase.initializeApp(CONF));

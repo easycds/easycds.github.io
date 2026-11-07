@@ -159,7 +159,7 @@
     f.querySelector('[data-a=creer]').onclick = function () { creation(mail.value.trim()); };
     f.querySelector('[data-a=oubli]').onclick = async function () {
       if (!mail.value.trim()) { erreur(f, 'Tape d’abord ton e-mail au-dessus'); mail.focus(); return; }
-      try { var a = await auth(); await a.sendPasswordResetEmail(mail.value.trim()); var e = f.querySelector('.err'); e.textContent = 'E-mail envoyé : regarde ta boîte (et les spams)'; e.classList.add('ok'); }
+      try { var a = await auth(); await a.sendPasswordResetEmail(mail.value.trim(), { url: location.origin + location.pathname });   /* le bouton « Continuer » ramène sur cette page */ var e = f.querySelector('.err'); e.textContent = 'E-mail envoyé : regarde ta boîte (et les spams)'; e.classList.add('ok'); }
       catch (x) { erreur(f, msgErreur(x)); }
     };
     f.onsubmit = async function (e) {

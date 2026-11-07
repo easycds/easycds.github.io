@@ -49,7 +49,7 @@ self.addEventListener('push', function (e) {
   var titre = d.titre || 'Easy';
   e.waitUntil(self.registration.showNotification(titre, {
     body: d.corps || '',
-    icon: '/easy-192.png', badge: '/favicon-48.png', tag: 'easy-' + Date.now(),
+    icon: '/easy-192.png', badge: '/notif-badge.png', tag: 'easy-' + Date.now(),
     data: { lien: d.lien || '/outils/' }
   }));
 });

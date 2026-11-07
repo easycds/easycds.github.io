@@ -1,0 +1,26 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "fr.easycds.moniteurs",
+      "sha256_cert_fingerprints": [
+        "FD:17:48:A6:22:CD:88:F1:87:12:DC:04:E7:1C:92:5E:89:0A:CD:25:98:B0:87:4B:BE:4C:C8:63:05:AE:D0:DE"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "fr.easycds.direction",
+      "sha256_cert_fingerprints": [
+        "FD:17:48:A6:22:CD:88:F1:87:12:DC:04:E7:1C:92:5E:89:0A:CD:25:98:B0:87:4B:BE:4C:C8:63:05:AE:D0:DE"
+      ]
+    }
+  }
+]

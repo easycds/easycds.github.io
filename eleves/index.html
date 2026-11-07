@@ -136,7 +136,7 @@ footer a{color:#fff}
     var st = (dd.stages || []).filter(function (x) { return x && x.du && x.au && x.au >= auj; }).sort(function (a, b) { return a.du < b.du ? -1 : 1; }).slice(0, 3);
     document.getElementById('stages').innerHTML = st.map(function (x) {
       var a = mois(x.du), b = mois(x.au), m1 = a.split(' ')[1], m2 = b.split(' ')[1];
-      return '<i>du ' + (m1 === m2 ? a.split(' ')[0] : a) + ' au ' + b + ' · <small' + (x.complet ? ' class="c">complet' : '>places dispo') + '</small></i>'; }).join('');
+      return '<i>du ' + (m1 === m2 ? a.split(' ')[0] : a) + ' au ' + b + ' · <small' + (x.complet ? ' class="c">complet' : '>Places disponibles') + '</small></i>'; }).join('');
     if (l.length) { document.getElementById('annonces').innerHTML = l.join(''); document.getElementById('une').hidden = false; }
   }).catch(function () {});
 })();

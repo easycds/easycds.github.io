@@ -245,6 +245,13 @@
     };
   }
 
+  function noterVisite(u, page) {   // dernière visite du compte (lue seulement par la direction, page Accès) ; jamais bloquant
+    try { if (!u || !u.email) return; u.getIdToken().then(function (t) {
+      return fetch('https://firestore.googleapis.com/v1/projects/easy-cds/databases/(default)/documents/visites/' + encodeURIComponent(u.email.toLowerCase()) + '?updateMask.fieldPaths=le&updateMask.fieldPaths=page',
+        { method: 'PATCH', headers: { Authorization: 'Bearer ' + t, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: { le: { timestampValue: new Date().toISOString() }, page: { stringValue: String(page || '').slice(0, 80) } } }) });
+    }).catch(function () {}); } catch (e) {}
+  }
   async function avecCompte(u) {
     var k;
     try { k = await lireCle(u, 'cle_' + ESPACE); }
@@ -254,7 +261,7 @@
       refus(u); return;
     }
     if (!k) { installation(u); return; }
-    garder(k); try { MAG().setItem('easy-compte', (u.email || '').toLowerCase()); } catch (e) {}   // pour les pages qui réservent une carte à un compte
+    garder(k); noterVisite(u, location.pathname); try { MAG().setItem('easy-compte', (u.email || '').toLowerCase()); } catch (e) {}   // pour les pages qui réservent une carte à un compte
     if (await ouvrir(k)) return;
     if (ecran) ecran.remove(); document.documentElement.classList.remove('easy-verrou');
   }

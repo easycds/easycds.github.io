@@ -721,7 +721,17 @@ function suivante(){
   premier=false;
 }
 majMeteo(); setInterval(majMeteo, 20*60000);
-majDonnees(); setInterval(majDonnees, 60000); ecouterDirect();   // la lecture toutes les minutes reste en secours
+majDonnees(); setInterval(majDonnees, 60000); ecouterDirect();
+/* Signal de vie (7/11/2026) : toutes les 5 minutes, la vraie télé note « je suis allumée » (ecran_signal/tvN).
+   Jamais depuis l'aperçu de l'Administratif (cadre ou ?admin). L'Écran TV affiche « Vue il y a … ». */
+function signalVie(){
+  try{
+    if(window.top!==window.self || /[?&]admin\b/.test(location.search) || navigator.onLine===false) return;
+    fetch('https://firestore.googleapis.com/v1/projects/easy-cds/databases/(default)/documents/ecran_signal/tv'+AG+'?updateMask.fieldPaths=vu'+FS_CLE.replace('?','&'),
+      { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({fields:{vu:{timestampValue:new Date().toISOString()}}}) }).catch(function(){});
+  }catch(e){}
+}
+setTimeout(signalVie, 15000); setInterval(signalVie, 5*60000);   // la lecture toutes les minutes reste en secours
 setTimeout(function boucle(){ suivante(); setTimeout(boucle, dureeActuelle()*1000); }, 1500);
 addEventListener('hashchange', function(){ aRefaire=true; suivante(); if(window.EASY_NUIT) window.EASY_NUIT(); });   // aperçu demandé par l'admin : tout de suite   // chaque diapo a sa propre durée (réglable dans l'admin)   // laisse 1,5 s pour charger météo et annonces
 

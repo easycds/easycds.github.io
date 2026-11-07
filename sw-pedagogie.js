@@ -47,12 +47,22 @@ self.addEventListener('push', function (e) {
   var d = {};
   try { var j = e.data ? e.data.json() : {}; d = j.data || j || {}; } catch (x) {}
   var titre = d.titre || 'Easy';
-  e.waitUntil(self.registration.showNotification(titre, {
+  e.waitUntil(Promise.all([badgePlusUn(), self.registration.showNotification(titre, {
     body: d.corps || '',
     icon: '/easy-192.png', badge: '/notif-badge.png', tag: 'easy-' + Date.now(),
     data: { lien: d.lien || '/outils/' }
-  }));
+  })]));
 });
+/* Chiffre sur l'icône de l'appli (iPad/iPhone avec Easy sur l'écran d'accueil ; ailleurs ignoré) :
+   +1 à chaque notification, remis à zéro à l'ouverture de Mes outils (outils/index.html). */
+function badgePlusUn() {
+  return caches.open('easy-badge').then(function (c) {
+    return c.match('/__badge').then(function (r) { return r ? r.text() : '0'; }).then(function (t) {
+      var n = (parseInt(t, 10) || 0) + 1;
+      return c.put('/__badge', new Response(String(n))).then(function () { if (self.navigator && self.navigator.setAppBadge) return self.navigator.setAppBadge(n); });
+    });
+  }).catch(function () {});
+}
 self.addEventListener('notificationclick', function (e) {
   e.notification.close();
   var lien = new URL((e.notification.data && e.notification.data.lien) || '/outils/', self.location.origin).href;

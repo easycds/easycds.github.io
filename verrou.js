@@ -29,6 +29,8 @@
     '@keyframes ea-trace{to{clip-path:inset(0 0 0 0)}}' +
     '#easy-acces form{width:100%;margin-top:clamp(28px,6vh,48px);text-align:center}' +
     '#easy-acces h1{margin:0;font:600 20px Fredoka,"DM Sans",sans-serif;letter-spacing:.01em}' +
+    '#easy-acces .ea-chev{position:relative;width:76px;height:76px;margin:18px auto 6px}#easy-acces .ea-chev i{position:absolute;inset:0;display:block}#easy-acces .ea-chev svg{position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;animation:ea-ch 1.1s ease-in-out infinite}' +
+    '@keyframes ea-ch{0%,100%{transform:translateX(16px)}50%{transform:translateX(24px)}}@media (prefers-reduced-motion:reduce){#easy-acces .ea-chev svg{animation:none;transform:translateX(18px)}}' +
     '#easy-acces p.ea-sous{margin:4px 0 22px;color:var(--muted);font-size:14.5px}' +
     '#easy-acces .pts{display:flex;justify-content:center;gap:12px;margin:0 0 26px}' +
     '#easy-acces .pts i{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:var(--surface);transition:background .15s,border-color .15s,transform .15s}' +
@@ -300,7 +302,7 @@
     var k = cleStockee();
     if (k) { try { if (await ouvrir(k)) { verifierEnFond(); return; } } catch (e) { try { MAG().removeItem(STOCK); } catch (x) {} } }
     if (!document.getElementById('easy-chiffre')) return;
-    afficher('<form><h1>' + NOM + '</h1><p class="ea-sous">Ouverture…</p></form>');
+    afficher('<form><h1>' + NOM + '</h1><div class="ea-chev" aria-hidden="true"><i style="transform:rotate(-90deg)"><svg viewBox="0 0 40 40"><path d="M13 7 L28 20 L13 33" fill="none" stroke="#ff3131" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="miter" stroke-miterlimit="3"/></svg></i><i style="transform:rotate(0deg)"><svg viewBox="0 0 40 40"><path d="M13 7 L28 20 L13 33" fill="none" stroke="#ff3131" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="miter" stroke-miterlimit="3"/></svg></i><i style="transform:rotate(90deg)"><svg viewBox="0 0 40 40"><path d="M13 7 L28 20 L13 33" fill="none" stroke="#ff3131" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="miter" stroke-miterlimit="3"/></svg></i><i style="transform:rotate(180deg)"><svg viewBox="0 0 40 40"><path d="M13 7 L28 20 L13 33" fill="none" stroke="#ff3131" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="miter" stroke-miterlimit="3"/></svg></i></div><p class="ea-sous">Ouverture…</p></form>');
     try {
       var a = await auth(), u = await etat(a);
       if (u) await avecCompte(u); else connexion('');

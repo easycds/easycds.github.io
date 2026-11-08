@@ -252,11 +252,14 @@
           body: JSON.stringify({ fields: { le: { timestampValue: new Date().toISOString() }, page: { stringValue: String(page || '').slice(0, 80) } } }) });
     }).catch(function () {}); } catch (e) {}
   }
-  async function avecCompte(u) {
+  async function avecCompte(u, deja) {
     var k;
     try { k = await lireCle(u, 'cle_' + ESPACE); }
     catch (x) {
       if (x.code !== 'refus') throw x;
+      // Juste après la confirmation de l'e-mail, le jeton gardé sur l'appareil dit encore « non confirmé » (8/11/2026, cas de Laura) :
+      // on relit le compte et on prend un jeton neuf, puis on réessaie une fois avant de conclure.
+      if (!deja) { try { await u.reload(); if (u.emailVerified) { await u.getIdToken(true); return avecCompte(u, true); } } catch (e) {} }
       if (!u.emailVerified) { try { await envoyerVerif(u); } catch (e) {} verification(u); return; }
       refus(u); return;
     }

@@ -1,6 +1,5 @@
+# easycds.fr : outils internes de l'équipe, rien ne doit apparaître dans Google.
+# Les robots peuvent passer pour lire la consigne « noindex » posée sur chaque page
+# (une page bloquée ici pourrait rester listée sans que Google voie le noindex).
 User-agent: *
-Allow: /contact/
-Allow: /mentions-legales.html
-Allow: /tv/img/
-Allow: /fonts/
-Disallow: /
+Allow: /

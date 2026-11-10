@@ -1,1 +1,1 @@
-pdf.js 6.2.108 (Mozilla, licence Apache-2.0) : lecture du journal des encaissements Elgeaweb dans le navigateur (administratif.html#chiffres).
+pdf.js 6.2.108, version « legacy » (avec compléments pour Safari et les navigateurs moins récents), Mozilla, licence Apache-2.0 : lecture du journal des encaissements Elgeaweb dans le navigateur (administratif.html#chiffres).

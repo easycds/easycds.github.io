@@ -84,12 +84,12 @@ form{text-align:left}
       }).catch(function (x) { montrer('non', 'Lien non valable', msg(x), '<a class="btn" href="/outils/">Aller à la connexion</a>'); });
     } else if (mode === 'resetPassword') {
       a.verifyPasswordResetCode(code).then(function (mail) {
-        montrer('cle', 'Nouveau mot de passe', 'Pour le compte <b>' + echap(mail) + '</b>. 8 caractères minimum.',
+        montrer('cle', 'Nouveau mot de passe', 'Pour le compte <b>' + echap(mail) + '</b>. 8 caractères minimum, avec une majuscule et un caractère spécial (! ? @ # …).',
           '<form id="f"><label>Nouveau mot de passe<input type="password" id="m1" autocomplete="new-password" minlength="8" required></label><label>Encore une fois<input type="password" id="m2" autocomplete="new-password" minlength="8" required></label><button class="btn" type="submit">Enregistrer</button><div class="err" id="err" aria-live="polite"></div></form>');
         var f = document.getElementById('f');
         f.onsubmit = function (e) {
           e.preventDefault(); var m1 = document.getElementById('m1').value, m2 = document.getElementById('m2').value, err = document.getElementById('err');
-          if (m1.length < 8) { err.textContent = '8 caractères minimum.'; return; } if (m1 !== m2) { err.textContent = 'Les deux mots de passe ne sont pas identiques.'; return; }
+          if (m1.length < 8) { err.textContent = '8 caractères minimum.'; return; } if (!/[A-ZÀ-ÖØ-Þ]/.test(m1)) { err.textContent = 'Ajoute une majuscule.'; return; } if (!/[^A-Za-zÀ-ÖØ-öø-ÿ0-9\s]/.test(m1)) { err.textContent = 'Ajoute un caractère spécial (! ? @ # …).'; return; } if (m1 !== m2) { err.textContent = 'Les deux mots de passe ne sont pas identiques.'; return; }
           f.querySelector('.btn').disabled = true; err.textContent = '';
           a.confirmPasswordReset(code, m1).then(function () { montrer('ok', 'Mot de passe enregistré', 'Tu peux te connecter avec ton nouveau mot de passe.', boutonSuite); })
             .catch(function (x) { f.querySelector('.btn').disabled = false; err.textContent = msg(x); });

@@ -175,9 +175,9 @@
 
   function creation(mailInitial) {
     var d = afficher('<form novalidate><h1>Première connexion</h1><p class="ea-sous">Utilise l’e-mail que tu as donné à la direction</p><div class="ea-champs">' +
-      champ('ea-mail', 'E-mail', 'email', 'username') + champ('ea-mdp', 'Choisis un mot de passe (8 caractères mini)', 'password', 'new-password') +
+      champ('ea-mail', 'E-mail', 'email', 'username') + champ('ea-mdp', 'Choisis un mot de passe', 'password', 'new-password') +
       champ('ea-mdp2', 'Retape-le', 'password', 'new-password') +
-      '</div><button class="ea-ok" type="submit">Créer mon compte</button><div class="err" aria-live="polite"></div>' +
+      '</div><p class="ea-sous" style="margin:10px 0 14px;font-size:13px">8 caractères minimum, avec une majuscule et un caractère spécial (! ? @ # …)</p><button class="ea-ok" type="submit">Créer mon compte</button><div class="err" aria-live="polite"></div>' +
       '<div class="ea-liens"><button type="button" class="ea-lien" data-a="retour">J’ai déjà un compte</button></div></form>');
     var f = d.querySelector('form'), mail = f.querySelector('#ea-mail'), mdp = f.querySelector('#ea-mdp'), mdp2 = f.querySelector('#ea-mdp2');
     mail.value = mailInitial || '';
@@ -186,6 +186,8 @@
       e.preventDefault();
       if (!mail.value.trim()) { erreur(f, 'Tape ton e-mail'); return; }
       if (mdp.value.length < 8) { erreur(f, 'Mot de passe trop court (8 caractères minimum)'); return; }
+      if (!/[A-ZÀ-ÖØ-Þ]/.test(mdp.value)) { erreur(f, 'Ajoute une majuscule à ton mot de passe'); return; }   // nouveaux comptes : majuscule + caractère spécial (Charles, 10/11/2026)
+      if (!/[^A-Za-zÀ-ÖØ-öø-ÿ0-9\s]/.test(mdp.value)) { erreur(f, 'Ajoute un caractère spécial à ton mot de passe (! ? @ # …)'); return; }
       if (mdp.value !== mdp2.value) { erreur(f, 'Les deux mots de passe ne sont pas pareils'); return; }
       occuper(f, true, 'Création…');
       try { var a = await auth(); var r = await a.createUserWithEmailAndPassword(mail.value.trim(), mdp.value); await envoyerVerif(r.user); verification(r.user); }

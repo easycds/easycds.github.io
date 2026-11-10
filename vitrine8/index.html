@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ff3131">
+<title>Easy · Écran vitrine (bêta)</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="stylesheet" href="/fonts/polices.css">
+<style>
+/* Écran vitrine, en portrait (1080 × 1920). 1rem = 16 px sur cet écran. Lisible depuis le trottoir : très gros textes. */
+:root{--easy:#ff3131;--easy-fonce:#e01f1f;--rose:#ffe4e4;--text:#000000;--muted:#4a515c;--bg:#fff;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:calc(min(100vw / 67.5, 100vh / 120))}
+html,body{height:100%;background:#000}
+body{font-family:'DM Sans','Segoe UI',system-ui,sans-serif;color:var(--text);overflow:hidden;cursor:none;display:flex;align-items:center;justify-content:center}
+.ecran{position:relative;width:67.5rem;height:120rem;background:var(--bg);overflow:hidden}
+.f{font-family:'Fredoka','DM Sans',sans-serif;font-weight:600}
+
+.haut{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:4.4rem 5rem;transition:color .6s}
+.logo{display:flex;flex-direction:column;line-height:.8}
+.logo b{font-family:'Fredoka',sans-serif;font-weight:600;font-size:7rem;color:var(--easy);transition:color .6s}
+.logo span{font-family:'Fredoka',sans-serif;font-weight:500;font-size:2.2rem;margin-top:2rem;line-height:1}
+.beta{font-size:1.3rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.35}
+.ecran.sur-rouge{color:#fff}
+.ecran.sur-rouge .logo b{color:#fff}
+
+.diapo{position:absolute;inset:0;padding:20rem 5rem 15rem;display:flex;flex-direction:column;visibility:hidden}
+.diapo.on{visibility:visible}
+.rouge{background:var(--easy);color:#fff}
+.kick{font-size:2.2rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--easy);margin-bottom:1.8rem}
+.rouge .kick{color:#fff;opacity:.9}
+h2{font-family:'Fredoka',sans-serif;font-weight:600;font-size:9.4rem;line-height:.98;text-wrap:balance}
+h2 em{font-style:normal;color:var(--easy)}
+.rouge h2 em{color:#fff}
+.intro{font-size:3rem;line-height:1.3;color:var(--muted);margin-top:2.6rem}
+.rouge .intro{color:#fff;opacity:.95}
+
+/* cartes de prix */
+.prix{display:flex;flex-direction:column;gap:2.4rem;margin-top:auto}
+.p{display:flex;align-items:center;gap:2.6rem;background:var(--card);border-radius:3.4rem;box-shadow:0 1rem 3.4rem rgba(0,0,0,.1);padding:2.4rem 3.2rem}
+.p img{flex:none;width:20rem;height:13rem;object-fit:contain}
+.p .nom{flex:1;min-width:0}
+.p .nom b{display:block;font-family:'Fredoka',sans-serif;font-weight:600;font-size:4.2rem;line-height:1.05}
+.p .nom small{display:block;font-size:2.4rem;color:var(--muted);margin-top:.6rem}
+.p .px{flex:none;text-align:right}
+.p .px small{display:block;font-size:1.9rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.p .px b{display:block;font-family:'Fredoka',sans-serif;font-weight:600;font-size:7.6rem;line-height:1;color:var(--easy);white-space:nowrap}
+.ttc{font-size:2rem;color:var(--muted);margin-top:2.6rem;text-align:center}
+.rouge .ttc{color:#fff;opacity:.8}
+
+/* carte avec image : le prix passe sous le nom */
+.p.img{display:grid;grid-template-columns:auto 1fr;column-gap:2.8rem;row-gap:.6rem;align-items:center}
+.p.img img{grid-row:1/3;width:19rem;height:13rem}
+.p.img .nom{align-self:end}
+.p.img .px{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:1rem;align-self:start}
+.p.img .px small{display:inline}
+/* fond blanc : les images des cartes se fondent dans la carte (fichiers non retouchés) */
+.p img[src$="e208.webp"]{-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent);mask-image:linear-gradient(to bottom,#000 80%,transparent)}
+/* grosse photo */
+.photo{margin:auto -5rem 0;height:42rem;display:flex;align-items:center;justify-content:center}
+.photo img{width:auto;max-width:100%;height:auto;max-height:100%;object-fit:contain;background:#fff;border-radius:3rem;box-shadow:0 1rem 3.4rem rgba(0,0,0,.1)}
+
+/* barre post-permis */
+.gain{background:var(--card);border-radius:3.4rem;box-shadow:0 1rem 3.4rem rgba(0,0,0,.1);padding:4rem;display:flex;flex-direction:column;gap:3.6rem;margin-top:auto}
+.gain b.t{font-family:'Fredoka',sans-serif;font-weight:600;font-size:3.6rem;display:block;margin-bottom:1.6rem}
+.gain b.t em{font-style:normal;color:var(--easy)}
+.barre{position:relative;height:5rem;border-radius:1.6rem;background:var(--rose);overflow:hidden}
+.barre i{position:absolute;left:0;top:0;bottom:0;border-radius:1.6rem;background:var(--easy)}
+.barre s{position:absolute;top:0;bottom:0;right:0;display:flex;align-items:center;justify-content:center;color:var(--easy);font-size:2.4rem;font-weight:700;text-decoration:none;background:repeating-linear-gradient(135deg,transparent 0 1rem,rgba(255,49,49,.12) 1rem 2rem)}
+.pastille{display:inline-flex;align-items:baseline;gap:1.2rem;align-self:flex-start;background:var(--easy);color:#fff;border-radius:2.6rem;padding:1.4rem 3.2rem;font-size:3rem;font-weight:700;margin-top:3rem}
+.pastille b{font-family:'Fredoka',sans-serif;font-weight:600;font-size:7rem;line-height:1}
+
+/* contact */
+.qr{margin:auto auto 0;background:#fff;border-radius:4rem;padding:3.4rem;width:44rem;box-shadow:0 2rem 5rem rgba(0,0,0,.18)}
+.qr img{width:100%;display:block}
+.tel{font-family:'Fredoka',sans-serif;font-weight:600;font-size:7.4rem;text-align:center;margin-top:4rem;line-height:1}
+.centre{text-align:center}
+
+.pied{position:absolute;left:5rem;right:5rem;bottom:5rem;z-index:5;display:flex;justify-content:space-between;align-items:center;font-size:2.4rem;font-weight:700;transition:color .6s}
+.pied .num{font-family:'Fredoka',sans-serif;font-size:3.4rem}
+.temps{position:absolute;left:5rem;right:5rem;bottom:3rem;height:.6rem;border-radius:1rem;background:rgba(0,0,0,.1);z-index:5;overflow:hidden}
+.temps i{display:block;height:100%;width:0;background:var(--easy)}
+.ecran.sur-rouge .temps{background:rgba(255,255,255,.3)}
+.ecran.sur-rouge .temps i{background:#fff}
+
+/* animations */
+.a{opacity:0;transform:translateY(3rem)}
+.diapo.on .a{animation:monte .8s cubic-bezier(.2,.7,.2,1) forwards}
+.diapo.on .a1{animation-delay:.1s}.diapo.on .a2{animation-delay:.25s}.diapo.on .a3{animation-delay:.4s}.diapo.on .a4{animation-delay:.6s}.diapo.on .a5{animation-delay:.8s}.diapo.on .a6{animation-delay:1s}
+@keyframes monte{to{opacity:1;transform:none}}
+.diapo.on .barre i{animation:pousse 1.4s .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes pousse{from{width:0!important}}
+@media (prefers-reduced-motion:reduce){.a,.diapo.on .a{animation:none;opacity:1;transform:none}}
+/* annonces et promos (réglées dans l'espace direction) */
+.pastille.promo{background:#fff;color:var(--easy);margin-top:4rem}
+.pastille.promo b{font-size:11rem}
+.rouge .pastille.promo{box-shadow:0 1.6rem 4rem rgba(0,0,0,.15)}
+.diapo.annonce h2{font-size:8.4rem}
+.diapo.annonce .intro{font-size:3.6rem}
+/* le sourire Easy signe l'annonce (comme sur la télé), en rouge sur fond clair */
+.diapo.annonce .sourire{width:28rem;aspect-ratio:834/264;margin-top:5rem;background:var(--easy);-webkit-mask:url(/tv/img/sourire_blanc.png) center/contain no-repeat;mask:url(/tv/img/sourire_blanc.png) center/contain no-repeat;opacity:0}
+.diapo.on.annonce .sourire{animation:sourit 1.2s cubic-bezier(.3,1.6,.5,1) .9s both}
+@keyframes sourit{from{opacity:0;transform:scaleX(.2)}to{opacity:1;transform:none}}
+
+/* Nouvelles diapos (maquettes retenues le 3/11/2026 : V1C, V3A, V4C, V5B, V7A, V8A / V8C) :
+   fond blanc, tout sur l'axe central, images fondues dans le décor (fichiers non retouchés) */
+.n .c,.n .hb{position:absolute;left:5.625rem;right:5.625rem;top:20.625rem;bottom:15.625rem}
+.n .c{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.n .hb{display:grid;grid-template-rows:1fr auto;gap:3.125rem}
+.n .img-zone{display:flex;align-items:center;justify-content:center;min-height:0}
+.n .kick{font-size:1.875rem;letter-spacing:.2em;margin-bottom:2.125rem}
+.n h2{font-size:8.75rem;line-height:1;letter-spacing:-.005em}
+.n h2.m{font-size:6.875rem}
+.n .intro{font-size:2.875rem;line-height:1.35;color:#5b6270;margin-top:2.25rem;max-width:53.75rem}
+.n.rouge .intro{color:#fff;opacity:.92}
+.n .im{display:block;max-width:100%;object-fit:contain}
+.n .fondu{-webkit-mask-image:linear-gradient(to bottom,#000 86%,transparent);mask-image:linear-gradient(to bottom,#000 86%,transparent)}
+.n .fig{font-family:'Fredoka',sans-serif;font-weight:600;font-size:20.625rem;line-height:.95;color:var(--easy);white-space:nowrap}
+.n.rouge .fig{color:#fff}
+.n .lignes{width:100%;margin-top:3.5rem;text-align:left}
+.n .lignes>div{display:flex;justify-content:space-between;align-items:center;gap:1.875rem;padding:2.125rem 0;border-top:.1875rem solid #e8e6e3}
+.n .lignes>div:last-child{border-bottom:.1875rem solid #e8e6e3}
+.n .lignes span b{display:block;font-family:'Fredoka',sans-serif;font-weight:500;font-size:3.5rem;line-height:1.1}
+.n .lignes span small{display:block;font-size:1.875rem;color:#5b6270;margin-top:.375rem}
+.n .lignes strong{font-family:'Fredoka',sans-serif;font-weight:600;font-size:5.25rem;line-height:1;color:var(--easy);white-space:nowrap}
+.n .ttc{font-size:1.75rem;color:#5b6270;margin-top:1.875rem}
+.n.rouge .ttc{color:#fff;opacity:.85}
+.n .hb .txt{text-align:left}.n .hb .ttc{text-align:left}
+.n .qr{margin:4.375rem 0 0;width:35rem;padding:2.75rem;border-radius:3.125rem;box-shadow:none}
+.n .tel{font-size:6.5rem;margin-top:3.125rem}
+/* le sourire Easy en signature, en bas au centre ; il s'étire en arrivant */
+.n .signe{position:absolute;left:50%;bottom:15.625rem;width:12.5rem;margin-left:-6.25rem;aspect-ratio:400/127;background:var(--easy);-webkit-mask:url(/tv/img/sourire_blanc.png) center/contain no-repeat;mask:url(/tv/img/sourire_blanc.png) center/contain no-repeat;opacity:0}
+.n.rouge .signe{background:#fff}
+.diapo.on.n .signe{animation:sourit 1.2s cubic-bezier(.3,1.6,.5,1) .9s both}
+</style>
+</head>
+<body>
+<div class="ecran" id="ecran">
+  <div class="haut"><div class="logo"><b>easy</b><span id="agence">auto-école · Saint-Sylvain</span></div><span class="beta">bêta</span></div>
+  <div id="diapos"></div>
+  <div class="pied"><span class="num" id="num">02 41 32 58 41</span></div>
+  <div class="temps"><i id="t"></i></div>
+</div>
+<div id="absente" style="position:fixed;inset:0;z-index:10;background:#000;display:none;align-items:flex-end;justify-content:center;padding-bottom:8vh"><p style="font:500 2.2vh 'DM Sans',sans-serif;color:#4b5361;text-align:center;padding:0 4vw"></p></div>
+<script>
+/* Écran vitrine : prix, diapos affichées, durées, annonces et promos réglables dans
+   Espace direction › Écran vitrine, pour chaque agence (même document que la télé, champ « vitrine »).
+   Une seule page, recopiée à la publication en /vitrine2/ … /vitrine10/ :
+   /vitrine = agence 1, Saint-Sylvain (ecran_tv/config) ; /vitrine2 = Les Banchais (ecran_tv/tv2) ; etc.
+   Nom et téléphone de l'agence : réglés dans Espace direction › Écran TV › l'agence.
+   Sans réseau ou sans réglage, l'écran garde les valeurs par défaut ci-dessous. */
+var DUREE = 9;   // secondes par diapo, par défaut
+var IMG = '/tv/img/';
+var AG = +((location.pathname.match(/\/vitrine(\d+)(\/|$)/) || [])[1] || 1);
+var URL_CONFIG = 'https://firestore.googleapis.com/v1/projects/easy-cds/databases/(default)/documents/ecran_tv/' + (AG === 1 ? 'config' : 'tv' + AG) + '?key=AIzaSyBTlHPr02V0yTyyksUdQJhMgwwMBhns_9E';
+var SS = { nom: 'Saint-Sylvain', tel: '02 41 32 58 41' };   // agence 1, tant que rien n'est réglé
+function agence() { return CONFIG.agence || {}; }
+function tel() { var g = agence(); return g.tel != null ? g.tel : AG === 1 ? SS.tel : ''; }
+var PRIX_DEF = { b_auto: '1 175', b_manu: '1 555', am: '275', moto: '799', passerelle: '295', post: '99', post_autre: '149', be: '829', b96: '295' };
+var CONFIG = {};
+
+function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+// « 1175 » ou « 1 175 » → « 1&nbsp;175 € » ; un texte libre (« -15 % ») reste tel quel
+function euros(v) {
+  v = String(v == null ? '' : v).trim();
+  if (/^\d[\d\s]*([.,]\d+)?$/.test(v)) { var n = v.replace(/\s/g, '').split(/[.,]/); v = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') + (n[1] ? ',' + n[1] : '') + '\u00a0€'; }
+  return esc(v).replace(/ (€|%)/g, '\u00a0$1');
+}
+function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function jourMois(s) { return new Date(s + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }); }
+function actifs(l) {
+  var auj = ymd(new Date());
+  return (l || []).filter(function (x) { return x && x.titre && x.ou !== 'tv' && (!x.du || x.du <= auj) && (!x.au || x.au >= auj); });
+}
+
+// lignes de prix des nouvelles diapos : [nom, détail, prix] ; a = numéro de la première animation
+function lignes(l, a) {
+  return '<div class="lignes">' + l.map(function (x, k) { return '<div class="a a' + Math.min(a + k, 6) + '"><span><b>' + x[0] + '</b>' + (x[1] ? '<small>' + x[1] + '</small>' : '') + '</span><strong>' + euros(x[2]) + '</strong></div>'; }).join('') + '</div>';
+}
+// chiffre géant (promo) : la taille s'adapte à la longueur pour tenir sur une ligne
+function fig(t) { var n = String(t).replace(/&nbsp;/g, ' ').length; return '<div class="fig a a2" style="font-size:' + Math.min(20.625, 56 / (n * .6)).toFixed(2) + 'rem">' + t + '</div>'; }
+// titre saisi dans l'espace direction : plus petit s'il est long, pour qu'aucun mot ne dépasse de l'écran
+function taille(t, max) { t = String(t || ''); var mot = Math.max.apply(null, t.split(/\s+/).map(function (x) { return x.length; }));
+  return Math.min(max, 56 / (mot * .58), t.length > 34 ? 6.875 : 99).toFixed(2) + 'rem'; }
+var STYLES = { qr: 'AC' };   // diapos à plusieurs styles : la première lettre est celle par défaut
+var DIAPOS = [
+  { k: 'promos' },
+  { k: 'b', html: function (p) { return '<div class="diapo"><div class="a a1"><div class="kick">Permis B</div></div><h2 class="a a2">Ton permis <em>dès ' + euros(p.b_auto) + '</em></h2>' +
+    '<p class="intro a a3">Code, conduite et accompagnement à l’examen : tout est dans le pack.</p>' +
+    '<div class="prix"><div class="p img a a4"><img src="' + IMG + 'e208.webp" alt=""><div class="nom"><b>Boîte auto</b><small>13 h de conduite</small></div><div class="px"><small>dès</small><b>' + euros(p.b_auto) + '</b></div></div>' +
+    '<div class="p img a a5"><img src="' + IMG + 'clio.jpg" alt=""><div class="nom"><b>Boîte manuelle</b><small>20 h de conduite</small></div><div class="px"><small>dès</small><b>' + euros(p.b_manu) + '</b></div></div></div>' +
+    '<p class="ttc a a6">Prix TTC · conduite accompagnée et supervisée en option</p></div>'; } },
+  { k: 'auto', html: function () { return '<div class="diapo n"><div class="c"><img class="im fondu a a1" src="' + IMG + 'e208.webp" alt="" style="max-height:35rem">' +
+    '<div class="kick a a2" style="margin-top:3.75rem">Permis boîte auto</div><h2 class="m a a3">Auto d’abord,<br><em>manuelle en 7&nbsp;h</em></h2>' +
+    '<p class="intro a a4">Juste après ton permis, sans repasser l’examen.</p></div></div>'; } },
+  { k: 'annonces' },
+  { k: 'moto', html: function (p) { return '<div class="diapo n"><div class="hb"><div class="img-zone a a1"><img class="im" src="' + IMG + 'moto.webp" alt="" style="max-height:35rem"></div>' +
+    '<div class="txt"><div class="kick a a2">Deux-roues</div><h2 class="m a a3">À toi la route</h2>' +
+    lignes([['Permis AM', 'dès 14&nbsp;ans', p.am], ['Moto A1 / A2', '20 h', p.moto], ['Passerelle A2 → A', '7&nbsp;h', p.passerelle]], 4) + '<p class="ttc a a6">Prix TTC</p></div></div></div>'; } },
+  { k: 'post', html: function (p) { return '<div class="diapo"><div class="a a1"><div class="kick">Formation post-permis</div></div><h2 class="a a2">Tes 12 points, <em>plus vite</em></h2>' +
+    '<div class="pastille a a3"><span>dès</span><b>' + euros(p.post) + '</b></div>' +
+    '<div class="gain a a4"><div><b class="t">Permis classique : <em>2 ans</em> au lieu de 3</b><div class="barre"><i style="width:66.7%"></i><s style="left:66.7%">− 1 an</s></div></div>' +
+    '<div><b class="t">Conduite accompagnée : <em>18 mois</em> au lieu de 2 ans</b><div class="barre"><i style="width:75%"></i><s style="left:75%">− 6 mois</s></div></div></div>' +
+    '<p class="ttc a a5">7 h, entre 6 mois et 1 an après le permis · ' + euros(p.post) + ' anciens élèves Easy, ' + euros(p.post_autre) + ' sinon · prix TTC</p></div>'; } },
+  { k: 'remorque', html: function (p) { return '<div class="diapo n"><div class="c"><img class="im a a1" src="' + IMG + 'remorque.webp" alt="" style="max-height:28.75rem">' +
+    '<h2 class="m a a2" style="margin-top:2.5rem">Tracter <em>en sécurité</em></h2>' +
+    lignes([['Permis BE', '14 h · examen compris', p.be], ['Formation B96', '7&nbsp;h · jusqu’à 4&nbsp;250 kg', p.b96]], 3) + '<p class="ttc a a5">Prix TTC</p></div></div>'; } },
+  // QR : style A (fond blanc) par défaut, ou C (fond rouge), au choix dans Espace direction › Écran vitrine › Diapos
+  { k: 'qr', html: function (p, st) { var r = st === 'C'; return '<div class="diapo n' + (r ? ' rouge" data-rouge' : '"') + '><div class="c"><div class="kick a a1">On est fermés ? Pas grave</div>' +
+    '<h2 class="m a a2">Scanne, ' + (r ? 'tout est en ligne' : '<em>tout est en ligne</em>') + '</h2>' +
+    '<div class="qr a a3"><img src="/vitrine/qr-site.svg" alt="QR code vers easy-auto-ecole.com"></div>' +
+    (tel() ? '<p class="tel a a4">' + esc(tel()) + '</p>' : '') + '</div></div>'; } }
+];
+
+function construire() {
+  var v = CONFIG.vitrine || {}, p = {}, off = v.off || {}, dur = v.durees || {}, sty = v.styles || {}, liste = [], ap = apercu();
+  for (var c in PRIX_DEF) p[c] = (v.prix && String(v.prix[c] || '').trim()) || PRIX_DEF[c];
+  DIAPOS.forEach(function (d) {
+    if (ap ? d.k !== ap.k : off[d.k]) return;
+    var st = ap && ap.st ? ap.st : sty[d.k];
+    if (STYLES[d.k] && STYLES[d.k].indexOf(st) < 0) st = STYLES[d.k][0];
+    var s = +dur[d.k] >= 3 && +dur[d.k] <= 120 ? +dur[d.k] : DUREE;
+    if (d.k === 'promos') (ap && !actifs(CONFIG.promos).length ? [{ titre: 'Permis moto', prix: '-15 %', texte: 'Sur le pack A2 (exemple).' }] : actifs(CONFIG.promos)).forEach(function (x) {
+      liste.push({ s: s, html: '<div class="diapo n rouge" data-rouge><div class="c"><div class="kick a a1">Promo du moment</div>' +
+        (x.prix ? fig(euros(x.prix)) + '<h2 class="m a a3" style="margin-top:2rem;font-size:' + taille(x.titre, 6.875) + '">' + esc(x.titre) + '</h2>' : '<h2 class="a a2" style="font-size:' + taille(x.titre, 8.75) + '">' + esc(x.titre) + '</h2>') +
+        (x.texte ? '<p class="intro a a4">' + esc(x.texte) + '</p>' : '') + (x.au ? '<p class="ttc a a5">Jusqu’au ' + jourMois(x.au) + '</p>' : '') + '</div><div class="signe"></div></div>' });
+    });
+    else if (d.k === 'annonces') (ap && !actifs(CONFIG.annonces).length ? [{ titre: 'Ouvert ce samedi matin', texte: 'Exemple : l’agence vous accueille de 9 h à 12 h.' }] : actifs(CONFIG.annonces)).forEach(function (x) {
+      liste.push({ s: s, html: '<div class="diapo n rouge" data-rouge><div class="c"><div class="kick a a1">À l’agence</div><h2 class="a a2" style="font-size:' + taille(x.titre, 8.75) + '">' + esc(x.titre) + '</h2>' +
+        (x.texte ? '<p class="intro a a3">' + esc(x.texte) + '</p>' : '') + '</div><div class="signe"></div></div>' });
+    });
+    else liste.push({ s: s, html: d.html(p, st) });
+  });
+  if (!liste.length) liste.push({ s: DUREE, html: DIAPOS[DIAPOS.length - 1].html(p, sty.qr) });
+  return liste;
+}
+
+// Aperçu depuis l'espace direction : #voir=<diapo>&style=<lettre> n'affiche que cette diapo (exemple si rien n'est en cours)
+function apercu() { var m = /voir=([^&]+)/.exec(location.hash); if (!m) return null; var s = /style=([A-Z]?)/.exec(location.hash); return { k: decodeURIComponent(m[1]), st: s ? s[1] : '' }; }
+addEventListener('hashchange', function () { monter(); });
+var zone = document.getElementById('diapos'), ecran = document.getElementById('ecran'), barre = document.getElementById('t'), i = -1, LISTE = [], els = [], minuterie = null, signature = '';
+function monter() {
+  var g = agence();
+  document.getElementById('agence').textContent = 'auto-école' + ((g.nom || (AG === 1 ? SS.nom : '')) ? ' · ' + (g.nom || SS.nom) : '');
+  document.getElementById('num').textContent = tel();
+  LISTE = construire();
+  zone.innerHTML = LISTE.map(function (d) { return d.html; }).join('');
+  els = [].slice.call(zone.querySelectorAll('.diapo'));
+  i = -1; clearTimeout(minuterie); suivante();
+}
+function suivante() {
+  if (i >= 0 && els[i]) els[i].classList.remove('on');
+  i = (i + 1) % els.length;
+  var el = els[i], s = LISTE[i].s;
+  void el.offsetWidth; el.classList.add('on');
+  ecran.classList.toggle('sur-rouge', el.hasAttribute('data-rouge'));
+  barre.style.transition = 'none'; barre.style.width = '0';
+  requestAnimationFrame(function () { requestAnimationFrame(function () { barre.style.transition = 'width ' + s + 's linear'; barre.style.width = '100%'; }); });
+  minuterie = setTimeout(suivante, s * 1000);
+}
+// réglages : au démarrage puis toutes les 2 minutes ; l'écran ne se remonte que si quelque chose a changé
+function charger() {
+  fetch(URL_CONFIG + '&t=' + Date.now(), { cache: 'no-store' }).then(function (r) { if (r.status === 404 && AG !== 1) absente(); return r.ok ? r.json() : null; }).then(function (j) {
+    if (!j || !j.fields || !j.fields.json) return;
+    var d = JSON.parse(j.fields.json.stringValue || '{}');
+    var g = d.agence || {}, sig = JSON.stringify([d.vitrine || {}, actifs(d.annonces), actifs(d.promos), g.nom, g.tel]);
+    document.getElementById('absente').style.display = 'none';
+    if (sig === signature) return;
+    signature = sig; CONFIG = d; monter();
+  }).catch(function () {});
+}
+// Agences 2, 3… : écran noir tant que les réglages ne sont pas arrivés ; message si l'agence n'existe pas encore
+function absente() { var e = document.getElementById('absente'); e.style.display = 'flex'; e.querySelector('p').textContent = 'Écran vitrine n° ' + AG + ' : agence pas encore créée dans l’espace direction.'; signature = ''; }
+if (AG !== 1) document.getElementById('absente').style.display = 'flex';
+monter(); charger(); setInterval(charger, 120000);
+setInterval(function () { var n = new Date(); if (n.getHours() === 4 && n.getMinutes() < 1) location.reload(); }, 50000);
+document.addEventListener('click', function () { if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {}); });
+try { if (navigator.wakeLock) navigator.wakeLock.request('screen').catch(function () {}); } catch (e) {}
+</script>
+</body>
+</html>

@@ -174,7 +174,7 @@
   }
 
   function creation(mailInitial) {
-    var d = afficher('<form novalidate><h1>Première connexion</h1><p class="ea-sous">Utilise l’e-mail que tu as donné à la direction</p><div class="ea-champs">' +
+    var d = afficher('<form novalidate><h1>Première connexion</h1><p class="ea-sous">Utilise l’e-mail que tu as donné à l’agence</p><div class="ea-champs">' +
       champ('ea-mail', 'E-mail', 'email', 'username') + champ('ea-mdp', 'Choisis un mot de passe', 'password', 'new-password') +
       champ('ea-mdp2', 'Retape-le', 'password', 'new-password') +
       '</div><p class="ea-sous" style="margin:10px 0 14px;font-size:13px">8 caractères minimum, avec une majuscule et un caractère spécial (! ? @ # …)</p><button class="ea-ok" type="submit">Créer mon compte</button><div class="err" aria-live="polite"></div>' +
@@ -212,7 +212,7 @@
   }
 
   function refus(u) {
-    var t = ESPACE === 'direction' ? 'Cet espace est réservé à la direction.' : 'Ton compte n’est pas encore dans la liste des moniteurs. Demande à la direction de t’ajouter, puis réessaie.';
+    var t = ESPACE === 'direction' ? 'Cet espace est réservé à la direction.' : 'Ton compte n’est pas encore dans la liste des moniteurs. Demande à l’agence de t’ajouter, puis réessaie.';
     var d = afficher('<form><h1>Accès réservé</h1><p class="ea-info">' + t + '<br><br>Compte : <b>' + echap(u.email) + '</b></p>' +
       '<button class="ea-ok" type="submit">Réessayer</button><div class="err" aria-live="polite"></div>' +
       '<div class="ea-liens">' + (ESPACE === 'direction' ? '<a class="ea-lien" href="/outils/">Aller à l’espace moniteurs</a>' : '') + '<button type="button" class="ea-lien" data-a="autre">Changer de compte</button></div></form>');

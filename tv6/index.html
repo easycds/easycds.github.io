@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#ff3131">
 <title>Easy · Écran d'accueil</title>
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="stylesheet" href="/fonts/polices.css">
+<link rel="stylesheet" href="/fonts/polices-fredoka.css">
 <style>
 :root{--easy:#ff3131;--easy-dark:#e01f1f;--rose:#ffe4e4;--text:#000000;--muted:#5f6672;--bg:#f1f0ef;--card:#fff;--border:#e6e3df}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -388,7 +388,7 @@ function stNb(t){ return String(t).replace(/([^\s<>]+-[^\s<>]+)/g,'<span style="
 function stEm(t,sep){ var p=String(t).split('<br>'); return p.length===2?p[0]+sep+'<em>'+p[1]+'</em>':t; }
 function stDate(s){ var x=new Date(s+'T12:00:00'); return x.getDate()+' '+MOIS[x.getMonth()]; }
 function stEt(liste){ return liste.length<2?liste.join(''):liste.slice(0,-1).join(', ')+' et '+liste[liste.length-1]; }
-var ST_ETAPES=[['1','Inscription','On monte ton dossier à l’agence et on demande ton numéro de candidat.'],['2','Évaluation de départ','Une séance avec un moniteur pour estimer ton nombre d’heures.'],['3','Formation au code','En salle à l’agence, en ligne ou en stage, à ton rythme.'],['4','Code de la route','Quand tu es prêt, tu t’inscris toi-même dans un centre d’examen agréé.'],['5','Formation pratique','Tes leçons de conduite, pas à pas jusqu’à l’autonomie.'],['+','Conduite accompagnée','Dès 15 ans : un an et 3 000 km avec un proche, et 2 rendez-vous à l’agence.'],['6','Pratique du permis','Le grand jour : ton moniteur t’accompagne à l’examen.']];
+var ST_ETAPES=[['1','Inscription','On monte ton dossier à l’agence et on demande ton numéro de candidat.'],['2','Évaluation de départ','Une séance avec un moniteur pour estimer ton nombre d’heures.'],['3','Formation au code','En salle à l’agence, en ligne ou en stage, à ton rythme.'],['4','Examen du code','Tu t’inscris dès que tu es prêt, dans un centre d’examen agréé.'],['5','Formation pratique','Tes leçons de conduite, pas à pas jusqu’à l’autonomie.'],['+','Conduite accompagnée','Dès 15 ans : un an et 3 000 km avec un proche, et 2 rendez-vous à l’agence.'],['6','Examen pratique','Le grand jour, ton moniteur t’accompagne à l’examen.']];
 function renduStyle(d,st){
   var f,cr,l,n,auj;
   switch(d.type){
@@ -412,7 +412,7 @@ function renduStyle(d,st){
       var t=function(k){ return (deb+pas*k).toFixed(2)+'s'; }, der=ST_ETAPES.length-1;
       var ret=function(k){ return ''; }, dk=function(k){ return ' data-k="'+k+'"'; };
       if(st==='A'){
-        var pts=ST_ETAPES.map(function(e,k){ return '<div><i'+dk(k)+'>'+e[0]+'</i><b'+dk(k)+'>'+e[1].replace('Conduite accompagnée','Accompagnée').replace('Évaluation de départ','Évaluation').replace('Formation au code','Code').replace('Code de la route','Examen code').replace('Formation pratique','Conduite').replace('Pratique du permis','Examen pratique')+'</b></div>'; }).join('');
+        var pts=ST_ETAPES.map(function(e,k){ return '<div><i'+dk(k)+'>'+e[0]+'</i><b'+dk(k)+'>'+e[1].replace('Conduite accompagnée','Accompagnée').replace('Évaluation de départ','Évaluation').replace('Formation au code','Code').replace('Examen du code','Examen code').replace('Formation pratique','Conduite').replace('Pratique du permis','Examen pratique')+'</b></div>'; }).join('');
         var det=ST_ETAPES.map(function(e,k){ return '<div'+dk(k)+'><p style="margin-top:0"><b style="color:#111">'+e[1]+'</b> — '+e[2]+'</p></div>'; }).join('');
         return stBloc('c',stK('Ton parcours',1)+'<h2 class="f a a2">Les étapes vers ton permis <em>chez Easy</em></h2><div class="st-etp a a3">'+pts+'</div><div class="st-pile" style="height:8rem;margin-top:3.2rem">'+det+'</div>',{d:tot,etp:deb+','+pas});
       }
@@ -497,7 +497,7 @@ function rendu(d){
       r=d.etapes.map(function(e,i){ return '<div'+a(i+3)+'><i>'+(i+1)+'</i>'+e+'</div>'; }).join('');
       return '<div class="diapo"><div class="txt"><div'+a(1)+'><div class="kick">'+d.kick+'</div></div><h2 class="f a a2">'+d.titre+'</h2><div class="etapes">'+r+'</div></div><div class="qr">'+QR+'<b>Ta carte est à l’accueil</b></div></div>';
     case 'etapes':   // l'affiche des étapes : chaque point s'allume, puis son détail arrive en bulle
-      var ET=[['1','Inscription','On monte ton dossier à l’agence et on demande ton numéro de candidat.'],['2','Évaluation de départ','Une séance avec un moniteur pour estimer ton nombre d’heures.'],['3','Formation au code','En salle à l’agence, en ligne ou en stage, à ton rythme.'],['4','Code de la route','Quand tu es prêt, tu t’inscris toi-même dans un centre d’examen agréé.','exam'],['5','Formation pratique','Tes leçons de conduite, pas à pas jusqu’à l’autonomie.'],['a','Conduite accompagnée','Dès 15 ans : un an et 3 000 km avec un proche, et 2 rendez-vous à l’agence.','aac'],['6','Pratique du permis','Le grand jour : ton moniteur t’accompagne à l’examen.','exam']];
+      var ET=[['1','Inscription','On monte ton dossier à l’agence et on demande ton numéro de candidat.'],['2','Évaluation de départ','Une séance avec un moniteur pour estimer ton nombre d’heures.'],['3','Formation au code','En salle à l’agence, en ligne ou en stage, à ton rythme.'],['4','Examen du code','Tu t’inscris dès que tu es prêt, dans un centre d’examen agréé.','exam'],['5','Formation pratique','Tes leçons de conduite, pas à pas jusqu’à l’autonomie.'],['a','Conduite accompagnée','Dès 15 ans : un an et 3 000 km avec un proche, et 2 rendez-vous à l’agence.','aac'],['6','Examen pratique','Le grand jour, ton moniteur t’accompagne à l’examen.','exam']];
       var POS={1:[37.7,30.1],2:[37.7,42.8],3:[41.8,54.9],4:[65.3,57.6],5:[74.4,66.9],a:[44,74.5],6:[38.2,88.3],r1:[15.8,70.1],r2:[14,80.5]};
       var PLUS='<svg viewBox="0 0 16 16"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>';
       var Dd=(typeof DONNEES!=='undefined'&&DONNEES&&DONNEES.durees)||{}, tot=(+Dd.etapes>=3&&+Dd.etapes<=120)?+Dd.etapes:42;   // 42 s : environ 5,5 s par étape
